@@ -80,3 +80,68 @@ def test_muslim_split_is_a_refinement_not_a_relabel(records):
     six = score_ladder(source.with_group(records, "category_religion"), group="group")
     merged = five.merge(six, on="level", suffixes=("_5", "_6"))
     assert (merged["mistakes_per_100_6"] >= merged["mistakes_per_100_5"] - 1e-9).all()
+
+
+mahadalit = load("02_jati_by_geography", "mahadalit")
+
+
+@pytest.fixture(scope="module")
+def hamlet():
+    raw = mahadalit.load()
+    if raw is None:
+        pytest.skip("Mahadalit census unavailable")
+    lad = mahadalit.ladder(raw)
+    plug = score_ladder(lad, group="jati", weight="households")
+    loo = leave_one_out_ladder(lad, group="jati", weight="households")
+    return plug.merge(loo, on="level").set_index("level")
+
+
+HAMLET_RUNGS = [
+    "surname+tola",
+    "surname+village",
+    "surname+panchayat",
+    "surname+block",
+    "surname+district",
+    "surname",
+]
+
+
+def test_hamlet_ladder_is_monotone(hamlet):
+    values = [hamlet.loc[r, "mistakes_per_100_loo"] for r in HAMLET_RUNGS]
+    assert values == sorted(values)
+
+
+def test_the_hamlet_rung_survives_leave_one_out(hamlet):
+    """Half the hamlet cells hold a single household, so a cell of one is
+    'predicted' perfectly by construction. The whole claim rests on this."""
+    plug = hamlet.loc["surname+tola", "mistakes_per_100"]
+    loo = hamlet.loc["surname+tola", "mistakes_per_100_loo"]
+    assert loo - plug < 2.0, f"leave-one-out moved the hamlet by {loo - plug:.2f}"
+    assert loo < hamlet.loc["surname+village", "mistakes_per_100_loo"]
+
+
+def test_the_hamlet_alone_beats_the_surname_alone(hamlet):
+    """The hamlets are often caste-named -- chamar tola, mushar tola -- so the
+    place carries real information on its own. The pair still beats either."""
+    assert (
+        hamlet.loc["tola alone", "mistakes_per_100_loo"]
+        < hamlet.loc["surname", "mistakes_per_100_loo"]
+    )
+    assert (
+        hamlet.loc["surname+tola", "mistakes_per_100_loo"]
+        < hamlet.loc["tola alone", "mistakes_per_100_loo"]
+    )
+
+
+def test_rebuild_matches_the_shipped_ladder(hamlet, scored):
+    """naampata ships a census ladder stopping at the village. Rebuilding it
+    from the raw district files must land in the same place, or the raw read is
+    wrong somewhere."""
+    mine = hamlet.loc["surname+village", "mistakes_per_100"]
+    assert 8 < mine < 14
+
+
+def test_surname_is_the_last_token_here():
+    """Checked, not assumed: Maharashtra's rolls put it first."""
+    tr = load("04_which_token_is_the_surname", "transmission")
+    assert [t for _, t in tr.shared_tokens("raj kumar das", "basudev das")] == ["das"]

@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 import data as source
+import mahadalit
 import pandas as pd
 
 from last_name_basis import leave_one_out_ladder, score_ladder
@@ -63,6 +64,30 @@ def main() -> None:
         scored.append(s)
         baselines["census/jati"] = baseline(census, "households", "jati")
 
+    # The Mahadalit census, scored one rung finer than naampata's shipped
+    # ladder: it carries the hamlet, which is the finest geography in any of
+    # this data and has never been scored.
+    mahadalit_summary = None
+    raw = mahadalit.load()
+    if raw is not None:
+        lad = mahadalit.ladder(raw)
+        hamlet = score_ladder(lad, group="jati", weight="households")
+        hamlet = hamlet.merge(
+            leave_one_out_ladder(lad, group="jati", weight="households"), on="level"
+        )
+        hamlet["ladder"] = "mahadalit_raw"
+        hamlet["target"] = "jati"
+        hamlet["rung"] = (
+            hamlet["level"].map(mahadalit.RUNG_LABEL).fillna(hamlet["level"])
+        )
+        hamlet["place_only"] = hamlet["level"].isin(mahadalit.PLACE_ONLY)
+        scored.append(hamlet)
+        mahadalit_summary = {
+            "households": int(len(raw)),
+            "jatis": int(raw["jati"].nunique()),
+            "districts": int(raw["district"].nunique()),
+        }
+
     table = pd.concat(scored, ignore_index=True)
     table.to_csv(TAB / "ladders.csv", index=False)
 
@@ -76,11 +101,15 @@ def main() -> None:
             records.loc[records["level"] == "surname", "accounts"].sum()
         ),
     }
+    if mahadalit_summary:
+        summary["mahadalit"] = mahadalit_summary
     (TAB / "summary.json").write_text(json.dumps(summary, indent=2))
 
     import figures
 
     figures.atrophy(table, baselines, FIG / "atrophy.png")
+    if (table["ladder"] == "mahadalit_raw").any():
+        figures.hamlet_ladder(table, FIG / "hamlet_ladder.png")
     figures.name_vs_place(table, baselines, FIG / "name_vs_place.png")
     # The rate for this specific surname, not the ladder average, so the
     # picture and its caption cannot disagree.

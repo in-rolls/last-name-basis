@@ -48,6 +48,7 @@ def reflow(md: str, width: int = 80) -> str:
 
 def main() -> None:
     t = pd.read_csv(TAB / "ladders.csv")
+    mh = t[t.ladder == "mahadalit_raw"].set_index("level") if "ladder" in t else None
     s = json.loads((TAB / "summary.json").read_text())
 
     def cell(target, level, col="mistakes_per_100"):
@@ -77,6 +78,15 @@ def main() -> None:
         for tg in ("jati", "category_religion")
         for lv in rungs
     )
+
+    mahadalit_households = s.get("mahadalit", {}).get("households", 0)
+    mahadalit_jatis = s.get("mahadalit", {}).get("jatis", 0)
+    if mh is not None and len(mh):
+        hamlet_tola = mh.loc["surname+tola", "mistakes_per_100_loo"]
+        hamlet_tola_plug = mh.loc["surname+tola", "mistakes_per_100"]
+        hamlet_village = mh.loc["surname+village", "mistakes_per_100_loo"]
+        hamlet_surname = mh.loc["surname", "mistakes_per_100_loo"]
+        hamlet_place = mh.loc["tola alone", "mistakes_per_100_loo"]
 
     md = f"""# Jati is a local fact
 
@@ -113,6 +123,37 @@ The atrophy is steep and it is orderly: {m('jati', 'surname+village')} in a
 village, {m('jati', 'surname+zone')} across a zone,
 {m('jati', 'surname+district')} across a district,
 {m('jati', 'surname')} across the state.
+
+## One rung below the village
+
+The land records stop at the village. Bihar's Mahadalit census does not: it
+records the **tola**, the hamlet, and hamlets in Bihar are frequently
+caste-segregated to the point of being named for it — `chamar tola`,
+`mushar tola`, `harijan tola`.
+
+![The hamlet rung]({FIG}/hamlet_ladder.png)
+
+Across {mahadalit_households:,} households and {mahadalit_jatis} Scheduled Caste
+jatis, knowing a surname and a hamlet leaves you wrong
+**{hamlet_tola:.0f} times in a hundred**, against {hamlet_village:.0f} at the
+village and {hamlet_surname:.0f} for the surname alone. One level below the
+village nearly halves the error again.
+
+Half of those hamlet cells hold a single household, and a cell of one is
+"predicted" perfectly by construction, so every figure here is leave-one-out:
+each household is guessed from a cell that excludes it. That moves the hamlet
+from {hamlet_tola_plug:.1f} to {hamlet_tola:.1f}, about one mistake in a
+hundred, which is why the rung stands.
+
+The hamlet is also doing work on its own. Knowing only which hamlet someone
+lives in, with no name at all, leaves you wrong {hamlet_place:.0f} times —
+better than knowing only their surname ({hamlet_surname:.0f}). The segregation is
+that sharp. But the pair is far better than either piece, which is the same
+lesson one level up.
+
+These numbers are Scheduled Caste households only, so they are within-Dalit
+across {mahadalit_jatis} jatis and are not comparable to the 141-jati land ladder
+above.
 
 ## Neither the name nor the place, on its own
 

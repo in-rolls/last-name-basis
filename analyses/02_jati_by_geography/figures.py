@@ -268,3 +268,97 @@ def rung_waffles(
     fig.tight_layout(rect=(0, 0.07, 1, 0.93))
     fig.savefig(out, dpi=170, bbox_inches="tight")
     plt.close(fig)
+
+
+def hamlet_ladder(table: pd.DataFrame, out: Path) -> None:
+    """The Mahadalit census, scored one rung below the village.
+
+    Leave-one-out is drawn alongside because the hamlet cells are small -- half
+    hold a single household -- and the plug-in figure would flatter them.
+    """
+    d = table[table["ladder"] == "mahadalit_raw"]
+    order = [
+        "surname+tola",
+        "surname+village",
+        "surname+panchayat",
+        "surname+block",
+        "surname+district",
+        "surname",
+    ]
+    d = d.set_index("level").reindex(order).reset_index()
+    x = np.arange(len(d))
+
+    fig, ax = plt.subplots(figsize=(8.4, 5.0))
+    ax.plot(
+        x,
+        d["mistakes_per_100_loo"],
+        "-o",
+        color=INK,
+        lw=2.4,
+        ms=7,
+        label="leave-one-out",
+        zorder=4,
+    )
+    ax.plot(
+        x,
+        d["mistakes_per_100"],
+        "--o",
+        color=MUTED,
+        lw=1.6,
+        ms=5,
+        label="plug-in",
+        zorder=3,
+    )
+    for xi, yi in zip(x, d["mistakes_per_100_loo"]):
+        ax.annotate(
+            f"{yi:.0f}",
+            (xi, yi),
+            xytext=(0, 10),
+            textcoords="offset points",
+            ha="center",
+            fontsize=9,
+            color=INK,
+        )
+
+    place = table[(table["ladder"] == "mahadalit_raw") & table["place_only"]]
+    for level, style in (("tola alone", ":"), ("village alone", "-.")):
+        row = place[place["level"] == level]
+        if row.empty:
+            continue
+        v = float(row["mistakes_per_100_loo"].iloc[0])
+        ax.axhline(v, color=ACCENT, ls=style, lw=1.2)
+        ax.text(
+            len(order) - 0.45,
+            v + 0.9,
+            f"{level}, no name — {v:.0f}",
+            fontsize=8.5,
+            color=ACCENT,
+            ha="right",
+        )
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(
+        [
+            "surname\n+ hamlet",
+            "surname\n+ village",
+            "surname\n+ panchayat",
+            "surname\n+ block",
+            "surname\n+ district",
+            "surname alone\n(statewide)",
+        ],
+        fontsize=9,
+    )
+    ax.set_ylim(0, 36)
+    ax.set_ylabel("of 100 households, how many you get wrong")
+    ax.set_title(
+        "Caste is a fact of the hamlet, not just the village\n"
+        "Going one level below the village nearly halves the error again.",
+        color=INK,
+        loc="left",
+        fontsize=12,
+    )
+    ax.legend(frameon=False, fontsize=9, loc="upper left")
+    style_axes(ax)
+    fig.tight_layout()
+    fig.savefig(out, dpi=170)
+    plt.close(fig)

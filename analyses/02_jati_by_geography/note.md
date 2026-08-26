@@ -34,6 +34,33 @@ the village cuts the mistakes you would otherwise make by about two-thirds.**
 The atrophy is steep and it is orderly: 16 in a village, 30 across a zone, 37
 across a district, 47 across the state.
 
+## One rung below the village
+
+The land records stop at the village. Bihar's Mahadalit census does not: it
+records the **tola**, the hamlet, and hamlets in Bihar are frequently
+caste-segregated to the point of being named for it — `chamar tola`, `mushar
+tola`, `harijan tola`.
+
+![The hamlet rung](out/fig/hamlet_ladder.png)
+
+Across 2,980,126 households and 22 Scheduled Caste jatis, knowing a surname and
+a hamlet leaves you wrong **7 times in a hundred**, against 12 at the village
+and 30 for the surname alone. One level below the village nearly halves the
+error again.
+
+Half of those hamlet cells hold a single household, and a cell of one is
+"predicted" perfectly by construction, so every figure here is leave-one-out:
+each household is guessed from a cell that excludes it. That moves the hamlet
+from 6.4 to 7.5, about one mistake in a hundred, which is why the rung stands.
+
+The hamlet is also doing work on its own. Knowing only which hamlet someone
+lives in, with no name at all, leaves you wrong 18 times — better than knowing
+only their surname (30). The segregation is that sharp. But the pair is far
+better than either piece, which is the same lesson one level up.
+
+These numbers are Scheduled Caste households only, so they are within-Dalit
+across 22 jatis and are not comparable to the 141-jati land ladder above.
+
 ## Neither the name nor the place, on its own
 
 ![Name against place](out/fig/name_vs_place.png)
