@@ -43,8 +43,7 @@ what the village is worth; analysis 01 measures what is left once it is gone.
 
 ```
 uv venv .venv
-uv pip install --python .venv/bin/python -e . --no-deps
-uv pip install --python .venv/bin/python pandas 'pyarrow>=18,!=19.0.0' numpy matplotlib pytest black isort flake8
+uv pip install --python .venv/bin/python -e '.[dev]'
 
 make all      # both pipelines: tables, figures, notes
 make a01      # just the first
@@ -65,9 +64,9 @@ Shared code is only the scoring measure and the drawing style:
 
 ## Data
 
-- [outkast](https://github.com/appeler/outkast) — SECC 2011 surname composition.
-  `outkast>=2.0.0` is not yet on PyPI, so analysis 01 falls back to a sibling
-  checkout.
+- [outkast](https://github.com/appeler/outkast) — SECC 2011 surname composition,
+  installed from PyPI. The package verifies its table and manifest by SHA-256
+  before every lookup, so a clean checkout reproduces these numbers exactly.
 - [instate](https://github.com/appeler/instate) — 2017 electoral-roll surname
   counts, used for how common a name is. SECC counts heads of household and so
   undercounts women's surnames badly: Devi is 2.3M there and 45M on the rolls,

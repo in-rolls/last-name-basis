@@ -25,5 +25,5 @@ Read [`note.md`](note.md). Run with `make a01`.
 legibility of Dalit and Adivasi status and nothing wider. Analysis 02 has the
 finer categories, for Bihar only.
 
-`outkast>=2.0.0` is not yet on PyPI; `data.py` falls back to a sibling checkout
-of the repo.
+`data.py` prefers the installed `outkast` package and falls back to a sibling
+checkout only if it is missing.
