@@ -184,3 +184,49 @@ def variant_band(raw: np.ndarray, merged: np.ndarray, moved: float, out: Path):
     fig.tight_layout()
     fig.savefig(out, dpi=170)
     plt.close(fig)
+
+
+def sex_marked(table: pd.DataFrame, out: Path) -> None:
+    """Who carries a last name that records their sex."""
+    d = table.sort_values("women_sex_marked", ascending=False)
+    y = np.arange(len(d))[::-1]
+    h = 0.36
+    fig, ax = plt.subplots(figsize=(8.2, 0.62 * len(d) + 1.9))
+    ax.barh(
+        y + h / 2, d["women_sex_marked"] * 100, height=h, color=ACCENT, label="women"
+    )
+    ax.barh(y - h / 2, d["men_sex_marked"] * 100, height=h, color=INK, label="men")
+    for yi, wv, mv in zip(y, d["women_sex_marked"], d["men_sex_marked"]):
+        ax.text(
+            wv * 100 + 1.2,
+            yi + h / 2,
+            f"{wv:.0%}",
+            va="center",
+            fontsize=8.5,
+            color=ACCENT,
+        )
+        ax.text(
+            mv * 100 + 1.2,
+            yi - h / 2,
+            f"{mv:.0%}",
+            va="center",
+            fontsize=8.5,
+            color=INK,
+        )
+    ax.set_yticks(y)
+    ax.set_yticklabels([s.replace("_", " ").title() for s in d["state"]], fontsize=9.5)
+    ax.set_xlim(0, 100)
+    ax.set_xlabel("share whose last name records their sex, not their family (%)")
+    ax.set_title(
+        "Four in five women in Bihar have a last name that marks their sex\n"
+        "Their brothers carry the family name instead.",
+        color=INK,
+        loc="left",
+        fontsize=11.5,
+    )
+    ax.legend(frameon=False, fontsize=9, loc="lower right")
+    style_axes(ax)
+    ax.grid(axis="y", visible=False)
+    fig.tight_layout()
+    fig.savefig(out, dpi=170)
+    plt.close(fig)

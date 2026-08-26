@@ -1,25 +1,29 @@
-"""Tokens that sit in the surname position without being family names.
+"""Last names that record the bearer's sex rather than their family.
 
-The commonest "surname" in India is `devi`, at 6.5% of the electoral roll. It is
-an honorific attached to women's names, not a family name, and neither are
-`kumari`, `kaur`, `bai`, `rani`, `begam`, `khatun` or `bibi`. Counting them as
-surnames makes India's names look far more concentrated than they are.
+An earlier draft called these "not real surnames", which is wrong. Devi is a
+last name: it is on the Aadhaar card, on the roll, on the school record, and it
+is what the woman is called. Nobody appends it as a title any more.
 
-The list is a judgment, so it is published rather than buried, and it is split so
-a reader can take the conservative half and leave the rest.
+What makes it different from Sharma is who carries it. On the Bihar rolls, 81%
+of women have a last name from this list against 10% of men, and the family
+names in the same state read as 84-89% male because those families' women are
+recorded as Devi. So for most women in the Hindi belt the last-name slot encodes
+sex, and the family name their brothers carry is simply absent.
 
-`CLEAR` are honorifics and gender markers. No family is called Devi the way a
-family is called Sharma; the token marks that the bearer is a woman.
+That is why these names carry no caste signal. A name assigned by sex cannot
+track a lineage, and analysis 01 finds exactly that: devi costs 24 mistakes per
+hundred against 30 for knowing nothing at all.
 
-`AMBIGUOUS` is `singh` and `kumar`, and they are genuinely both things at once.
-Singh is the surname of Rajput and other families *and* the name given to every
-Sikh man *and* a common filler across the Hindi belt. Kumar is a family name in
-some places and a placeholder in others. Nothing in the rolls separates the two
-uses, so every figure is reported with and without them and the reader decides.
+`CLEAR` are unambiguously sex-marking: no man is called Devi or Kumari.
 
-Not covered here, and worth naming: patronymics standing in the surname slot
-(common in the south), and OCR debris from scanned rolls. Both are real and
-neither is quantified in this analysis.
+`AMBIGUOUS` is `singh` and `kumar`. Both are real inherited surnames for many
+families *and* near-universal fillers -- Singh for every Sikh man and across the
+Hindi belt, Kumar as a male counterpart to Kumari. Nothing in the rolls
+separates the uses, so every figure is reported with and without them.
+
+Not covered here: patronymics standing in the last-name slot, common in the
+south, and OCR debris from scanned rolls. Both are real and neither is
+quantified.
 """
 
 from __future__ import annotations
@@ -27,24 +31,24 @@ from __future__ import annotations
 import pandas as pd
 
 CLEAR = {
-    "devi": "honorific for a woman",
-    "kumari": "honorific for an unmarried woman",
+    "devi": "carried by women only",
+    "kumari": "carried by unmarried women",
     "kaur": "given to every Sikh woman",
-    "bai": "honorific for a woman, western and central India",
-    "rani": "honorific, 'queen'",
-    "begam": "honorific for a Muslim woman",
-    "begum": "honorific for a Muslim woman",
-    "khatun": "honorific for a Muslim woman",
-    "bibi": "honorific for a Muslim woman",
-    "banu": "honorific for a Muslim woman",
-    "beevi": "honorific for a Muslim woman, Kerala",
-    "sri": "honorific, 'mister'",
-    "smt": "abbreviation of Srimati, 'missus'",
+    "bai": "carried by women, western and central India",
+    "rani": "carried by women",
+    "begam": "carried by Muslim women",
+    "begum": "carried by Muslim women",
+    "khatun": "carried by Muslim women",
+    "bibi": "carried by Muslim women",
+    "banu": "carried by Muslim women",
+    "beevi": "carried by Muslim women, Kerala",
+    "sri": "honorific for a man, rarely a family name",
+    "smt": "abbreviation of Srimati, for a married woman",
 }
 
 AMBIGUOUS = {
-    "singh": "given to every Sikh man; also a real surname",
-    "kumar": "common filler; also a real surname",
+    "singh": "every Sikh man, and a filler; also a real surname",
+    "kumar": "male counterpart to kumari; also a real surname",
 }
 
 LEVELS = {
@@ -55,8 +59,8 @@ LEVELS = {
 
 LEVEL_LABEL = {
     "as_written": "names as written on the roll",
-    "minus_clear": "minus honorifics",
-    "minus_all": "minus honorifics, singh and kumar",
+    "minus_clear": "minus sex-marking names",
+    "minus_all": "minus sex-marking names, singh and kumar",
 }
 
 

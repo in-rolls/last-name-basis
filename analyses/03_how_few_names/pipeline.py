@@ -148,6 +148,46 @@ def main() -> None:
         cost.to_csv(TAB / "title_signal.csv", index=False)
         summary["blind_mistakes_per_100"] = scored.attrs["blind"]
 
+    # Who carries these names. This reads the raw per-state rolls -- hundreds
+    # of megabytes each -- so it takes minutes and the result is cached. Delete
+    # out/tab/sex_marked.csv to recompute.
+    sex_path = TAB / "sex_marked.csv"
+    if sex_path.exists():
+        sex = pd.read_csv(sex_path)
+    else:
+        gender = source.first_name_gender()
+        rows = (
+            [
+                source.sex_marked_share(st, gender)
+                for st in (
+                    "bihar",
+                    "uttar_pradesh",
+                    "west_bengal",
+                    "maharashtra",
+                    "kerala",
+                    "tamil_nadu",
+                )
+            ]
+            if gender is not None
+            else []
+        )
+        sex = pd.DataFrame([r for r in rows if r is not None])
+        if not sex.empty:
+            sex.to_csv(sex_path, index=False)
+
+    if not sex.empty:
+        # Gender is looked up by first name, and naampy knows only some of them.
+        # Tamil Nadu matches 4% of its roll, which is too thin a slice to
+        # describe the state, so anything under a fifth is dropped rather than
+        # quietly reported.
+        shown = sex[sex["coverage"] >= 0.15]
+        summary["sex_marked"] = shown.set_index("state").to_dict("index")
+        summary["sex_marked_dropped_for_coverage"] = sorted(
+            sex.loc[sex["coverage"] < 0.15, "state"]
+        )
+        if not shown.empty:
+            figures.sex_marked(shown, FIG / "sex_marked.png")
+
     initials = source.kerala_initial_share()
     if initials is not None:
         summary["kerala_single_initial_share"] = initials

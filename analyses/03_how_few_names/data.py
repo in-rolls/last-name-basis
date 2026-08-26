@@ -101,3 +101,76 @@ def kerala_initial_share() -> float | None:
     d = pd.read_parquet(p, columns=["name"])
     last = d["name"].fillna("").str.strip().str.split().str[-1].fillna("")
     return float((last.str.len() == 1).mean())
+
+
+GENDERED = {
+    "devi",
+    "kumari",
+    "bai",
+    "rani",
+    "begam",
+    "begum",
+    "khatun",
+    "bibi",
+    "banu",
+    "beevi",
+    "kaur",
+}
+
+
+def first_name_gender(min_bearers: int = 200) -> dict[str, float] | None:
+    """P(female | first name), from naampy's electoral-roll counts.
+
+    Used to ask who carries which last name. The gender comes from the first
+    name and the question is about the last name, so the two are independent.
+    """
+    p = _github() / "naampy/in_rolls_state_year_fn_naampy.csv.gz"
+    if not p.exists():
+        return None
+    d = pd.read_csv(p, usecols=["first_name", "n_female", "n_male"])
+    g = d.groupby("first_name")[["n_female", "n_male"]].sum()
+    n = g["n_female"] + g["n_male"]
+    return (g["n_female"] / n)[n >= min_bearers].to_dict()
+
+
+def sex_marked_share(state: str, gender: dict[str, float]) -> dict | None:
+    """Share of each sex whose last name is one of the gendered ones.
+
+    Reads the raw per-state roll rather than the aggregated table, because it
+    needs the first and last name of the same person.
+    """
+    import csv
+    import gzip
+
+    path = _github() / f"instate/data/names_{state}.csv.gz"
+    if not path.exists():
+        return None
+
+    female = male = female_marked = male_marked = 0.0
+    matched = total = 0
+    with gzip.open(path, "rt") as fh:
+        for row in csv.DictReader(fh):
+            n = int(row["n_times"])
+            total += n
+            parts = row["english_name"].split()
+            if len(parts) < 2:
+                continue
+            p_female = gender.get(parts[0])
+            if p_female is None:
+                continue
+            matched += n
+            female += n * p_female
+            male += n * (1 - p_female)
+            if parts[-1] in GENDERED:
+                female_marked += n * p_female
+                male_marked += n * (1 - p_female)
+    if not matched:
+        return None
+    return {
+        "state": state,
+        "people_matched": matched,
+        "coverage": matched / total,
+        "female_share": female / matched,
+        "women_sex_marked": female_marked / female,
+        "men_sex_marked": male_marked / male,
+    }

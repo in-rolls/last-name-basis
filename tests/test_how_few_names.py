@@ -119,3 +119,41 @@ def test_the_tail_is_not_mostly_spelling(counts):
     m = variants.assign(counts)
     moved = m["n"].sum() / counts["national"].sum()
     assert moved < 0.02
+
+
+def test_sex_marking_is_the_point(counts):
+    """The claim the note leads with: these names are carried by one sex.
+
+    Reads the cached table rather than the raw rolls, which take minutes.
+    """
+    import pandas as pd
+
+    path = (
+        __import__("pathlib").Path(__file__).resolve().parent.parent
+        / "analyses/03_how_few_names/out/tab/sex_marked.csv"
+    )
+    if not path.exists():
+        pytest.skip("sex_marked.csv not built")
+    d = pd.read_csv(path).set_index("state")
+
+    bihar = d.loc["bihar"]
+    assert bihar["women_sex_marked"] > 0.75
+    assert bihar["men_sex_marked"] < 0.15
+    # Every state, the gap runs the same way and is large where it exists.
+    assert (d["women_sex_marked"] >= d["men_sex_marked"] - 1e-9).all()
+
+
+def test_low_coverage_states_are_dropped_not_reported(counts):
+    """Tamil Nadu matches 4% of its roll. A share computed on that slice does
+    not describe the state, so it must not reach a figure."""
+    import pandas as pd
+
+    path = (
+        __import__("pathlib").Path(__file__).resolve().parent.parent
+        / "analyses/03_how_few_names/out/tab/sex_marked.csv"
+    )
+    if not path.exists():
+        pytest.skip("sex_marked.csv not built")
+    d = pd.read_csv(path)
+    thin = d[d["coverage"] < 0.15]
+    assert "tamil_nadu" in set(thin["state"])

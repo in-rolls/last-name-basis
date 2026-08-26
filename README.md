@@ -32,19 +32,20 @@ jatis someone belongs to. Keep the surname, drop the village, and it is **47**.
 
 [![How caste information atrophies with distance](analyses/02_jati_by_geography/out/fig/atrophy.png)](analyses/02_jati_by_geography/note.md)
 
-### [03 — much of what looks like a surname isn't one](analyses/03_how_few_names)
+### [03 — India's commonest last name tells you nothing](analyses/03_how_few_names)
 
-The commonest "surname" in India is **devi**, at 6.5% of the electoral roll. It
-is an honorific, not a family name, and neither are kumari, kaur, bai, rani,
-begam, khatun or bibi. Singh and Kumar are both at once. Together these sit in
-the surname slot for **19% of the country**.
+The commonest last name in India is **devi**, at 6.5% of the electoral roll. It
+is a real last name — but it records the bearer's sex, not her family. On the
+Bihar rolls **81% of women carry a name from this group against 10% of men**, and
+the family names in the same state read as 84–89% male because those families'
+women are on the roll as Devi. A woman and her brother do not share a last name.
 
-That changes the concentration everyone quotes: 18 tokens cover a quarter of
-India, but it takes **103 real family names**. And the north-south gap turns out
-to be a titles gap — three people in four in Punjab carry one, against two in a
-hundred in Tamil Nadu.
+That is why these names carry no caste signal: a name assigned by sex cannot
+track a lineage. Thirteen of them cover **19% of the country**, and counting them
+makes Indian names look far more concentrated than they are — 18 names cover a
+quarter of India, but **103** if you count only names a brother and sister share.
 
-[![Share of each state whose surname slot holds a title](analyses/03_how_few_names/out/fig/title_share.png)](analyses/03_how_few_names/note.md)
+[![Who carries a sex-marking last name](analyses/03_how_few_names/out/fig/sex_marked.png)](analyses/03_how_few_names/note.md)
 
 ## The three together
 
@@ -54,9 +55,9 @@ informative in a Bihar village and nearly empty in a city. Analysis 02 measures
 what the village is worth; analysis 01 measures what is left once it is gone.
 
 Analysis 03 supplies the mechanism. The names that tell you nothing are, to a
-large extent, not family names at all: devi costs 24 mistakes per hundred and
-singh 22, against 30 for knowing nothing whatever. A word given to everybody
-cannot distinguish anybody.
+large extent, names that identify a sex rather than a family: devi costs 24
+mistakes per hundred and singh 22, against 30 for knowing nothing whatever. A
+name a woman does not share with her brother cannot carry his lineage.
 
 ## Run it
 
