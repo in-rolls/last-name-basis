@@ -1,0 +1,29 @@
+[project]
+name = "last-name-basis"
+version = "0.1.0"
+description = "How much does an Indian last name tell you about caste?"
+requires-python = ">=3.11"
+dependencies = [
+    "outkast>=2.0.0",
+    "pandas>=2.2",
+    "pyarrow>=18,!=19.0.0",
+    "numpy>=1.26",
+    "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "isort", "flake8"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+profile = "black"
+line_length = 88
