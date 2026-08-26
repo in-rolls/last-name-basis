@@ -7,17 +7,15 @@ cannot drift from the build.
 from __future__ import annotations
 
 import json
-import sys
 import textwrap
 from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "src"))
+HERE = Path(__file__).resolve().parent
 
-TAB = ROOT / "out/tab"
-FIG = "../out/fig"
+TAB = HERE / "out/tab"
+FIG = "out/fig"
 
 
 def pct(x: float, d: int = 0) -> str:
@@ -344,7 +342,7 @@ because SECC counts heads of household and so undercounts women's surnames
 badly. Name–caste association drifts over time; do not read these numbers to the
 decimal place.*
 """
-    out = ROOT / "note/note.md"
+    out = HERE / "note.md"
     out.write_text(reflow(md))
     print(f"wrote {out} ({len(out.read_text().splitlines())} lines)")
 

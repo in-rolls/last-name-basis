@@ -24,7 +24,7 @@ That is the number to beat.
 
 For some names this changes everything. For most it changes nothing at all.
 
-![A hundred people with each name](../out/fig/name_waffles.png)
+![A hundred people with each name](out/fig/name_waffles.png)
 
 Read a few of them:
 
@@ -44,7 +44,7 @@ Read a few of them:
 Here is the thing that decides the answer. Indian surnames are enormously
 concentrated, and the enormous ones are the empty ones.
 
-![The commonest names in India tell you almost nothing](../out/fig/common_and_empty.png)
+![The commonest names in India tell you almost nothing](out/fig/common_and_empty.png)
 
 Devi, Singh and Kumar are the three commonest surnames in the country. Together
 with a dozen others in the same position they are about a fifth of every surname
@@ -55,7 +55,7 @@ called Kumar tells you very nearly what you already knew.
 So the honest way to ask the question is not "pick a name" but "pick a person".
 Pick one at random and you are far more likely to get a Devi than a Paswan.
 
-![A hundred people picked at random](../out/fig/random_hundred.png)
+![A hundred people picked at random](out/fig/random_hundred.png)
 
 Weighted that way — by who you would actually meet — 37% of people carry a
 surname that lands within five points of the base rate, and 91% carry one that
@@ -145,9 +145,9 @@ name does help, and by roughly the same amount however rare it is: the median
 from rank eleven down to rank three thousand is about 13 mistakes. The step
 happens at rank ten, and the people are all on the wrong side of it.
 
-![Mistakes per 100, against how common the name is](../out/fig/mistakes_by_rank.png)
+![Mistakes per 100, against how common the name is](out/fig/mistakes_by_rank.png)
 
-![Cumulative share of people by mistakes per 100](../out/fig/mistakes_cdf.png)
+![Cumulative share of people by mistakes per 100](out/fig/mistakes_cdf.png)
 
 ## Is the name really about caste, or just about region?
 

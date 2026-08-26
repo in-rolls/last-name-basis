@@ -1,14 +1,40 @@
-"""How much does an Indian last name tell you about caste?"""
+"""Shared vocabulary for the analyses in this repo.
 
-from .data import base_rates, load_cells, per_name
-from .metrics import add_metrics, by_frequency_band, headline, uninformative_cdf
+Each analysis in ``analyses/`` owns its own pipeline, data loading, figures and
+note. What lives here is only what more than one of them needs: the scoring
+measure and the drawing style.
+"""
+
+from .scoring import (
+    entropy_bits,
+    leave_one_out_ladder,
+    score_ladder,
+    weighted_summary,
+)
+from .style import (
+    ACCENT,
+    CATEGORY_FILL,
+    INK,
+    MUTED,
+    allocate,
+    band_of,
+    mistake_bands,
+    style_axes,
+    waffle,
+)
 
 __all__ = [
-    "load_cells",
-    "per_name",
-    "base_rates",
-    "add_metrics",
-    "headline",
-    "by_frequency_band",
-    "uninformative_cdf",
+    "entropy_bits",
+    "weighted_summary",
+    "score_ladder",
+    "leave_one_out_ladder",
+    "INK",
+    "ACCENT",
+    "MUTED",
+    "CATEGORY_FILL",
+    "style_axes",
+    "allocate",
+    "waffle",
+    "mistake_bands",
+    "band_of",
 ]

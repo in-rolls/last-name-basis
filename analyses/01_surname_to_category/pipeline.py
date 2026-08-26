@@ -3,17 +3,14 @@
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 
+import coverage as cov
+import figures
 import pandas as pd
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
-
-from last_name_basis import coverage as cov  # noqa: E402
-from last_name_basis import figures, report  # noqa: E402
-from last_name_basis.data import base_rates, load_cells, per_name  # noqa: E402
-from last_name_basis.metrics import (  # noqa: E402
+import report
+from data import base_rates, load_cells, per_name
+from metrics import (
     add_metrics,
     by_frequency_band,
     confusion,
@@ -25,8 +22,8 @@ from last_name_basis.metrics import (  # noqa: E402
     weighted_summary,
 )
 
-ROOT = Path(__file__).resolve().parent.parent
-TAB, FIG = ROOT / "out/tab", ROOT / "out/fig"
+HERE = Path(__file__).resolve().parent
+TAB, FIG = HERE / "out/tab", HERE / "out/fig"
 ANNOTATE = ("singh", "kumar", "devi", "ram", "sharma", "yadav", "paswan", "jatav")
 
 # Four regimes, four to a row: sits at the base rate / rules out / near a

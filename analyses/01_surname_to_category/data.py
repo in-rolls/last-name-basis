@@ -76,7 +76,7 @@ def state_weights(cells: pd.DataFrame, scheme: str) -> pd.Series:
 
 def census_population() -> pd.Series:
     """Census 2011 total population by state, keyed to outkast's state spelling."""
-    path = Path(__file__).parent / "census_2011_state_population.csv"
+    path = Path(__file__).resolve().parent / "census_2011_state_population.csv"
     pop = pd.read_csv(path, comment="#")
     return pop.set_index("state")["population_2011"]
 

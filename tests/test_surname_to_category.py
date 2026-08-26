@@ -5,9 +5,19 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 import pytest
+from conftest import load
 
-from last_name_basis.data import PROB_COLS, base_rates, load_cells, per_name
-from last_name_basis.metrics import add_metrics, signal_decomposition
+from last_name_basis import entropy_bits
+
+data = load("01_surname_to_category", "data")
+metrics = load("01_surname_to_category", "metrics")
+coverage = load("01_surname_to_category", "coverage")
+
+PROB_COLS = data.PROB_COLS
+base_rates, load_cells, per_name = data.base_rates, data.load_cells, data.per_name
+add_metrics, signal_decomposition = metrics.add_metrics, metrics.signal_decomposition
+weighted_summary = metrics.weighted_summary
+with_roll_frequency = coverage.with_roll_frequency
 
 
 @pytest.fixture(scope="module")
@@ -93,9 +103,8 @@ def test_hundred_squares_are_representative():
     """Allocating squares across names hands them all to the commonest few and
     silently drops the long tail, which is 40% of people. Allocate across the
     bands instead, and check the picture still adds to a hundred."""
-    from last_name_basis.coverage import with_roll_frequency
-    from last_name_basis.figures import _allocate, _bucket, buckets
-    from last_name_basis.metrics import weighted_summary
+
+    from last_name_basis.style import allocate, band_of, mistake_bands
 
     table = per_name(load_cells())
     table = with_roll_frequency(add_metrics(table, base_rates(table)))
@@ -103,8 +112,8 @@ def test_hundred_squares_are_representative():
         pytest.skip("instate roll counts unavailable")
 
     baseline = weighted_summary(table, "share_roll")["err_blind"] * 100
-    bands = buckets(baseline)
-    band = (table["err"] * 100).map(lambda m: _bucket(m, bands))
+    bands = mistake_bands(baseline)
+    band = (table["err"] * 100).map(lambda m: band_of(m, bands))
     shares = np.array(
         [
             table.loc[band == i, "share_roll"].sum() / table["share_roll"].sum()
@@ -112,7 +121,7 @@ def test_hundred_squares_are_representative():
         ]
     )
     assert shares.sum() == pytest.approx(1.0)
-    counts = _allocate(shares)
+    counts = allocate(shares)
     assert counts.sum() == 100
     # The last band is "harder than a stranger" -- it must not be empty, since
     # that group is the note's sharpest claim.
@@ -124,8 +133,6 @@ def test_cut_averages_to_the_mutual_information_under_its_own_prior():
     the weighting that prior came from. Averaging a roll-weighted table against
     a SECC-weighted prior silently breaks the identity -- it is how one draft
     reported 0.32 and 0.44 for the same quantity, and 9 squares against 16%."""
-    from last_name_basis.coverage import with_roll_frequency
-    from last_name_basis.metrics import weighted_summary
 
     table = per_name(load_cells())
     table = with_roll_frequency(add_metrics(table, base_rates(table)))
@@ -149,7 +156,6 @@ def test_cut_averages_to_the_mutual_information_under_its_own_prior():
 def test_cut_never_exceeds_total_uncertainty(named):
     """Unlike KL, `cut` is bounded above by H(caste) -- a name cannot appear to
     tell you more than the answer itself. That bound is why it is the headline."""
-    from last_name_basis.metrics import entropy_bits
 
     base = base_rates(named)
     ceiling = entropy_bits((base / base.sum()).to_numpy())

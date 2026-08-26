@@ -28,8 +28,10 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
+from data import CATEGORIES, PROB_COLS
 
-from .data import CATEGORIES, PROB_COLS
+from last_name_basis.scoring import entropy_bits
+from last_name_basis.scoring import weighted_summary as _weighted_summary
 
 LABELS = {"sc": "SC", "st": "ST", "other": "Other"}
 
@@ -51,42 +53,6 @@ def add_metrics(names: pd.DataFrame, base: pd.Series) -> pd.DataFrame:
         conditional = -np.where(p > 0, p * np.log2(p), 0.0).sum(axis=1)
     out["cut"] = entropy_bits(prior) - conditional
     return out
-
-
-def weighted_summary(named: pd.DataFrame, weight: str) -> dict:
-    """Summarise the table under a given people-weighting, prior and all.
-
-    The prior is recomputed from these weights. Averaging ``cut`` against a prior
-    from some other weighting silently breaks the identity that makes the average
-    interpretable -- it is how an earlier draft reported 0.32 and 0.44 for the
-    same quantity.
-    """
-    w = named[weight].fillna(0).to_numpy(float)
-    w = w / w.sum()
-    p = named[PROB_COLS].to_numpy()
-    prior = (p * w[:, None]).sum(axis=0)
-
-    h_prior = entropy_bits(prior)
-    with np.errstate(divide="ignore", invalid="ignore"):
-        conditional = -np.where(p > 0, p * np.log2(p), 0.0).sum(axis=1)
-    cut = h_prior - conditional
-    blind = int(prior.argmax())
-
-    return {
-        "base_rates": {c: float(prior[i]) for i, c in enumerate(CATEGORIES)},
-        "caste_entropy_bits": h_prior,
-        "err_blind": float(1.0 - prior.max()),
-        "err_per_person": float((w * (1.0 - p.max(axis=1))).sum()),
-        "uncertainty_removed_bits": float((w * cut).sum()),
-        "share_guess_unchanged": float(w[p.argmax(axis=1) == blind].sum()),
-        "share_less_sure": float(w[cut < 0].sum()),
-    }
-
-
-def entropy_bits(prior: np.ndarray) -> float:
-    prior = np.asarray(prior, dtype=float)
-    prior = prior[prior > 0]
-    return float(-(prior * np.log2(prior)).sum())
 
 
 def headline(named: pd.DataFrame, base: pd.Series) -> dict:
@@ -258,3 +224,8 @@ def signal_decomposition(cells: pd.DataFrame) -> dict:
         "mistakes_knowing_name": mistakes(by_name),
         "mistakes_knowing_both": mistakes(by_cell),
     }
+
+
+def weighted_summary(named: pd.DataFrame, weight: str) -> dict:
+    """This analysis's categories, scored by the shared routine."""
+    return _weighted_summary(named, PROB_COLS, weight, CATEGORIES)

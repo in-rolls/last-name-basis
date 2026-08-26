@@ -12,19 +12,15 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-INK = "#1c1c1c"
-ACCENT = "#b8322f"
-MUTED = "#9a9a9a"
-
-
-def _style(ax):
-    for side in ("top", "right"):
-        ax.spines[side].set_visible(False)
-    ax.spines["left"].set_color(MUTED)
-    ax.spines["bottom"].set_color(MUTED)
-    ax.tick_params(colors=INK, labelsize=9)
-    ax.grid(axis="y", color="#e6e6e6", lw=0.6)
-    ax.set_axisbelow(True)
+from last_name_basis.style import (  # noqa: E402
+    ACCENT,
+    INK,
+    MUTED,
+    allocate,
+    band_of,
+    mistake_bands,
+    style_axes,
+)
 
 
 def mistakes_by_rank(named: pd.DataFrame, baseline: float, out: Path, annotate=()):
@@ -119,7 +115,7 @@ def mistakes_by_rank(named: pd.DataFrame, baseline: float, out: Path, annotate=(
         fontsize=11,
     )
     ax.legend(frameon=False, fontsize=8, loc="upper center")
-    _style(ax)
+    style_axes(ax)
     fig.tight_layout()
     fig.savefig(out, dpi=170)
     plt.close(fig)
@@ -152,7 +148,7 @@ def mistakes_cdf(named: pd.DataFrame, baseline: float, out: Path):
     ax.set_xlabel("of 100 people with this name, how many you get wrong")
     ax.set_ylabel("cumulative share of people")
     ax.set_title("Most people carry a name that barely helps", color=INK, loc="left")
-    _style(ax)
+    style_axes(ax)
     fig.tight_layout()
     fig.savefig(out, dpi=170)
     plt.close(fig)
@@ -222,37 +218,10 @@ def err_vs_blind(named: pd.DataFrame, out: Path, annotate=()):
         ),
     ]
     ax.legend(handles=handles, frameon=False, fontsize=8, loc="upper left")
-    _style(ax)
+    style_axes(ax)
     fig.tight_layout()
     fig.savefig(out, dpi=170)
     plt.close(fig)
-
-
-# Everything is expressed as mistakes per hundred, because that is a unit a
-# reader already owns. Bits are in the tables for anyone who wants them, but no
-# figure asks anyone to interpret one.
-def buckets(baseline: float) -> list[tuple[float, str, str]]:
-    """Bands of "how many of a hundred would you get wrong", against the rate
-    for a stranger. The last band is names that make the guess *harder*."""
-    return [
-        (5.0, "#8d2420", "all but settles it"),
-        (15.0, "#c99a97", "narrows it a lot"),
-        (baseline, "#dcdcdc", "barely helps"),
-        (float("inf"), "#8d9aa8", "harder than a stranger"),
-    ]
-
-
-def _bucket(mistakes: float, bands) -> int:
-    return next(i for i, (hi, _, _) in enumerate(bands) if mistakes < hi)
-
-
-def _allocate(shares: np.ndarray, total: int = 100) -> np.ndarray:
-    """Largest-remainder allocation, so the picture is exact, not a random draw."""
-    raw = shares / shares.sum() * total
-    base = np.floor(raw).astype(int)
-    for i in np.argsort(-(raw - base))[: total - base.sum()]:
-        base[i] += 1
-    return base
 
 
 def random_hundred(named: pd.DataFrame, baseline: float, out: Path, label_top=6):
@@ -268,13 +237,13 @@ def random_hundred(named: pd.DataFrame, baseline: float, out: Path, label_top=6)
     seed: in frequency order the pale squares bunch at the top and read as
     structure where there is none.
     """
-    bands = buckets(baseline)
+    bands = mistake_bands(baseline)
     d = named.dropna(subset=["share_roll"]).copy()
-    d["band"] = (d["err"] * 100).map(lambda m: _bucket(m, bands))
+    d["band"] = (d["err"] * 100).map(lambda m: band_of(m, bands))
     shares = np.array(
         [d.loc[d["band"] == i, "share_roll"].sum() for i in range(len(bands))]
     )
-    counts = _allocate(shares)
+    counts = allocate(shares)
 
     cells = np.repeat(np.arange(len(bands)), counts)
     cells = cells[np.random.default_rng(11).permutation(len(cells))]
@@ -341,7 +310,7 @@ def name_waffles(named: pd.DataFrame, names: list[str], out: Path):
     nrow = int(np.ceil(len(d) / ncol))
     fig, axes = plt.subplots(nrow, ncol, figsize=(9.6, 2.55 * nrow))
     for ax, (nm, r) in zip(axes.ravel(), d.iterrows()):
-        counts = _allocate(np.array([r["p_sc"], r["p_st"], r["p_other"]]))
+        counts = allocate(np.array([r["p_sc"], r["p_st"], r["p_other"]]))
         seq = np.repeat(["sc", "st", "other"], counts)
         for i, cat in enumerate(seq):
             ax.add_patch(
@@ -459,7 +428,7 @@ def common_and_empty(
             color=MUTED,
         )
     for ax in (a1, a2):
-        _style(ax)
+        style_axes(ax)
         ax.grid(axis="y", visible=False)
     fig.suptitle(
         f"The commonest names in India tell you almost nothing\n"

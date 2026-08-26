@@ -7,3 +7,4 @@ __pycache__/
 # the notes render on GitHub.
 out/tab/
 analyses/*/out/tab/
+*.egg-info/

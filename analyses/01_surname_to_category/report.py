@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 import pandas as pd
-
-from .data import PROB_COLS, load_cells, per_name
-from .metrics import add_metrics, headline
+from data import PROB_COLS, load_cells, per_name
+from metrics import add_metrics, headline
 
 # Names a reader is likely to try, including two the table cannot answer.
 LOOKUP = [
