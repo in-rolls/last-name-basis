@@ -6,7 +6,7 @@ is really the name, rather than the place?**
 Everything here is measured the same way, in a unit that needs no explaining:
 **of a hundred people, how many would you get wrong?**
 
-## Two analyses
+## Three analyses
 
 ### [01 — a surname alone, across India](analyses/01_surname_to_category)
 
@@ -32,12 +32,31 @@ jatis someone belongs to. Keep the surname, drop the village, and it is **47**.
 
 [![How caste information atrophies with distance](analyses/02_jati_by_geography/out/fig/atrophy.png)](analyses/02_jati_by_geography/note.md)
 
-## The two together
+### [03 — much of what looks like a surname isn't one](analyses/03_how_few_names)
+
+The commonest "surname" in India is **devi**, at 6.5% of the electoral roll. It
+is an honorific, not a family name, and neither are kumari, kaur, bai, rani,
+begam, khatun or bibi. Singh and Kumar are both at once. Together these sit in
+the surname slot for **19% of the country**.
+
+That changes the concentration everyone quotes: 18 tokens cover a quarter of
+India, but it takes **103 real family names**. And the north-south gap turns out
+to be a titles gap — three people in four in Punjab carry one, against two in a
+hundred in Tamil Nadu.
+
+[![Share of each state whose surname slot holds a title](analyses/03_how_few_names/out/fig/title_share.png)](analyses/03_how_few_names/note.md)
+
+## The three together
 
 Caste is a local fact. A surname carries a great deal where people know the
 village and very little where they do not — which is why the same name reads as
 informative in a Bihar village and nearly empty in a city. Analysis 02 measures
 what the village is worth; analysis 01 measures what is left once it is gone.
+
+Analysis 03 supplies the mechanism. The names that tell you nothing are, to a
+large extent, not family names at all: devi costs 24 mistakes per hundred and
+singh 22, against 30 for knowing nothing whatever. A word given to everybody
+cannot distinguish anybody.
 
 ## Run it
 
@@ -48,6 +67,7 @@ uv pip install --python .venv/bin/python -e '.[dev]'
 make all      # both pipelines: tables, figures, notes
 make a01      # just the first
 make a02      # just the second
+make a03      # just the third
 make test
 make lint
 ```
@@ -87,7 +107,11 @@ screening tool.
   finer categories exist only in analysis 02, and only for Bihar.
 - Analysis 02 is **Bihar, landowners** — it under-represents the landless, who
   are disproportionately Dalit and EBC.
-- Both score a perfect guesser with one or two cues. That is a floor on what is
+- Analysis 03's title list is a judgment call, published in
+  `analyses/03_how_few_names/out/tab/titles.csv` and reported at three
+  levels so you can take the conservative half. Patronymics and OCR debris
+  are further non-surnames it does not quantify, so 19% is a floor.
+- Both scoring analyses assume a perfect guesser with one or two cues. That is a floor on what is
   knowable, not a ceiling on what someone can work out about you: a real person
   also has your first name, your father's or husband's name, your neighbourhood.
 

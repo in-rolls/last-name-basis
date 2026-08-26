@@ -1,8 +1,9 @@
 PY := .venv/bin/python
 A01 := analyses/01_surname_to_category
 A02 := analyses/02_jati_by_geography
+A03 := analyses/03_how_few_names
 
-all: a01 a02
+all: a01 a02 a03
 
 a01:
 	$(PY) $(A01)/pipeline.py
@@ -24,4 +25,8 @@ fmt:
 	.venv/bin/black --fast src analyses tests
 	.venv/bin/isort src analyses tests
 
-.PHONY: all a01 a02 test lint fmt
+.PHONY: all a01 a02 a03 test lint fmt
+
+a03:
+	$(PY) $(A03)/pipeline.py
+	$(PY) $(A03)/note.py
