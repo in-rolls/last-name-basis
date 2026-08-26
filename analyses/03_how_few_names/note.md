@@ -65,10 +65,10 @@ At the other end:
 
 | state | carries a title | names for half: as written → real |
 |---|---|---|
+| Karnataka | 1% | 493 → 506 |
+| Odisha | 1% | 15 → 15 |
 | Nagaland | 1% | 2,973 → 3,028 |
 | Goa | 0% | 70 → 68 |
-| Maharashtra | 0% | 478 → 480 |
-| Gujarat | 0% | 449 → 448 |
 
 ![Share of each state whose surname slot holds a title](out/fig/title_share.png)
 

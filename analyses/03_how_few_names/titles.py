@@ -16,14 +16,18 @@ hundred against 30 for knowing nothing at all.
 
 `CLEAR` are unambiguously sex-marking: no man is called Devi or Kumari.
 
-`AMBIGUOUS` is `singh` and `kumar`. Both are real inherited surnames for many
-families *and* near-universal fillers -- Singh for every Sikh man and across the
-Hindi belt, Kumar as a male counterpart to Kumari. Nothing in the rolls
-separates the uses, so every figure is reported with and without them.
+`AMBIGUOUS` is `singh` and `kumar`, and analysis 04 has since measured both by
+asking how often each is shared with the bearer's father or husband. **Singh
+transmits 78% of the time and Kumar 8%.** So Singh is mostly a real inherited
+surname and grouping it here was wrong; Kumar mostly is not. Both stay in this
+set so the three reporting levels remain comparable with earlier versions of the
+note, but the `measured` level in the pipeline is the one to trust.
 
-Not covered here: patronymics standing in the last-name slot, common in the
-south, and OCR debris from scanned rolls. Both are real and neither is
-quantified.
+Not covered by this list, and found by analysis 04's measurement instead: given
+names sitting in the last-name slot, which is a larger category than anything
+here -- sanjay, ashok, suresh, ramesh, sunita and anita all transmit under 2% of
+the time. Some of that is real naming practice and some is that instate takes
+the last token, which is a given name in surname-first states.
 """
 
 from __future__ import annotations

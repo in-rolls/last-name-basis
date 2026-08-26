@@ -7,4 +7,8 @@ __pycache__/
 # the notes render on GitHub.
 out/tab/
 analyses/*/out/tab/
+# Analysis 04's scan reads ~1.5GB of rolls and takes ~8 minutes. Its two
+# small tables are tracked so a stray delete does not cost that again.
+!analyses/04_which_token_is_the_surname/out/tab/
+!analyses/04_which_token_is_the_surname/out/tab/*.csv
 *.egg-info/

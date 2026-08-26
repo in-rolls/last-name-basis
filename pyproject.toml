@@ -16,7 +16,7 @@ dependencies = [
 # instate supplies electoral-roll surname frequencies. Analysis 01 runs without
 # it and reports the frequency-weighted figures as unavailable.
 rolls = ["instate>=3.0.0"]
-dev = ["pytest", "black", "isort", "flake8"]
+dev = ["pytest", "black", "isort", "flake8", "jupyter", "nbformat", "nbconvert"]
 
 [build-system]
 requires = ["setuptools>=68"]

@@ -6,7 +6,7 @@ is really the name, rather than the place?**
 Everything here is measured the same way, in a unit that needs no explaining:
 **of a hundred people, how many would you get wrong?**
 
-## Three analyses
+## Four analyses
 
 ### [01 — a surname alone, across India](analyses/01_surname_to_category)
 
@@ -47,7 +47,27 @@ quarter of India, but **103** if you count only names a brother and sister share
 
 [![Who carries a sex-marking last name](analyses/03_how_few_names/out/fig/sex_marked.png)](analyses/03_how_few_names/note.md)
 
-## The three together
+### [04 — which token is actually the surname?](analyses/04_which_token_is_the_surname)
+
+The three analyses above lean on a list of names I wrote by hand. The rolls can
+measure it: every record carries the elector's **father or husband**, and a token
+appearing in both names is one that **passed between two family members**.
+
+The hand list was right about the ten sex-marking names — devi, kumari, kaur and
+the rest all transmit under 1% of the time — and wrong about the two it called
+ambiguous. **Singh transmits 78% of the time and Kumar 8%**, so Singh is mostly a
+real inherited surname and Kumar mostly is not. It also found a category the list
+never contemplated: given names in the last-name slot, larger than everything on
+it.
+
+And it caught a defect. **Maharashtra writes the surname first** — `patil
+ashwini`, father `patil ashok` — so instate's last-token column holds a *given*
+name there, and analysis 03's Maharashtra and Gujarat figures have been
+withdrawn.
+
+[Read the notebook.](analyses/04_which_token_is_the_surname/investigate.ipynb)
+
+## The four together
 
 Caste is a local fact. A surname carries a great deal where people know the
 village and very little where they do not — which is why the same name reads as
@@ -69,6 +89,7 @@ make all      # both pipelines: tables, figures, notes
 make a01      # just the first
 make a02      # just the second
 make a03      # just the third
+make a04      # runs the notebook
 make test
 make lint
 ```

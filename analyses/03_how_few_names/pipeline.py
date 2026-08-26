@@ -52,6 +52,13 @@ def analysis_01_scores() -> pd.DataFrame | None:
     return table.set_index("last_name")
 
 
+# Analysis 04 found that these states write the surname FIRST, so instate's
+# last-token `last_name` holds a given name for them and any count of "how many
+# surnames cover half the state" is about the wrong word. Withdrawn rather than
+# reported: see analyses/04_which_token_is_the_surname.
+SURNAME_FIRST = {"Maharashtra", "Gujarat"}
+
+
 def state_table(counts: pd.DataFrame) -> pd.DataFrame:
     drop_clear = titles.LEVELS["minus_clear"]
     drop_all = titles.LEVELS["minus_all"]
@@ -64,7 +71,7 @@ def state_table(counts: pd.DataFrame) -> pd.DataFrame:
             continue
         s = counts[state]
         people = float(s.sum())
-        if people < BIG_STATE:
+        if people < BIG_STATE or state in SURNAME_FIRST:
             continue
         rows.append(
             {
