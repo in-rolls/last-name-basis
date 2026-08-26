@@ -6,7 +6,7 @@ is really the name, rather than the place?**
 Everything here is measured the same way, in a unit that needs no explaining:
 **of a hundred people, how many would you get wrong?**
 
-## Five analyses
+## Six analyses
 
 ### [01 — a surname alone, across India](analyses/01_surname_to_category)
 
@@ -83,7 +83,23 @@ a naive audit understate discrimination against the group the audit is for.
 
 [![Mistakes by the carrier's own caste](analyses/05_who_has_an_uninformative_name/out/fig/by_caste.png)](analyses/05_who_has_an_uninformative_name/note.md)
 
-## The five together
+### [06 — does knowing your neighbours give you away?](analyses/06_neighbours)
+
+Analysis 02's "surname + village" memorises the village. Hold out whole villages
+instead, so the only cue is the composition of the *other* surnames there, and
+the picture changes.
+
+On average neighbours save about four mistakes per 100. But the average hides
+the case: **Chaudhary goes from 80 mistakes to 56, Prasad from 72 to 54**, while
+Paswan — which already identifies you at 6 — gains nothing. **The names that
+carry no caste information alone are the ones the neighbourhood rescues.**
+
+So the headline needs qualifying rather than retracting: a surname alone is weak,
+but a surname is not weak once you know where its bearer lives.
+
+[![Which names get rescued](analyses/06_neighbours/out/fig/per_surname.png)](analyses/06_neighbours/note.md)
+
+## The six together
 
 Caste is a local fact. A surname carries a great deal where people know the
 village and very little where they do not — which is why the same name reads as
@@ -107,6 +123,7 @@ make a02      # just the second
 make a03      # just the third
 make a04      # runs the notebook
 make a05      # just the fifth
+make a06      # just the sixth
 make test
 make lint
 ```
