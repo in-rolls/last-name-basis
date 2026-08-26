@@ -25,8 +25,9 @@ roughly one person in five has no family name recorded at all.
 
 Eighteen tokens cover a quarter of India. Eighteen real family names do not; it
 takes 103. Every concentration figure depends on a judgment about what counts as
-a surname, so all three are reported here and the list itself is in
-`out/tab/titles.csv` to be argued with.
+a surname, so all three are reported here, and the list itself is in
+[`titles.py`](titles.py) with a reason beside each token, to be argued with
+rather than inherited.
 
 ![How concentrated Indian surnames are](out/fig/concentration.png)
 

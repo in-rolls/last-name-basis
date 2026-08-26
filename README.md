@@ -108,8 +108,8 @@ screening tool.
 - Analysis 02 is **Bihar, landowners** — it under-represents the landless, who
   are disproportionately Dalit and EBC.
 - Analysis 03's title list is a judgment call, published in
-  `analyses/03_how_few_names/out/tab/titles.csv` and reported at three
-  levels so you can take the conservative half. Patronymics and OCR debris
+  [`analyses/03_how_few_names/titles.py`](analyses/03_how_few_names/titles.py)
+  with a reason beside each token, and reported at three levels so you can take the conservative half. Patronymics and OCR debris
   are further non-surnames it does not quantify, so 19% is a floor.
 - Both scoring analyses assume a perfect guesser with one or two cues. That is a floor on what is
   knowable, not a ceiling on what someone can work out about you: a real person

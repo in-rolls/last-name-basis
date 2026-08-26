@@ -22,8 +22,8 @@ Read [`note.md`](note.md). Run with `make a03`.
 | `note.py` | renders `note.md` from the generated tables |
 
 **The title list is a judgment**, so every figure reports three levels — as
-written, minus honorifics, minus honorifics plus singh and kumar — and the list
-is written to `out/tab/titles.csv` to be disagreed with.
+written, minus honorifics, minus honorifics plus singh and kumar — and the list lives in
+[`titles.py`](titles.py) with a reason beside each token, to be disagreed with.
 
 **Limits.** Titles are not the only non-surname in the column; patronymics and
 OCR debris are real and unquantified, so 19% is a floor. instate drops names
