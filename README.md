@@ -6,7 +6,7 @@ is really the name, rather than the place?**
 Everything here is measured the same way, in a unit that needs no explaining:
 **of a hundred people, how many would you get wrong?**
 
-## Four analyses
+## Five analyses
 
 ### [01 — a surname alone, across India](analyses/01_surname_to_category)
 
@@ -67,7 +67,23 @@ withdrawn.
 
 [Read the notebook.](analyses/04_which_token_is_the_surname/investigate.ipynb)
 
-## The four together
+### [05 — whose name tells you nothing](analyses/05_who_has_an_uninformative_name)
+
+The analyses above report an average. This asks who carries the uninformative
+names, because if they are not spread evenly then every name-based caste method
+has differential error in a knowable direction.
+
+They are not. A **Dalit is guessed wrong 29 times in 100 against a blind rate of
+30** — the name buys essentially nothing — while someone outside the schedules
+gets **17**. The guess finds 34% of Dalits and 96% of everyone else.
+
+So the method is not weakly accurate across the board. It is accurate about the
+advantaged and blind about the disadvantaged, which is the direction that makes
+a naive audit understate discrimination against the group the audit is for.
+
+[![Mistakes by the carrier's own caste](analyses/05_who_has_an_uninformative_name/out/fig/by_caste.png)](analyses/05_who_has_an_uninformative_name/note.md)
+
+## The five together
 
 Caste is a local fact. A surname carries a great deal where people know the
 village and very little where they do not — which is why the same name reads as
@@ -90,6 +106,7 @@ make a01      # just the first
 make a02      # just the second
 make a03      # just the third
 make a04      # runs the notebook
+make a05      # just the fifth
 make test
 make lint
 ```

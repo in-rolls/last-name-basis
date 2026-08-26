@@ -3,8 +3,9 @@ A01 := analyses/01_surname_to_category
 A02 := analyses/02_jati_by_geography
 A03 := analyses/03_how_few_names
 A04 := analyses/04_which_token_is_the_surname
+A05 := analyses/05_who_has_an_uninformative_name
 
-all: a01 a02 a03
+all: a01 a02 a03 a05
 
 a01:
 	$(PY) $(A01)/pipeline.py
@@ -26,7 +27,7 @@ fmt:
 	.venv/bin/black --fast src analyses tests
 	.venv/bin/isort src analyses tests
 
-.PHONY: all a01 a02 a03 a04 test lint fmt
+.PHONY: all a01 a02 a03 a04 a05 test lint fmt
 
 a03:
 	$(PY) $(A03)/pipeline.py
@@ -34,3 +35,7 @@ a03:
 
 a04:
 	cd $(A04) && ../../$(PY) -m jupyter nbconvert --execute --inplace --to notebook investigate.ipynb
+
+a05:
+	$(PY) $(A05)/pipeline.py
+	$(PY) $(A05)/note.py

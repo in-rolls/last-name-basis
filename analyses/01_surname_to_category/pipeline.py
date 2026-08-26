@@ -94,6 +94,10 @@ def main() -> None:
     conf.to_csv(TAB / "confusion.csv")
     top50.to_csv(TAB / "top50_by_frequency.csv", index=False)
 
+    audit = report.surname_position_audit()
+    audit.to_csv(TAB / "surname_position_audit.csv", index=False)
+    h["surname_position_audit"] = audit.set_index("basis").to_dict("index")
+
     covr = cov.coverage(secc, "Delhi")
     if covr:
         h["coverage_delhi"] = covr
@@ -140,6 +144,8 @@ def main() -> None:
     print(report.fmt(look))
     print("\n=== suppression-floor sensitivity ===")
     print(report.fmt(floors, 4))
+    print("\n=== does the headline survive the surname-position bug? ===")
+    print(report.fmt(audit, 3))
     print("\n=== pooling: SECC-weighted vs Census-reweighted (biggest movers) ===")
     print(report.fmt(shift))
     print("\n=== where the errors land (guess x truth, share of all people) ===")

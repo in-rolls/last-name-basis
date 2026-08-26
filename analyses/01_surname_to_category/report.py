@@ -111,3 +111,49 @@ def pooling_shift(secc: pd.DataFrame, census: pd.DataFrame, top: int = 20):
 
 def fmt(df: pd.DataFrame, decimals: int = 3) -> str:
     return df.round(decimals).to_string()
+
+
+# States where analysis 04 found the roll writes the surname FIRST, so a
+# last-token surname column holds a given name. See
+# analyses/04_which_token_is_the_surname/out/tab/surname_position.csv.
+SURNAME_FIRST = {"gujarat", "maharashtra"}
+POSITION_AMBIGUOUS = {"mizoram"}
+
+
+def surname_position_audit(scheme: str = "secc") -> pd.DataFrame:
+    """Does the headline survive dropping states whose surname column is wrong?
+
+    The bug is real: instate and outkast both take the last whitespace token,
+    and Maharashtra and Gujarat write the surname first. This asks whether the
+    all-India number rests on it. Until this ran, the headline was a number of
+    unknown provenance in an unknown fraction of the country.
+    """
+    from data import PROB_COLS, base_rates, load_cells, per_name
+    from metrics import add_metrics
+
+    cells = load_cells()
+    total = cells["total_support"].sum()
+    rows = []
+    for label, drop in (
+        ("as published", set()),
+        ("minus surname-first states", SURNAME_FIRST),
+        ("minus surname-first and ambiguous", SURNAME_FIRST | POSITION_AMBIGUOUS),
+    ):
+        sub = cells[~cells["state"].isin(drop)]
+        table = per_name(sub, scheme=scheme)
+        base = base_rates(table)
+        table = add_metrics(table, base)
+        prior = (base / base.sum()).to_numpy()
+        w = table["share"].to_numpy()
+        err = float((w * (1 - table[PROB_COLS].to_numpy().max(axis=1))).sum() * 100)
+        blind = float((1 - prior.max()) * 100)
+        rows.append(
+            {
+                "basis": label,
+                "records_dropped": 1 - sub["total_support"].sum() / total,
+                "blind_per_100": blind,
+                "with_name_per_100": err,
+                "mistakes_saved": blind - err,
+            }
+        )
+    return pd.DataFrame(rows)
