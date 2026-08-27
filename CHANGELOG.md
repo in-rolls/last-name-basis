@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-08-26
+
+One wrong sentence in the most citable claim, and the reversal it forces.
+
 ### Fixed
 
 - **A wrong sentence in the most citable claim.** The front page and analysis 05
@@ -93,5 +97,6 @@ average, is the finding.
 - `in-rolls/jati` is private, and analyses 02 and 06 read their ladders from a
   local clone of it. The README linked it as though a reader could follow.
 
-[Unreleased]: https://github.com/in-rolls/last-name-basis/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/in-rolls/last-name-basis/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/in-rolls/last-name-basis/releases/tag/v1.0.1
 [1.0.0]: https://github.com/in-rolls/last-name-basis/releases/tag/v1.0.0
