@@ -10,16 +10,23 @@ Everything here is measured the same way, in a unit that needs no explaining:
 
 ### [01 — a surname alone, across India](analyses/01_surname_to_category)
 
-Take a hundred adults at random: about 19 are Dalit, 6 Adivasi, 75 neither.
+Take a hundred adults at random from the electoral roll: about 19 are Dalit,
+6 Adivasi, 75 neither.
 Guess "neither" every time and you get **25 of 100 wrong**. Now let yourself
 hear their last name. You get **20 wrong**.
 
 Five mistakes saved, and that average describes nobody. A few names settle it
 outright — Jha and Yadav cost you 0 and 1. But for **91% of people the name does
-not change your answer at all**, and for **32% it makes the guess harder**.
+not change your answer at all**, and for **16% it makes the guess harder**.
 Meanwhile the names that would help are carried by almost no one: Devi, Singh
 and Kumar are the three commonest surnames in India, and all three leave you no
 better off than a stranger would.
+
+Those figures weight every person on the roll equally, which is what "at random"
+ought to mean. The rest of this page weights by SECC records instead, and that
+population is composed differently — 20 Dalit and 9 Adivasi per hundred rather
+than 19 and 6 — so its blind rate is **30, not 25**. Where a number below
+says 30, it is the SECC population.
 
 [![A hundred people picked at random](analyses/01_surname_to_category/out/fig/random_hundred.png)](analyses/01_surname_to_category/note.md)
 
@@ -27,8 +34,11 @@ better off than a stranger would.
 
 So are surnames weak, or did we throw away the place? Bihar's land records let
 you put a name and a village together, and the answer is unambiguous. Knowing a
-surname **and a village** leaves you wrong **16 times in 100** about which of 141
+surname **and a village** leaves you wrong **17 times in 100** about which of 141
 jatis someone belongs to. Keep the surname, drop the village, and it is **47**.
+Both are leave-one-out figures. Half those name-and-village cells hold a single
+household, so a household scored against a table it helped build reads 16
+instead, and the flattery lands on the one rung this comparison turns on.
 
 [![How caste information atrophies with distance](analyses/02_jati_by_geography/out/fig/atrophy.png)](analyses/02_jati_by_geography/note.md)
 
@@ -41,9 +51,11 @@ the family names in the same state read as 84–89% male because those families'
 women are on the roll as Devi. A woman and her brother do not share a last name.
 
 That is why these names carry no caste signal: a name assigned by sex cannot
-track a lineage. Thirteen of them cover **19% of the country**, and counting them
-makes Indian names look far more concentrated than they are — 18 names cover a
-quarter of India, but **103** if you count only names a brother and sister share.
+track a lineage. The clear cases cover **10.5% of the country**; adding Singh
+and Kumar, which analysis 04 shows behave nothing like each other, takes it to
+19%. Counting them makes Indian names look far more
+concentrated than they are — 18 names cover a quarter of India, but **103** if
+you count only names a brother and sister share.
 
 [![Who carries a sex-marking last name](analyses/03_how_few_names/out/fig/sex_marked.png)](analyses/03_how_few_names/note.md)
 
@@ -81,12 +93,17 @@ So the method is not weakly accurate across the board. It is accurate about the
 advantaged and blind about the disadvantaged, which is the direction that makes
 a naive audit understate discrimination against the group the audit is for.
 
-[![Mistakes by the carrier's own caste](analyses/05_who_has_an_uninformative_name/out/fig/by_caste.png)](analyses/05_who_has_an_uninformative_name/note.md)
+The same question asked about sex has no such answer. Women's names cost
+**3.3 more mistakes per hundred than men's in Bihar**, but 1.4 *fewer* in
+Rajasthan and 0.2 fewer in Maharashtra. There is no direction here to report.
 
-The companion sex split now consumes Upnaam's resolved recorded surnames
-instead of taking the final string. That correction moves Maharashtra's gap
-from +0.85 mistakes per hundred for women to -0.19; Bihar remains +3.28 and
-Rajasthan -1.37. The direction still does not generalize across states.
+Read the Rajasthan figure with care: surnames there come from Upnaam's resolved
+recorded surnames rather than the last word of the name, and the resolver could
+both resolve and sex only **21% of the Rajasthan roll, against 61% in Bihar and
+66% in Maharashtra**. That 1.4 rests on a fifth of the state; the other two rest
+on roughly two thirds.
+
+[![Mistakes by the carrier's own caste](analyses/05_who_has_an_uninformative_name/out/fig/by_caste.png)](analyses/05_who_has_an_uninformative_name/note.md)
 
 ### [06 — does knowing your neighbours give you away?](analyses/06_neighbours)
 
@@ -94,20 +111,24 @@ Analysis 02's "surname + village" memorises the village. Hold out whole villages
 instead, so the only cue is the composition of the *other* surnames there, and
 the picture changes.
 
-On average neighbours save about four mistakes per 100. But the average hides
-the case: **Chaudhary goes from 80 mistakes to 56, Prasad from 72 to 54**, while
+On the Bihar land records neighbours save about four mistakes per 100. But
+the average hides the case: **Chaudhary goes from 80 mistakes to 56, Prasad from 72 to 54**, while
 Paswan — which already identifies you at 6 — gains nothing. **The names that
 carry no caste information alone are the ones the neighbourhood rescues.**
 
 So the headline needs qualifying rather than retracting: a surname alone is weak,
 but a surname is not weak once you know where its bearer lives.
 
-**And it finishes the bracket.** Stack everything an electoral roll prints — the
-name, the father's or husband's name, the hamlet — and score every household
-rather than only the easy ones: across 2.98M Scheduled Caste households and 22
-jatis, the surname alone leaves **30** mistakes per 100 and the roll page leaves
-**9**. The name is a poor instrument; the record is a good one. The exposure
-belongs to the document, not the word.
+**And it finishes the bracket.** Caste is printed on no electoral roll, so the
+real question is what the roll's cues are worth to someone who can match them
+against a caste register of the same population. Across 887,512 Scheduled Caste
+households in 8,307 held-out villages, sorted into 22 jatis: knowing nothing
+leaves 59 mistakes per 100, the surname alone leaves **30**, neighbours bring
+that to **26**, and the name, the father's name and the hamlet together with a
+caste register leave **9**.
+
+The name is a poor instrument; the name joined to a register is a good one. The
+exposure belongs to the linkage, not the word.
 
 [![Which names get rescued](analyses/06_neighbours/out/fig/per_surname.png)](analyses/06_neighbours/note.md)
 
@@ -129,7 +150,7 @@ name a woman does not share with her brother cannot carry his lineage.
 uv venv .venv
 uv pip install --python .venv/bin/python -e '.[dev]'
 
-make all      # both pipelines: tables, figures, notes
+make all      # the five scripted analyses: tables, figures, notes
 make a01      # just the first
 make a02      # just the second
 make a03      # just the third
@@ -141,14 +162,14 @@ make lint
 ```
 
 Each analysis owns its own pipeline, data loading, figures, note and `out/`.
-Shared code is only the scoring measure and the drawing style:
+Shared code is only the scoring measure, the drawing style and one data
+reader:
 
 | path | what |
 |---|---|
 | `src/last_name_basis/scoring.py` | mistakes per hundred; ladder scoring; leave-one-out |
 | `src/last_name_basis/style.py` | palette, hundred-square grid, band definitions |
-| `analyses/01_surname_to_category/` | outkast SECC, all-India |
-| `analyses/02_jati_by_geography/` | naampata ladders, Bihar |
+| `src/last_name_basis/upnaam.py` | validated reader for resolved roll surnames |
 
 ## Data
 
@@ -163,8 +184,10 @@ Shared code is only the scoring measure and the drawing style:
   resolution for the Bihar, Rajasthan, and Maharashtra sex split. The consumer
   validates state, source-row cardinality, weights, abstentions, and resolver
   revision before using an artifact.
-- [jati](https://github.com/in-rolls/jati) / [land](https://github.com/in-rolls/land)
-  — Bihar ladders and the caste dictionary with its religion flag.
+- `jati` (not public) and [land](https://github.com/in-rolls/land) — Bihar
+  ladders and the caste dictionary with its religion flag. Analyses 02 and 06
+  read their ladders from a local clone of `jati`, so those two cannot be
+  reproduced from a clean checkout without access to it. The rest can.
 
 ## What is deliberately not here
 
@@ -181,10 +204,11 @@ screening tool.
   are disproportionately Dalit and EBC.
 - Analysis 03's title list is a judgment call, published in
   [`analyses/03_how_few_names/titles.py`](analyses/03_how_few_names/titles.py)
-  with a reason beside each token, and reported at three levels so you can take the conservative half. Patronymics and OCR debris
-  are further non-surnames it does not quantify, so 19% is a floor.
-- Both scoring analyses assume a perfect guesser with one or two cues. That is a floor on what is
-  knowable, not a ceiling on what someone can work out about you: a real person
+  with a reason beside each token, and reported at three levels so you can take
+  the conservative half. Patronymics and OCR debris are further non-surnames it
+  does not quantify, so even 19%, the widest of the three levels, is a floor.
+- The scoring analyses assume a perfect guesser with one or two cues. That is
+  a floor on what is knowable, not a ceiling on what someone can work out about you: a real person
   also has your first name, your father's or husband's name, your neighbourhood.
 
 MIT licensed.

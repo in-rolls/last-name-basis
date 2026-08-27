@@ -1,7 +1,7 @@
 # 02 — How fast caste information dies as the place gets bigger
 
 Bihar ladders from the `naampata` package in
-[jati](https://github.com/in-rolls/jati): the same surname scored against
+`jati`, which is not public: the same surname scored against
 successively coarser geographies, for 141 jatis and for the reservation
 categories. The Muslim split uses the caste dictionary in
 [land](https://github.com/in-rolls/land).

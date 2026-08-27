@@ -268,7 +268,7 @@ resort. That is the difference between {ceiling:.1f} and 1.2.
 ---
 
 *Bihar land records and the Mahadalit census, via the ladders in
-[naampata](https://github.com/in-rolls/jati), the same source as analysis 02.*
+naampata, the same source as analysis 02. That repository is not public.*
 """
     out = HERE / "note.md"
     out.write_text(reflow(md))

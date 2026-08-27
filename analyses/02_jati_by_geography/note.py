@@ -218,7 +218,7 @@ person against a cell that excludes them moves no rung by more than
 ---
 
 *Source: the `records_ladder` and `census_ladder` tables shipped in
-[naampata](https://github.com/in-rolls/jati), built from Bihar land records
+naampata (not a public repository), built from Bihar land records
 ({s['records_accounts'] / 1e6:.1f}M land-owning accounts across
 {s['groups']['jati']} jatis) and the Mahadalit census. The Muslim split uses the
 caste dictionary in the [land](https://github.com/in-rolls/land) repo, which
