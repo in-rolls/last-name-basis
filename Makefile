@@ -1,4 +1,7 @@
-PY := .venv/bin/python
+PY ?= .venv/bin/python
+BLACK ?= .venv/bin/black
+ISORT ?= .venv/bin/isort
+FLAKE8 ?= .venv/bin/flake8
 A01 := analyses/01_surname_to_category
 A02 := analyses/02_jati_by_geography
 A03 := analyses/03_how_few_names
@@ -17,18 +20,23 @@ a02:
 	$(PY) $(A02)/note.py
 
 test:
-	.venv/bin/python -m pytest -q
+	$(PY) -m pytest -q
 
 lint:
-	.venv/bin/black --check --fast src analyses tests
-	.venv/bin/isort --check-only src analyses tests
-	.venv/bin/flake8 src analyses tests
+	$(BLACK) --check --fast src analyses tests
+	$(ISORT) --check-only src analyses tests
+	$(FLAKE8) src analyses tests
 
 fmt:
-	.venv/bin/black --fast src analyses tests
-	.venv/bin/isort src analyses tests
+	$(BLACK) --fast src analyses tests
+	$(ISORT) src analyses tests
 
-.PHONY: all a01 a02 a03 a04 a05 a06 test lint fmt
+.PHONY: all a01 a02 a03 a04 a05 a06 test lint fmt ci ci-docker
+
+ci: lint test
+
+ci-docker:
+	docker run --rm -e DEBIAN_FRONTEND=noninteractive -e MPLCONFIGDIR=/tmp/matplotlib -e PIP_ROOT_USER_ACTION=ignore -v "$(PWD):/workspace" -w /workspace python:3.13-slim sh -c "apt-get update && apt-get install -y --no-install-recommends make && pip install -e '.[dev]' && make PY=python BLACK=black ISORT=isort FLAKE8=flake8 ci"
 
 a03:
 	$(PY) $(A03)/pipeline.py

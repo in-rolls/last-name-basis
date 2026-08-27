@@ -73,9 +73,8 @@ def by_sex(wide: pd.DataFrame, blind: float, out: Path) -> None:
     ax.set_xlim(0, 36)
     ax.set_xlabel("of 100 people, how many the guess gets wrong")
     ax.set_title(
-        "And it does less for women than for men\n"
-        "Because the name a woman is recorded under often marks her sex, "
-        "not her family.",
+        "The sex gap changes direction across states\n"
+        "Resolved surnames do not support one women-versus-men pattern.",
         color=INK,
         loc="left",
         fontsize=12,

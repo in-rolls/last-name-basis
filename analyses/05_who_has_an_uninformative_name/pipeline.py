@@ -11,7 +11,7 @@ import pandas as pd
 
 HERE = Path(__file__).resolve().parent
 TAB, FIG = HERE / "out/tab", HERE / "out/fig"
-SEX_STATES = ["bihar", "uttar_pradesh", "west_bengal", "rajasthan", "maharashtra"]
+SEX_STATES = ["bihar", "rajasthan", "maharashtra"]
 
 
 def _load(name: str, path: Path):
@@ -61,23 +61,28 @@ def main() -> None:
         "spread": source.spread(named),
     }
 
-    sex_path = TAB / "by_sex.csv"
-    if sex_path.exists():
-        sex = pd.read_csv(sex_path)
-    else:
-        gender = source.first_name_gender()
-        rows = []
-        if gender is not None:
-            for state in SEX_STATES:
-                sexed = source.surname_by_sex(state, gender)
-                if sexed is None:
-                    continue
-                r = source.by_sex(named, sexed, secc.PROB_COLS)
-                r["state"] = state
-                rows.append(r)
-        sex = pd.concat(rows, ignore_index=True) if rows else pd.DataFrame()
-        if not sex.empty:
-            sex.to_csv(sex_path, index=False)
+    gender = source.first_name_gender()
+    rows = []
+    resolution_rows = []
+    if gender is not None:
+        for state in SEX_STATES:
+            sexed = source.surname_by_sex(state, gender)
+            if sexed is None:
+                continue
+            r = source.by_sex(named, sexed, secc.PROB_COLS)
+            r["state"] = state
+            rows.append(r)
+            audit = {"state": state, **sexed.attrs}
+            audit["resolved_share"] = audit["resolved_weight"] / audit["input_weight"]
+            audit["gendered_share"] = audit["gendered_weight"] / audit["input_weight"]
+            resolution_rows.append(audit)
+    sex = pd.concat(rows, ignore_index=True) if rows else pd.DataFrame()
+    if not sex.empty:
+        sex.to_csv(TAB / "by_sex.csv", index=False)
+    if resolution_rows:
+        resolution = pd.DataFrame(resolution_rows)
+        resolution.to_csv(TAB / "surname_resolution.csv", index=False)
+        summary["surname_resolution"] = resolution.set_index("state").to_dict("index")
 
     if not sex.empty:
         wide = sex.pivot(index="state", columns="who", values="mistakes_per_100")

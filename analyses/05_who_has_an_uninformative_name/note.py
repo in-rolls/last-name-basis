@@ -65,6 +65,7 @@ def main() -> None:
         for r in caste.itertuples()
     )
     sex_rows = ""
+    sex_conclusion = "No supported state-level sex comparison was available."
     if (TAB / "sex_gap.csv").exists():
         g = pd.read_csv(TAB / "sex_gap.csv").sort_values("gap", ascending=False)
         sex_rows = "\n".join(
@@ -72,6 +73,15 @@ def main() -> None:
             f"| {r.gap:+.1f} |"
             for r in g.itertuples()
         )
+        if not g.empty:
+            higher = g.iloc[0]
+            lower = g.iloc[-1]
+            sex_conclusion = (
+                f"Women are worse off in {higher.state.replace('_', ' ').title()} "
+                f"by {abs(higher.gap):.1f} mistakes per hundred and better off in "
+                f"{lower.state.replace('_', ' ').title()} by {abs(lower.gap):.1f}. "
+                "The direction reverses."
+            )
 
     md = f"""# Whose name tells you nothing
 
@@ -127,8 +137,7 @@ was my prediction. It does not hold.
 
 ![Mistakes by sex]({FIG}/by_sex.png)
 
-Women are worse off in Bihar by three mistakes per hundred and **better** off in
-Uttar Pradesh by two. The direction reverses. A sex-marking name is not
+{sex_conclusion} A sex-marking name is not
 automatically a worse-predicted one: Devi puts you at the base rate, and plenty
 of the names men carry in these states — Ram, Das, Lal — are worse than the base
 rate. Reported here because it was the prediction going in.
@@ -151,9 +160,14 @@ audit that assumes uniform error will understate error for Dalits by about
   decomposition of a known distribution, not an out-of-sample test, so it
   describes the ceiling a perfect user of this table would hit rather than the
   performance of any fitted model.
-- **The sex split needs a first name naampy can gender**, which covers part of
-  each roll, and it uses the surname as written rather than a resolved family
-  name.
+- **The sex split covers only Bihar, Rajasthan, and Maharashtra**, the states
+  supported by Upnaam's `resolver-v1` and present locally. It uses Upnaam's
+  recorded surname, not a resolved family surname.
+- **The sex split needs a given name naampy can gender.** For Maharashtra's
+  surname-first records, the second token is assumed to be the given name. The
+  resulting gendered shares of all weighted roll records are 61% in Bihar, 21%
+  in Rajasthan, and 66% in Maharashtra. Rajasthan's estimate is especially
+  selected.
 - **Nothing here is per-name.** The tables report groups, never a ranked list of
   which names give which people away.
 
@@ -162,7 +176,8 @@ audit that assumes uniform error will understate error for Dalits by about
 *Caste composition from [outkast](https://github.com/appeler/outkast)'s SECC
 2011 extract, the same source as analysis 01. Sex from
 [naampy](https://github.com/appeler/naampy)'s first-name counts applied to
-[instate](https://github.com/appeler/instate)'s raw rolls.*
+[Upnaam](https://github.com/in-rolls/upnaam)'s `resolver-v1` aggregate roll
+outputs.*
 """
     out = HERE / "note.md"
     out.write_text(reflow(md))

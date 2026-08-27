@@ -6,6 +6,9 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+from conftest import load
+
+source = load("05_who_has_an_uninformative_name", "data")
 
 TAB = Path(__file__).resolve().parent.parent / (
     "analyses/05_who_has_an_uninformative_name/out/tab"
@@ -51,3 +54,30 @@ def test_the_sex_gap_does_not_run_one_way():
         pytest.skip("sex table not built")
     g = pd.read_csv(path)
     assert (g["gap"] > 0).any() and (g["gap"] < 0).any()
+    maharashtra = g.loc[g["state"] == "maharashtra", "gap"]
+    if not maharashtra.empty:
+        assert abs(maharashtra.iloc[0]) < 0.5
+
+
+def test_sex_weights_use_upnaam_surname_order(tmp_path, monkeypatch):
+    artifact = tmp_path / "upnaam/data/derived/resolved/maharashtra.parquet"
+    artifact.parent.mkdir(parents=True)
+    pd.DataFrame(
+        {
+            "source_row": [0, 1, 2],
+            "state": ["maharashtra"] * 3,
+            "name_raw": ["patil ashwini", "jadhav suresh", "sattar"],
+            "weight": [10, 5, 20],
+            "surname": ["patil", "jadhav", None],
+            "surname_position": ["first", "first", None],
+            "abstained": [False, False, True],
+            "resolver_revision": ["resolver-v1"] * 3,
+        }
+    ).to_parquet(artifact, index=False)
+    monkeypatch.setenv("GITHUB_DIR", str(tmp_path))
+    result = source.surname_by_sex(
+        "maharashtra", {"ashwini": 0.8, "suresh": 0.1, "patil": 0.0}
+    ).set_index("last_name")
+    assert result.loc["patil", "female"] == pytest.approx(8)
+    assert result.loc["patil", "male"] == pytest.approx(2)
+    assert result.loc["jadhav", "female"] == pytest.approx(0.5)

@@ -18,14 +18,14 @@ by sex    weight by female and male bearers, using naampy's first-name gender to
 
 from __future__ import annotations
 
-import csv
-import gzip
 import os
 from collections import Counter
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+from last_name_basis.upnaam import iter_resolved_roll, resolved_roll_path
 
 CATEGORY_LABEL = {"sc": "Scheduled Caste", "st": "Scheduled Tribe", "other": "neither"}
 
@@ -80,36 +80,57 @@ def first_name_gender(min_bearers: int = 200) -> dict[str, float] | None:
 def surname_by_sex(state: str, gender: dict[str, float]) -> pd.DataFrame | None:
     """Female and male bearers of each surname, from one state's roll.
 
-    Sex comes from the first name and the question is about the last name, so
-    the two are independent.
+    Sex comes from the positional given-name token and the question is about
+    Upnaam's recorded surname, so the two tokens are distinct. In Maharashtra,
+    the surname is first and the second token supplies the gender lookup.
     """
-    path = _github() / f"instate/data/names_{state}.csv.gz"
+    path = resolved_roll_path(state, github_dir=_github())
     if not path.exists():
         return None
-    female: Counter = Counter()
-    male: Counter = Counter()
-    with gzip.open(path, "rt") as fh:
-        for row in csv.DictReader(fh):
-            parts = row["english_name"].split()
-            if len(parts) < 2:
-                continue
-            p_female = gender.get(parts[0])
-            if p_female is None:
-                continue
-            n = int(row["n_times"])
-            surname = parts[-1]
-            if len(surname) < 2:
-                continue
-            female[surname] += n * p_female
-            male[surname] += n * (1 - p_female)
+    female: Counter[str] = Counter()
+    male: Counter[str] = Counter()
+    input_weight = 0
+    resolved_weight = 0
+    gendered_weight = 0
+    for frame in iter_resolved_roll(path, state=state):
+        input_weight += int(frame["weight"].sum())
+        resolved = frame.loc[~frame["abstained"]].copy()
+        resolved_weight += int(resolved["weight"].sum())
+        if resolved.empty:
+            continue
+        tokens = resolved["name_raw"].astype("string").str.split(expand=True)
+        if tokens.shape[1] < 2:
+            continue
+        given = tokens[0].copy()
+        surname_first = resolved["surname_position"].eq("first")
+        given.loc[surname_first] = tokens.loc[surname_first, 1]
+        p_female = given.str.casefold().map(gender)
+        usable = p_female.notna()
+        if not usable.any():
+            continue
+        weights = resolved.loc[usable, "weight"].astype(float)
+        probabilities = p_female.loc[usable].astype(float)
+        surnames = resolved.loc[usable, "surname"]
+        gendered_weight += int(weights.sum())
+        female.update((weights * probabilities).groupby(surnames).sum().to_dict())
+        male.update((weights * (1 - probabilities)).groupby(surnames).sum().to_dict())
     names = set(female) | set(male)
-    return pd.DataFrame(
+    result = pd.DataFrame(
         {
             "last_name": sorted(names),
             "female": [female.get(x, 0.0) for x in sorted(names)],
             "male": [male.get(x, 0.0) for x in sorted(names)],
         }
     )
+    result.attrs.update(
+        {
+            "input_weight": input_weight,
+            "resolved_weight": resolved_weight,
+            "gendered_weight": gendered_weight,
+            "resolver_revision": "resolver-v1",
+        }
+    )
+    return result
 
 
 def by_sex(

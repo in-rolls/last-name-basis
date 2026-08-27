@@ -83,6 +83,11 @@ a naive audit understate discrimination against the group the audit is for.
 
 [![Mistakes by the carrier's own caste](analyses/05_who_has_an_uninformative_name/out/fig/by_caste.png)](analyses/05_who_has_an_uninformative_name/note.md)
 
+The companion sex split now consumes Upnaam's resolved recorded surnames
+instead of taking the final string. That correction moves Maharashtra's gap
+from +0.85 mistakes per hundred for women to -0.19; Bihar remains +3.28 and
+Rajasthan -1.37. The direction still does not generalize across states.
+
 ### [06 — does knowing your neighbours give you away?](analyses/06_neighbours)
 
 Analysis 02's "surname + village" memorises the village. Hold out whole villages
@@ -154,6 +159,10 @@ Shared code is only the scoring measure and the drawing style:
   counts, used for how common a name is. SECC counts heads of household and so
   undercounts women's surnames badly: Devi is 2.3M there and 45M on the rolls,
   where it is the commonest surname in India.
+- [Upnaam](https://github.com/in-rolls/upnaam) — versioned recorded-surname
+  resolution for the Bihar, Rajasthan, and Maharashtra sex split. The consumer
+  validates state, source-row cardinality, weights, abstentions, and resolver
+  revision before using an artifact.
 - [jati](https://github.com/in-rolls/jati) / [land](https://github.com/in-rolls/land)
   — Bihar ladders and the caste dictionary with its religion flag.
 

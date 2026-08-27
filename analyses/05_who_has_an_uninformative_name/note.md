@@ -49,15 +49,13 @@ was my prediction. It does not hold.
 | state | mistakes on men | on women | gap |
 |---|---|---|---|
 | Bihar | 17 | 20 | +3.3 |
-| Maharashtra | 15 | 16 | +0.8 |
-| West Bengal | 18 | 17 | -1.1 |
+| Maharashtra | 17 | 17 | -0.2 |
 | Rajasthan | 24 | 22 | -1.4 |
-| Uttar Pradesh | 21 | 18 | -2.2 |
 
 ![Mistakes by sex](out/fig/by_sex.png)
 
-Women are worse off in Bihar by three mistakes per hundred and **better** off in
-Uttar Pradesh by two. The direction reverses. A sex-marking name is not
+Women are worse off in Bihar by 3.3 mistakes per hundred and better off in
+Rajasthan by 1.4. The direction reverses. A sex-marking name is not
 automatically a worse-predicted one: Devi puts you at the base rate, and plenty
 of the names men carry in these states — Ram, Das, Lal — are worse than the base
 rate. Reported here because it was the prediction going in.
@@ -79,9 +77,14 @@ uniform error will understate error for Dalits by about 12 mistakes per hundred.
   decomposition of a known distribution, not an out-of-sample test, so it
   describes the ceiling a perfect user of this table would hit rather than the
   performance of any fitted model.
-- **The sex split needs a first name naampy can gender**, which covers part of
-  each roll, and it uses the surname as written rather than a resolved family
-  name.
+- **The sex split covers only Bihar, Rajasthan, and Maharashtra**, the states
+  supported by Upnaam's `resolver-v1` and present locally. It uses Upnaam's
+  recorded surname, not a resolved family surname.
+- **The sex split needs a given name naampy can gender.** For Maharashtra's
+  surname-first records, the second token is assumed to be the given name. The
+  resulting gendered shares of all weighted roll records are 61% in Bihar, 21%
+  in Rajasthan, and 66% in Maharashtra. Rajasthan's estimate is especially
+  selected.
 - **Nothing here is per-name.** The tables report groups, never a ranked list of
   which names give which people away.
 
@@ -90,4 +93,5 @@ uniform error will understate error for Dalits by about 12 mistakes per hundred.
 *Caste composition from [outkast](https://github.com/appeler/outkast)'s SECC
 2011 extract, the same source as analysis 01. Sex from
 [naampy](https://github.com/appeler/naampy)'s first-name counts applied to
-[instate](https://github.com/appeler/instate)'s raw rolls.*
+[Upnaam](https://github.com/in-rolls/upnaam)'s `resolver-v1` aggregate roll
+outputs.*
