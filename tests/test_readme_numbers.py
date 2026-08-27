@@ -25,6 +25,8 @@ A02 = ROOT / "analyses/02_jati_by_geography/out/tab"
 A03 = ROOT / "analyses/03_how_few_names/out/tab"
 A05 = ROOT / "analyses/05_who_has_an_uninformative_name/out/tab"
 A06 = ROOT / "analyses/06_neighbours/out/tab"
+A07 = ROOT / "analyses/07_where_the_name_works/out/tab"
+A08 = ROOT / "analyses/08_karnataka_initials/out/tab"
 
 
 def _json(path: Path) -> dict:
@@ -113,6 +115,27 @@ def _band(rank: str, col: str):
         d = pd.read_csv(path).set_index("rank")
         v = float(d.loc[rank, col])
         return 100 * v if col == "share_people" else v
+
+    return get
+
+
+def _state(state: str, col: str):
+    def get():
+        path = A07 / "by_state.csv"
+        if not path.exists():
+            pytest.skip("analysis 07 not built")
+        return float(pd.read_csv(path).set_index("state").loc[state, col])
+
+    return get
+
+
+def _karnataka(key: str):
+    def get():
+        path = A08 / "summary.json"
+        if not path.exists():
+            pytest.skip("analysis 08 not built")
+        s = _json(path)
+        return s[key] if key in s else float(s["scores"][key]["mistakes_per_100"])
 
     return get
 
@@ -289,6 +312,31 @@ def claims():
             _ceil("households"),
         ),
         ("06 villages", r"([\d,]+) held-out villages", _ceil("villages_held_out")),
+        (
+            "07 assam",
+            r"closes \*\*(\d+)% of the\s+gap in Assam",
+            _state("assam", "removed"),
+        ),
+        (
+            "07 haryana",
+            r"gap in Assam and (\d+)% in Haryana\*\*",
+            _state("haryana", "removed"),
+        ),
+        (
+            "08 initial share",
+            r"\*\*(\d+)% of last tokens there are a single letter\*\*",
+            _karnataka("naive_is_single_letter"),
+        ),
+        (
+            "08 naive",
+            r"(\d+\.\d) mistakes per 100 against",
+            _karnataka("naive_surname"),
+        ),
+        (
+            "08 clean",
+            r"mistakes per 100 against\s+(\d+\.\d)",
+            _karnataka("clean_surname"),
+        ),
     ]
 
 

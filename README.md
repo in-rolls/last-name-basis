@@ -6,7 +6,7 @@ is really the name, rather than the place?**
 Everything here is measured the same way, in a unit that needs no explaining:
 **of a hundred people, how many would you get wrong?**
 
-## Six analyses
+## Eight analyses
 
 ### [01 — a surname alone, across India](analyses/01_surname_to_category)
 
@@ -153,6 +153,39 @@ exposure belongs to the linkage, not the word.
 
 [![Which names get rescued](analyses/06_neighbours/out/fig/per_surname.png)](analyses/06_neighbours/note.md)
 
+### [07 — where a surname works, and where it does not](analyses/07_where_the_name_works)
+
+The national figure hides an enormous spread. The same guess closes **67% of the
+gap in Assam and 0% in Haryana**, and what carries a state is one or two large,
+decisive names rather than many: Assam has two majority-Dalit surnames among its
+commonest and closes two thirds of the gap, because one of them is `das`. Punjab
+has five and closes 3%, because its biggest are `ram` at 62% and `lal` at 52%.
+Haryana has none at all.
+
+Every state's coverage is printed beside its result, because these are the
+surnames that cleared a 100-record disclosure floor and they cover between 3%
+and 19% of a state. The obvious objection — that a state retaining few names
+looks uninformative by construction — is tested by cutting every state to its
+25 commonest names, and the ordering survives.
+
+[![How much of the gap a surname closes, by state](analyses/07_where_the_name_works/out/fig/where_it_works.png)](analyses/07_where_the_name_works/note.md)
+
+### [08 — Karnataka, where the last token is an initial](analyses/08_karnataka_initials)
+
+Analysis 04 found Maharashtra writes the surname first. Karnataka breaks the
+same assumption differently: **34% of last tokens there are a single letter**,
+and the six commonest are `S`, `R`, `K`, `N`, `B`, `G`. Drop single letters and
+the list becomes `Kumar`, `Patil`, `Naik`, `Manjunatha` — two different
+inventories of "Karnataka's commonest surnames" from one set of names.
+
+Cleaning them changes the prediction not at all: 49.2 mistakes per 100 against
+49.6, versus 54.5 knowing nothing. Slightly *worse*, because splitting the
+initial-buckets leaves fewer people sharing a cell with anyone. The naive rule
+was never predicting from surnames; it was pooling people into a few enormous
+initial-buckets.
+
+[![What a last-token rule calls a surname](analyses/08_karnataka_initials/out/fig/naive_vs_clean.png)](analyses/08_karnataka_initials/note.md)
+
 ## The six together
 
 Caste is a local fact. A surname carries a great deal where people know the
@@ -171,13 +204,15 @@ name a woman does not share with her brother cannot carry his lineage.
 uv venv .venv
 uv pip install --python .venv/bin/python -e '.[dev]'
 
-make all      # the five scripted analyses: tables, figures, notes
+make all      # the seven scripted analyses: tables, figures, notes
 make a01      # just the first
 make a02      # just the second
 make a03      # just the third
 make a04      # runs the notebook
 make a05      # just the fifth
 make a06      # just the sixth
+make a07      # just the seventh
+make a08      # just the eighth
 make test
 make lint
 ```

@@ -8,6 +8,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **Analysis 07, where a surname works and where it does not.** The national
+  figure hides a spread from 67% of the gap closed in Assam to 0% in Haryana.
+  What carries a state is one or two large decisive names, not many of them:
+  Punjab has five majority-Dalit surnames among its 25 commonest and closes 3%,
+  Assam has two and closes 67%, because one of them is `das`. Each state's
+  coverage is printed beside its result, and the ordering survives cutting every
+  state to its 25 commonest names.
+- **Analysis 08, Karnataka.** 34% of last tokens there are a single letter, and
+  the ten commonest all are. Cleaning them changes the surname inventory
+  completely and the prediction not at all, 49.2 against 49.6 per 100 with a
+  blind rate of 54.5 -- slightly worse, because smaller cells resolve fewer
+  people. Reported as the null it is.
+
 - The front page now shows the skew. Sorted by frequency, the ten commonest
   surnames in India cover 32% of everybody and not one of them moves the guess
   off the base rate, while the 2,930 names ranked 1001 and below cover 6% of
