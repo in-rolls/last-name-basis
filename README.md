@@ -18,9 +18,22 @@ hear their last name. You get **20 wrong**.
 Five mistakes saved, and that average describes nobody. A few names settle it
 outright — Jha and Yadav cost you 0 and 1. But for **91% of people the name does
 not change your answer at all**, and for **16% it makes the guess harder**.
-Meanwhile the names that would help are carried by almost no one: Devi, Singh
-and Kumar are the three commonest surnames in India, and all three leave you no
-better off than a stranger would.
+Meanwhile the names that would help are carried by almost no one. Sort every
+surname in India by how many people carry it and the two facts run in opposite
+directions:
+
+| rank by frequency | names | share of India | how many change your answer |
+|---|---|---|---|
+| 1–10 | 10 | **32%** | **none** |
+| 11–25 | 15 | 13% | 2 |
+| 26–50 | 25 | 10% | 8 |
+| 1001–3930 | 2,930 | 6% | 625 |
+
+The ten commonest surnames in the country cover a third of everybody, and not
+one of them moves your guess off the base rate. The names that do settle the
+question are down in the tail, carried by a few people each.
+
+[![The commonest names in India tell you almost nothing](analyses/01_surname_to_category/out/fig/common_and_empty.png)](analyses/01_surname_to_category/note.md)
 
 Those figures weight every person on the roll equally, which is what "at random"
 ought to mean. The rest of this page weights by SECC records instead, and that

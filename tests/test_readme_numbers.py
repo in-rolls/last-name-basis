@@ -103,6 +103,20 @@ def _caste(group: str, key: str = "wrong_per_100"):
     return lambda: _json(A05 / "summary.json")["by_caste"][group][key]
 
 
+def _band(rank: str, col: str):
+    """A row of analysis 01's frequency-band table."""
+
+    def get():
+        path = A01 / "by_frequency_band.csv"
+        if not path.exists():
+            pytest.skip("analysis 01 not built")
+        d = pd.read_csv(path).set_index("rank")
+        v = float(d.loc[rank, col])
+        return 100 * v if col == "share_people" else v
+
+    return get
+
+
 def claims():
     """(label, regex with one capture group, callable giving the value).
 
@@ -143,6 +157,24 @@ def claims():
             "01 share made worse",
             r"for \*\*(\d+)% it makes the guess harder\*\*",
             lambda: _roll("share_less_sure")() * 100,
+        ),
+        # The skew: the commonest names cover a third of India and none of
+        # them changes the answer. Both halves are pinned, because the pairing
+        # is the point and a stale half would break it silently.
+        (
+            "01 top ten share",
+            r"\| 1–10 \| 10 \| \*\*(\d+)%\*\*",
+            _band("1-10", "share_people"),
+        ),
+        (
+            "01 band 11-25 gainers",
+            r"\| 11–25 \| 15 \| \d+% \| (\d+) \|",
+            _band("11-25", "names_gain_gt0"),
+        ),
+        (
+            "01 tail gainers",
+            r"\| 1001–3930 \| 2,930 \| \d+% \| (\d+) \|",
+            _band("1001-3930", "names_gain_gt0"),
         ),
         # The rung with median cell size 1, so the one where plug-in bias is
         # worst and leave-one-out is not optional.
@@ -276,3 +308,20 @@ def test_readme_number_matches_its_output(label, pattern, expected) -> None:
     assert (
         abs(printed - value) < tol
     ), f"{label}: README says {match.group(1)}, output says {value:.4f}"
+
+
+def test_the_readme_says_none_only_while_none_is_true() -> None:
+    """The pairing is the point: ten names, a third of India, no information.
+
+    The word "none" carries a number, so it needs pinning like one. If any of
+    the ten commonest surnames ever starts moving the guess off the base rate,
+    this sentence becomes false while still reading fine.
+    """
+    path = A01 / "by_frequency_band.csv"
+    if not path.exists():
+        pytest.skip("analysis 01 not built")
+    gainers = pd.read_csv(path).set_index("rank").loc["1-10", "names_gain_gt0"]
+    says_none = "| 1–10 | 10 | **32%** | **none** |" in README.read_text()
+    assert says_none == (
+        gainers == 0
+    ), f"README says none={says_none}, but {gainers} of the top ten gain"

@@ -6,6 +6,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- The front page now shows the skew. Sorted by frequency, the ten commonest
+  surnames in India cover 32% of everybody and not one of them moves the guess
+  off the base rate, while the 2,930 names ranked 1001 and below cover 6% of
+  people and 625 of them do. The figure pairing frequency against Dalit share
+  was already built and was not linked from the README.
+
 ## [1.0.1] - 2026-08-26
 
 One wrong sentence in the most citable claim, and the reversal it forces.
