@@ -52,7 +52,11 @@ def reflow(md: str, width: int = 80) -> str:
 
 
 def main() -> None:
+    import json
+
     held = pd.read_csv(TAB / "held_out.csv").set_index("ladder")
+    summary = json.loads((TAB / "summary.json").read_text())
+    ceil = summary.get("ceiling")
     per = pd.read_csv(TAB / "per_surname.csv")
     land = held.loc["land records"]
 
@@ -70,6 +74,14 @@ def main() -> None:
         f"| {r.surname} | {r.alone:.0f} | {r.with_neighbours:.0f} | {r.saved:+.0f} |"
         for r in lr.tail(4).itertuples()
     )
+
+    mah = held.loc["Mahadalit census"]
+    mah_blind, mah_name = mah["blind"], mah["surname_only"]
+    mah_nb = mah["surname_plus_neighbours"]
+    ceiling = ceil["mistakes_per_100"] if ceil else float("nan")
+    ceil_groups = ceil["groups"] if ceil else 0
+    fine_cover = ceil["coverage"][0]["resolves"] if ceil else 0
+    fallback = ceil["share_needing_the_global_fallback"] if ceil else 0
 
     md = f"""# Does knowing your neighbours give you away?
 
@@ -173,6 +185,48 @@ A second correction: the mixing parameter was first searched over a range that
 topped out at 1.2, and the optimum was past it. Widening the search moved the
 gain from 1.9 mistakes per hundred to {land.surname_only - land.surname_plus_neighbours:.1f}.
 
+## The other end of the bracket
+
+The question this repo keeps asking is what a surname gives away when it is all
+you have. The answer is a floor. It is worth finishing the sentence and asking
+what the *most* an ordinary reader of a public document could do.
+
+Every cue below is printed on an electoral roll page: the name, the father's or
+husband's name, and the hamlet.
+
+![The whole bracket]({FIG}/ceiling.png)
+
+| what the guesser has | mistakes per 100 |
+|---|---|
+| nothing | {mah_blind:.0f} |
+| the surname alone | {mah_name:.0f} |
+| surname + neighbours | {mah_nb:.0f} |
+| **everything on the roll** | **{ceiling:.0f}** |
+
+**The name is weak. The roll is not.** A surname alone leaves
+{mah_name:.0f} mistakes per hundred across {ceil_groups} jatis; the page it is
+printed on leaves {ceiling:.0f}.
+
+That reframes what the repo has been measuring. The finding is not that caste is
+hard to infer in India. It is that the *name* is a poor instrument and the
+*record* is a good one, and the exposure belongs to the document rather than to
+the word.
+
+### The number that was nearly published instead
+
+The first version of this said **1.2**, and it was wrong in a way worth
+recording. Scoring each household against a cell that excludes it is the right
+idea, but at the finest cue only **{fine_cover:.0%}** of households share a cell
+with anyone else — those are the people with a same-named relative in the same
+hamlet, and they are the easy ones. The households nobody could resolve were
+being dropped rather than counted as errors, so the figure described a third of
+the population and flattered it eightfold.
+
+The fix is to make the guesser answer for everybody: when the finest cue cannot
+resolve someone, fall back to a coarser one, and when nothing resolves, fall
+back to the commonest jati. Only {fallback:.1%} of households need that last
+resort. That is the difference between {ceiling:.1f} and 1.2.
+
 ## Limits
 
 - **Bihar only**, and the land-records ladder covers landowning households, which
@@ -181,7 +235,7 @@ gain from 1.9 mistakes per hundred to {land.surname_only - land.surname_plus_nei
   numbers and walk order, which would give the twenty people actually around you,
   but rolls carry no caste, so a finer cue could not be scored. It is left
   unmeasured rather than reported unvalidated.
-- **The model is not published.** These are aggregate error rates. No fitted
+- **The ceiling is Scheduled Caste households only**, across 22 jatis, so it\n  is not comparable to the all-India SC/ST/Other bracket of 30 to 20. And it\n  is conservative in one direction and optimistic in the other: a real reader\n  of the roll also sees age, sex and true walk-order neighbours, which cannot\n  be scored here; but a better model than a fallback chain would do more with\n  the cues that are here.\n- **The model is not published.** These are aggregate error rates. No fitted
   object, no per-person output, and the per-name table is ranked by how common a
   name is, not by how much it gives its bearer away.
 

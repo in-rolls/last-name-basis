@@ -16,16 +16,26 @@ It is a tendency rather than a law: Thakur gets three *worse*.
 So the repo's headline needs qualifying, not retracting. A surname alone is weak.
 A surname is not weak once you know where its bearer lives.
 
+**It also closes the bracket.** With everything a roll prints — name, father's
+name, hamlet — and every household scored, the surname alone leaves 30 mistakes
+per 100 and the roll leaves **9**. The name is weak; the record is not.
+
 Read [`note.md`](note.md). Run with `make a06`.
 
 | file | what |
 |---|---|
 | `neighbours.py` | held-out-village split, co-occurrence model, per-surname scoring |
+| `ceiling.py` | the other end: every cue the roll prints, every household scored |
 | `figures.py` | the bracket, and which names get rescued |
 | `pipeline.py` | entry point |
 | `note.py` | renders `note.md` |
 
-**One design failed first, and it is documented rather than deleted.** Averaging
+**Two designs failed first, and both are documented rather than deleted.** The
+ceiling first read **1.2** because leave-one-out silently dropped the 64% of
+households that share no cell with anyone, scoring only people with a same-named
+relative in the same hamlet. Answering for everybody gives 9.1.
+
+ Averaging
 `P(jati | surname)` over the neighbours yields a near-uniform smear and scores
 *worse than blind*; it moved the headline 0.1 and would have licensed a false
 null. Scoring the neighbour cue alone is what caught it and is now a permanent

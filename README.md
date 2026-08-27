@@ -97,6 +97,13 @@ carry no caste information alone are the ones the neighbourhood rescues.**
 So the headline needs qualifying rather than retracting: a surname alone is weak,
 but a surname is not weak once you know where its bearer lives.
 
+**And it finishes the bracket.** Stack everything an electoral roll prints — the
+name, the father's or husband's name, the hamlet — and score every household
+rather than only the easy ones: across 2.98M Scheduled Caste households and 22
+jatis, the surname alone leaves **30** mistakes per 100 and the roll page leaves
+**9**. The name is a poor instrument; the record is a good one. The exposure
+belongs to the document, not the word.
+
 [![Which names get rescued](analyses/06_neighbours/out/fig/per_surname.png)](analyses/06_neighbours/note.md)
 
 ## The six together

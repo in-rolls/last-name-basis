@@ -189,6 +189,26 @@ Sood, Iyer, Balmiki and Agarwal are simply not in it. Matched against Delhi's
 electoral roll it can speak to 56% of surnames on the page — and separately, 27%
 of Delhi's electors are listed with a single name and no surname at all.
 
+**Rare names were removed, not merged, and they are the identifiable ones.** The
+census extract keeps only surnames carried by more than a thousand people:
+140.2M household-head records become 109.9M after cleaning and then **93.4M**,
+so **15% of people are dropped for having an uncommon name**. Since rare names
+identify their bearers better than common ones, the survivors are the harder
+half and the figures here understate what a name gives away.
+
+Measuring the size of that in Bihar's Mahadalit census, which has no such floor:
+people whose surname has fewer than a thousand bearers cost **26.5** mistakes
+per hundred against **30.4** for the rest. About four. Carried across to a
+censored 15%, the headline would move from 20 to roughly 19.5 -- real, in the
+direction that flatters this analysis, and small.
+
+Worth saying how that number was arrived at, because the naive version is three
+times larger and wrong. Plug-in error puts the rare group at 18.1, but 40,076 of
+the 50,848 rarest names in that census have a single bearer, and a name carried
+by one person is "predicted" perfectly by construction. Scoring each person
+against a table that excludes them removes the artefact and two-thirds of the
+apparent gap with it.
+
 **The cautious data makes names look worse, not better.** The published table
 drops any cell with fewer than 100 records, and rare cells are the sharp ones.
 Raising that floor makes names *less* useful, not more — from 20 mistakes per

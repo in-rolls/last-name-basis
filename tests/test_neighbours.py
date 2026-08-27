@@ -75,3 +75,54 @@ def test_uninformative_names_are_the_ones_rescued():
     r = np.corrcoef(d["alone"], d["saved"])[0, 1]
     assert r > 0.4, f"expected uninformative names to gain most, got r={r:.2f}"
     assert d["saved"].max() > 10
+
+
+def test_the_ceiling_scores_every_household():
+    """The trap this analysis fell into twice.
+
+    At the finest cue only 36% of households share a cell with anyone, and those
+    are the easy ones -- people with a same-named relative in the same hamlet.
+    Scoring only them gives 1.2 mistakes per 100 and describes a third of the
+    population. Falling back to a coarser cue instead of excusing the household
+    gives 9.1, which describes everybody.
+    """
+    import json
+    import pathlib
+
+    path = (
+        pathlib.Path(__file__).resolve().parent.parent
+        / "analyses/06_neighbours/out/tab/summary.json"
+    )
+    if not path.exists():
+        pytest.skip("analysis 06 not built")
+    s = json.load(open(path))
+    if "ceiling" not in s:
+        pytest.skip("Mahadalit census unavailable")
+    c = s["ceiling"]
+
+    assert c["households"] > 2_000_000
+    # The finest cue resolves a minority. If this ever reads high, the fallback
+    # chain has been removed and the number is about the easy third again.
+    assert c["coverage"][0]["resolves"] < 0.6
+    # And almost nobody should be left to the global fallback.
+    assert c["share_needing_the_global_fallback"] < 0.05
+    # The honest ceiling is several times the misleading one.
+    assert 5 < c["mistakes_per_100"] < 20
+
+
+def test_the_ceiling_beats_the_name_but_does_not_reach_zero():
+    import json
+    import pathlib
+
+    base = (
+        pathlib.Path(__file__).resolve().parent.parent
+        / "analyses/06_neighbours/out/tab"
+    )
+    if not (base / "summary.json").exists():
+        pytest.skip("analysis 06 not built")
+    s = json.load(open(base / "summary.json"))
+    if "ceiling" not in s:
+        pytest.skip("Mahadalit census unavailable")
+    held = pd.read_csv(base / "held_out.csv").set_index("ladder")
+    name_only = held.loc["Mahadalit census", "surname_only"]
+    assert s["ceiling"]["mistakes_per_100"] < name_only
