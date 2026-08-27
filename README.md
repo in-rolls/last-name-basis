@@ -97,11 +97,13 @@ The same question asked about sex has no such answer. Women's names cost
 **3.3 more mistakes per hundred than men's in Bihar**, but 1.4 *fewer* in
 Rajasthan and 0.2 fewer in Maharashtra. There is no direction here to report.
 
-Read the Rajasthan figure with care: surnames there come from Upnaam's resolved
-recorded surnames rather than the last word of the name, and the resolver could
-both resolve and sex only **21% of the Rajasthan roll, against 61% in Bihar and
-66% in Maharashtra**. That 1.4 rests on a fifth of the state; the other two rest
-on roughly two thirds.
+Read all three with care. Surnames come from Upnaam's resolved recorded
+surnames rather than the last word of the name, and after matching to the caste
+table these rest on **57% of the Bihar roll, 36% of the Maharashtra roll and
+20% of the Rajasthan roll**. Resolution alone looks healthier than that, 66% for
+Maharashtra, but a surname that gets a sex and then has no caste row never
+reaches the estimate. Bihar is the only one of the three built on most of a
+state.
 
 [![Mistakes by the carrier's own caste](analyses/05_who_has_an_uninformative_name/out/fig/by_caste.png)](analyses/05_who_has_an_uninformative_name/note.md)
 

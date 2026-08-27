@@ -104,8 +104,14 @@ def surname_by_sex(state: str, gender: dict[str, float]) -> pd.DataFrame | None:
         given = tokens[0].copy()
         surname_first = resolved["surname_position"].eq("first")
         given.loc[surname_first] = tokens.loc[surname_first, 1]
-        p_female = given.str.casefold().map(gender)
-        usable = p_female.notna()
+        given = given.str.casefold()
+        p_female = given.map(gender)
+        # A one-letter token is an initial, and a token equal to the resolved
+        # surname means the position rule landed on the surname itself.
+        looks_like_a_given_name = given.str.len().gt(1) & given.ne(
+            resolved["surname"].astype("string").str.casefold()
+        )
+        usable = p_female.notna() & looks_like_a_given_name
         if not usable.any():
             continue
         weights = resolved.loc[usable, "weight"].astype(float)

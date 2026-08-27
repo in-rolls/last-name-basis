@@ -75,6 +75,11 @@ def main() -> None:
             audit = {"state": state, **sexed.attrs}
             audit["resolved_share"] = audit["resolved_weight"] / audit["input_weight"]
             audit["gendered_share"] = audit["gendered_weight"] / audit["input_weight"]
+            # What the estimate rests on, which is not the gendered share: a
+            # surname can be gendered and then dropped by by_sex's inner join
+            # for having no caste row.
+            audit["analytic_weight"] = float(r["people"].sum())
+            audit["analytic_share"] = audit["analytic_weight"] / audit["input_weight"]
             resolution_rows.append(audit)
     sex = pd.concat(rows, ignore_index=True) if rows else pd.DataFrame()
     if not sex.empty:
