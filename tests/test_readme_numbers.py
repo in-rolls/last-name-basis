@@ -99,8 +99,8 @@ def _ceil(key: str):
     return lambda: _json(A06 / "summary.json")["ceiling"][key]
 
 
-def _caste(group: str):
-    return lambda: _json(A05 / "summary.json")["by_caste"][group]["mistakes_per_100"]
+def _caste(group: str, key: str = "wrong_per_100"):
+    return lambda: _json(A05 / "summary.json")["by_caste"][group][key]
 
 
 def claims():
@@ -173,12 +173,12 @@ def claims():
         ),
         (
             "05 Dalit error",
-            r"Dalit is guessed wrong (\d+) times in 100",
+            r"wrong about \*\*(\d+) of every 100 Dalits\*\*",
             _caste("Scheduled Caste"),
         ),
         (
             "05 other error",
-            r"outside the schedules\s+gets \*\*(\d+)\*\*",
+            r"\*\*(\d+) of\s+every 100 people outside the schedules\*\*",
             _caste("neither"),
         ),
         (

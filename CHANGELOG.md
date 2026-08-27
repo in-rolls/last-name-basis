@@ -6,6 +6,30 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **A wrong sentence in the most citable claim.** The front page and analysis 05
+  said "a Dalit is guessed wrong 29 times in 100 against a blind rate of 30 --
+  the name buys essentially nothing". The 29 was `1 - max(p)` averaged over the
+  Dalits carrying each name, which measures how vague those names are; it is a
+  property of names, not of people, and it was set against a population-wide
+  blind rate. Scored consistently, the guess is wrong about 66 of every 100
+  Dalits and 4 of every 100 people outside the schedules, and those weight up to
+  the 20-per-hundred headline exactly.
+
+  This reverses part of the old claim. The name is not useless for Dalits: it is
+  the group it helps most, taking them from wrong about all of them to wrong
+  about 66 in a hundred. What survives, and is stronger, is the disparity --
+  seventeen-fold -- and the consequence for audits, which now rests on the right
+  mechanism: two thirds of Dalits land in the comparison group.
+
+  `by_caste` now reports `wrong_per_100`, `blind_wrong_per_100` and the old
+  quantity renamed `name_vagueness_per_100`, and the figure plots recall error
+  against each group's own blind rate rather than plotting vagueness under an
+  axis labelled as error.
+- Coverage for the sex split is now measured after the merge onto the caste
+  table in analysis 05's own note, matching the front page.
+
 ## [1.0.0] - 2026-08-26
 
 Six analyses of one question: pick a person at random, know only their last
@@ -33,7 +57,8 @@ average, is the finding.
 - **05 who has an uninformative name.** The errors are not spread evenly. A
   Dalit is guessed wrong 29 times per hundred against a blind rate of 30; someone
   outside the schedules, 17. The method is accurate about the advantaged and
-  blind about the disadvantaged.
+  blind about the disadvantaged. *(Corrected in Unreleased: the 29 was not what
+  this sentence claims it was.)*
 - **06 neighbours.** Holding out whole villages, the surrounding surnames rescue
   precisely the names that say nothing alone. Chaudhary goes from 80 mistakes to
   56. The bracket closes at 9 once the roll's cues are matched against a caste

@@ -50,16 +50,28 @@ def by_caste(
     counts = named[[f"n_{c}" for c in categories]].to_numpy()
     prior = counts.sum(axis=0) / counts.sum()
 
+    # The best constant guess names the largest group, so it is wrong about
+    # every member of every other group and right about all of that one.
+    blind_guess = int(prior.argmax())
+
     rows = []
     for i, cat in enumerate(categories):
         w = counts[:, i]
         w = w / w.sum()
+        found = float((w * (guess == i)).sum())
         rows.append(
             {
                 "caste": CATEGORY_LABEL[cat],
                 "share_of_people": float(prior[i]),
-                "mistakes_per_100": float((w * err).sum()),
-                "found_by_the_guess": float((w * (guess == i)).sum()),
+                # How uninformative the names this group carries are. A
+                # property of the name, averaged over the group's bearers --
+                # NOT how often the guess is wrong about one of them.
+                "name_vagueness_per_100": float((w * err).sum()),
+                "found_by_the_guess": found,
+                # How often the guess is actually wrong about a member of this
+                # group. These weight up to the headline error exactly.
+                "wrong_per_100": 100 * (1 - found),
+                "blind_wrong_per_100": 0.0 if i == blind_guess else 100.0,
             }
         )
     out = pd.DataFrame(rows)

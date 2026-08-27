@@ -23,22 +23,31 @@ def caste():
     return pd.read_csv(path).set_index("caste")
 
 
-def test_the_name_does_nothing_for_dalits(caste):
-    """29.3 against a blind 29.6. The headline of this analysis."""
-    import json
+def test_the_guess_is_far_worse_about_dalits(caste):
+    """66 wrong per 100 against 4. The headline of this analysis.
 
-    blind = json.loads((TAB / "summary.json").read_text())["blind_per_100"]
-    sc = caste.loc["Scheduled Caste", "mistakes_per_100"]
-    assert abs(sc - blind) < 1.5
-
-
-def test_it_does_a_lot_for_everyone_else(caste):
-    assert caste.loc["neither", "mistakes_per_100"] < 20
+    This replaces a test asserting the name does *nothing* for Dalits, which
+    compared a group-specific vagueness score against a population-wide blind
+    rate. Scored consistently the name helps Dalits more than anyone; it just
+    starts them so far back that helping most still leaves them worst off.
+    """
+    assert caste.loc["Scheduled Caste", "wrong_per_100"] > 60
+    assert caste.loc["neither", "wrong_per_100"] < 10
     assert (
-        caste.loc["Scheduled Caste", "mistakes_per_100"]
-        - caste.loc["neither", "mistakes_per_100"]
-        > 8
+        caste.loc["Scheduled Caste", "wrong_per_100"]
+        > 10 * caste.loc["neither", "wrong_per_100"]
     )
+
+
+def test_the_name_helps_the_scheduled_groups_and_not_the_majority(caste):
+    """The part that reverses the old claim, so it gets its own test."""
+    for group in ("Scheduled Caste", "Scheduled Tribe"):
+        row = caste.loc[group]
+        assert row["blind_wrong_per_100"] == 100
+        assert row["wrong_per_100"] < row["blind_wrong_per_100"] - 25
+    other = caste.loc["neither"]
+    assert other["blind_wrong_per_100"] == 0
+    assert other["wrong_per_100"] > 0
 
 
 def test_recall_is_wildly_unequal(caste):
@@ -81,3 +90,36 @@ def test_sex_weights_use_upnaam_surname_order(tmp_path, monkeypatch):
     assert result.loc["patil", "female"] == pytest.approx(8)
     assert result.loc["patil", "male"] == pytest.approx(2)
     assert result.loc["jadhav", "female"] == pytest.approx(0.5)
+
+
+def test_the_recall_split_reconstructs_the_headline_error():
+    """`wrong_per_100` and the headline must be one estimator, not two.
+
+    The README once said a Dalit is guessed wrong 29 times in 100. That was
+    `name_vagueness_per_100` -- a property of the names a group carries,
+    averaged over its bearers -- read as if it were the group's error rate. The
+    two differ by a factor of two and tell opposite stories: on vagueness the
+    name appears to do nothing for Dalits, while on error it helps them more
+    than anyone (100 wrong to 66) and still leaves them worst off.
+
+    If this ever stops summing, the table has drifted back into mixing them.
+    """
+    import json
+    import pathlib
+
+    root = pathlib.Path(__file__).resolve().parent.parent
+    a05 = root / "analyses/05_who_has_an_uninformative_name/out/tab/summary.json"
+    a01 = root / "analyses/01_surname_to_category/out/tab/headline.json"
+    if not a05.exists() or not a01.exists():
+        pytest.skip("analyses not built")
+    by_caste = json.loads(a05.read_text())["by_caste"]
+    headline = json.loads(a01.read_text())["err_per_person"] * 100
+
+    implied = sum(v["share_of_people"] * v["wrong_per_100"] for v in by_caste.values())
+    assert abs(implied - headline) < 0.01, (
+        f"recall split implies {implied:.3f} mistakes per 100, "
+        f"headline says {headline:.3f}"
+    )
+    # And the two quantities must stay distinguishable, or the mistake is back.
+    sc = by_caste["Scheduled Caste"]
+    assert sc["wrong_per_100"] > 2 * sc["name_vagueness_per_100"]

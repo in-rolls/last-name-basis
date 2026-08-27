@@ -12,33 +12,46 @@ direction, and anyone using one ought to know which way it runs.
 
 It is not spread evenly.
 
-## A guess from the name does nothing for Dalits
+## The guess is wrong about two thirds of Dalits and four percent of everyone else
 
-Knowing nothing at all about someone, the best guess is wrong 30 times in a
-hundred. Now weight each surname not by everybody who carries it, but by the
-people **of one caste** who carry it. That gives what a member of that caste
-actually experiences.
+Score the same guess separately on each group. Knowing nothing, the best you can
+do is name the largest group and say it every time, which is right about all of
+that group and wrong about everyone else. Then let the name in.
 
-| your caste | share of India | mistakes made on you | the guess finds you |
-|---|---|---|---|
-| Scheduled Caste | 20% | 29 | 34% |
-| Scheduled Tribe | 9% | 21 | 57% |
-| neither | 70% | 17 | 96% |
+| your caste | share of India | wrong knowing nothing | wrong with the name | vagueness of the names you carry |
+|---|---|---|---|---|
+| Scheduled Caste | 20% | 100 | 66 | 29 |
+| Scheduled Tribe | 9% | 100 | 43 | 21 |
+| neither | 70% | 0 | 4 | 17 |
 
-![Mistakes by the carrier's own caste](out/fig/by_caste.png)
+![What the guess gets wrong, by the person's own caste](out/fig/by_caste.png)
 
-A Dalit is guessed wrong **29 times in a hundred**, against 30 for knowing
-nothing whatever. The name has bought essentially nothing. For everyone outside
-the schedules it buys a great deal: 17 mistakes instead of 30.
+The guess is wrong about **66 of every 100 Dalits** and **4 of every 100 people
+outside the schedules**. That is a 17-fold gap, and it is the number to carry
+away. Weight the two middle columns by the shares beside them and they come to
+30 and 20, the mistakes per hundred a blind guess and a name-based guess make
+across everybody. This is one estimator split by who it is applied to, not a new
+one.
 
-The recall column says the same thing from the other side. The guessing finds
-34% of Dalits and 96% of everyone else.
+Note what the table does **not** say. The name is not useless for Dalits: it is
+the group it helps most, taking them from wrong about all of them to wrong about
+66 in a hundred. It helps people outside the schedules not at all, and in fact
+costs them 4 per hundred, because knowing nothing already had them right. The
+trouble is that helping Dalits most still leaves them far and away the worst
+served.
+
+The last column is a different quantity and is kept because it is the one the
+mistake is easy to make with. It is how vague the names a group carries are --
+one minus the largest share in the name's own composition, averaged over that
+group's bearers. It is a property of names, not of people, so it cannot be read
+as how often the guess is wrong about someone.
 
 So the method is not weakly accurate across the board. It is accurate about the
-advantaged and blind about the disadvantaged, which is the opposite of what a
+advantaged and poor about the disadvantaged, which is the opposite of what a
 user assuming uniform error would expect, and it runs in the direction that
 makes a naive audit understate discrimination against exactly the group the
-audit is for.
+audit is for: two thirds of the Dalits in the data land in the comparison group,
+on both sides of the gap being measured.
 
 ## By sex, there is no consistent story
 
@@ -64,9 +77,9 @@ rate. Reported here because it was the prediction going in.
 
 The caste result is the one to carry away, and it is not a caveat. Any method
 that infers caste from an Indian surname — this repo's, outkast's, a BISG-style
-transfer — will be **roughly as good as chance for Scheduled Caste individuals
-and substantially better than chance for everyone else**. An audit that assumes
-uniform error will understate error for Dalits by about 12 mistakes per hundred.
+transfer — will **miss most Scheduled Caste individuals while classifying nearly
+everyone else correctly**. An audit that assumes uniform error understates the
+error made on Dalits by about 62 mistakes per hundred.
 
 ## Limits
 
@@ -80,11 +93,12 @@ uniform error will understate error for Dalits by about 12 mistakes per hundred.
 - **The sex split covers only Bihar, Rajasthan, and Maharashtra**, the states
   supported by Upnaam's `resolver-v1` and present locally. It uses Upnaam's
   recorded surname, not a resolved family surname.
-- **The sex split needs a given name naampy can gender.** For Maharashtra's
-  surname-first records, the second token is assumed to be the given name. The
-  resulting gendered shares of all weighted roll records are 61% in Bihar, 21%
-  in Rajasthan, and 66% in Maharashtra. Rajasthan's estimate is especially
-  selected.
+- **The sex split needs a given name naampy can gender, and a surname the caste
+  table knows.** After both, the estimates rest on 57% of the Bihar roll, 36% of
+  the Maharashtra roll and 20% of the Rajasthan roll. Resolution alone looks
+  healthier -- 66% for Maharashtra -- but a surname that is gendered and then
+  has no caste row never reaches the estimate. Bihar is the only one of the
+  three built on most of a state.
 - **Nothing here is per-name.** The tables report groups, never a ranked list of
   which names give which people away.
 

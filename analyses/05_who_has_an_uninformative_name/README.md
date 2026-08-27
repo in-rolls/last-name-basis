@@ -4,11 +4,16 @@ The other analyses report an average. This asks *who*, because if the
 uninformative names are not spread evenly then every name-based caste method has
 differential error in a knowable direction.
 
-**Finding.** A Dalit is guessed wrong **29 times in 100 against a blind rate of
-30** — the name buys essentially nothing — while someone outside the schedules
-gets **17**. Recall is 34% against 96%. Any method that infers caste from an
-Indian surname is roughly as good as chance for Scheduled Caste individuals and
-substantially better than chance for everyone else.
+**Finding.** The guess is wrong about **66 of every 100 Dalits** and **4 of
+every 100 people outside the schedules**, a seventeen-fold gap that weights up
+to the 20 mistakes per hundred it makes overall. Any method inferring caste from
+an Indian surname misses most Scheduled Caste individuals while classifying
+nearly everyone else correctly.
+
+Note what that does *not* say. The name is not useless for Dalits: it is the
+group it helps most, from wrong about all of them to wrong about 66 in a
+hundred. It still leaves them far and away the worst served, which is the part
+that matters downstream.
 
 **And a null.** The obvious companion prediction — that women fare worse, since
 a woman in the Hindi belt is often recorded under a sex-marking name — does not

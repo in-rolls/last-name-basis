@@ -85,13 +85,18 @@ The analyses above report an average. This asks who carries the uninformative
 names, because if they are not spread evenly then every name-based caste method
 has differential error in a knowable direction.
 
-They are not. A **Dalit is guessed wrong 29 times in 100 against a blind rate of
-30** — the name buys essentially nothing — while someone outside the schedules
-gets **17**. The guess finds 34% of Dalits and 96% of everyone else.
+They are not. The guess is wrong about **66 of every 100 Dalits** and **4 of
+every 100 people outside the schedules**, a seventeen-fold gap. Those weight up
+to the 20 mistakes per hundred it makes across everybody, so this is one guess
+split by who it lands on, not a second estimator.
 
-So the method is not weakly accurate across the board. It is accurate about the
-advantaged and blind about the disadvantaged, which is the direction that makes
-a naive audit understate discrimination against the group the audit is for.
+The name is not useless for Dalits — it is the group it helps most, taking them
+from wrong about all of them to wrong about 66 in a hundred. But helping them
+most still leaves them far and away the worst served, and that is what matters
+for anyone building on it: a name-based method misses two thirds of the people
+it is usually deployed to find. Use it to test whether Dalits get fewer
+callbacks and two thirds of the real Dalits sit in your comparison group, on
+both sides of the gap you are trying to measure.
 
 The same question asked about sex has no such answer. Women's names cost
 **3.3 more mistakes per hundred than men's in Bihar**, but 1.4 *fewer* in
