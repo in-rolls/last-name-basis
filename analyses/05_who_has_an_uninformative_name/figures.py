@@ -78,7 +78,7 @@ def by_caste(table: pd.DataFrame, out: Path) -> None:
     ax.set_ylim(-0.8, len(d) - 0.2)
     ax.set_xlabel("of 100 people in this group, how many the guess gets wrong")
     ax.set_title(
-        "The name helps Dalits most, and still leaves them worst off\n"
+        "The name helps both scheduled groups, and still fails Dalits\n"
         "It misses two thirds of Dalits and four percent of everyone else.",
         color=INK,
         loc="left",

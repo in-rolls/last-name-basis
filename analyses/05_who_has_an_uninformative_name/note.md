@@ -33,12 +33,12 @@ away. Weight the two middle columns by the shares beside them and they come to
 across everybody. This is one estimator split by who it is applied to, not a new
 one.
 
-Note what the table does **not** say. The name is not useless for Dalits: it is
-the group it helps most, taking them from wrong about all of them to wrong about
-66 in a hundred. It helps people outside the schedules not at all, and in fact
-costs them 4 per hundred, because knowing nothing already had them right. The
-trouble is that helping Dalits most still leaves them far and away the worst
-served.
+Note what the table does **not** say. The name is not useless for Dalits: it
+takes them from wrong about all of them to wrong about 66 in a hundred. It does
+more for Adivasis, 100 down to 43. It does nothing for people outside the
+schedules and in fact costs them 4 per hundred, because knowing nothing already
+had them right. The trouble is that a large gain still leaves Dalits far and
+away the worst served.
 
 The last column is a different quantity and is kept because it is the one the
 mistake is easy to make with. It is how vague the names a group carries are --
@@ -95,10 +95,11 @@ error made on Dalits by about 62 mistakes per hundred.
   recorded surname, not a resolved family surname.
 - **The sex split needs a given name naampy can gender, and a surname the caste
   table knows.** After both, the estimates rest on 57% of the Bihar roll, 36% of
-  the Maharashtra roll and 20% of the Rajasthan roll. Resolution alone looks
-  healthier -- 66% for Maharashtra -- but a surname that is gendered and then
-  has no caste row never reaches the estimate. Bihar is the only one of the
-  three built on most of a state.
+  the Maharashtra roll and 20% of the Rajasthan roll. Each earlier step looks
+  healthier: Maharashtra resolves a surname for 98% of its roll and genders one
+  for 66%, but a surname that is gendered and then has no caste row never
+  reaches the estimate. Bihar is the only one of the three built on most of a
+  state.
 - **Nothing here is per-name.** The tables report groups, never a ranked list of
   which names give which people away.
 

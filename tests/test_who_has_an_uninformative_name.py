@@ -123,3 +123,16 @@ def test_the_recall_split_reconstructs_the_headline_error():
     # And the two quantities must stay distinguishable, or the mistake is back.
     sc = by_caste["Scheduled Caste"]
     assert sc["wrong_per_100"] > 2 * sc["name_vagueness_per_100"]
+
+
+def test_no_group_is_claimed_to_gain_most_without_checking(caste):
+    """A published claim said the name helps Dalits most. It helps Adivasis more.
+
+    Both scheduled groups start at 100 wrong, so the one that ends lower gains
+    more, and that is Scheduled Tribe. Guarding it because the error survived a
+    green suite, a figure, a note and two READMEs.
+    """
+    gain = caste["blind_wrong_per_100"] - caste["wrong_per_100"]
+    assert gain["Scheduled Tribe"] > gain["Scheduled Caste"]
+    # And the point that does hold: biggest gain, still worst outcome.
+    assert caste.loc["Scheduled Caste", "wrong_per_100"] == caste["wrong_per_100"].max()

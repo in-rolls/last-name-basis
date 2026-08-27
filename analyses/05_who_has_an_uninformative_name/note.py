@@ -55,6 +55,7 @@ def main() -> None:
     caste = pd.read_csv(TAB / "by_caste.csv")
     sc = caste[caste.caste == "Scheduled Caste"].iloc[0]
     other = caste[caste.caste == "neither"].iloc[0]
+    st = caste[caste.caste == "Scheduled Tribe"].iloc[0]
     overall = float((caste["share_of_people"] * caste["wrong_per_100"]).sum())
     resolution = (
         pd.read_csv(TAB / "surname_resolution.csv").set_index("state")
@@ -62,13 +63,17 @@ def main() -> None:
         else None
     )
 
-    def _share(state: str, col: str = "analytic_share") -> float:
-        return 0.0 if resolution is None else 100 * float(resolution.loc[state, col])
+    def _share(state: str, col: str = "analytic_share") -> str:
+        """Rendered coverage, or "not available" when the state was skipped."""
+        if resolution is None or state not in resolution.index:
+            return "not available"
+        return f"{100 * float(resolution.loc[state, col]):.0f}%"
 
     bihar_share = _share("bihar")
     maharashtra_share = _share("maharashtra")
     rajasthan_share = _share("rajasthan")
     maharashtra_gendered = _share("maharashtra", "gendered_share")
+    maharashtra_resolved = _share("maharashtra", "resolved_share")
     blind_overall = float(
         (caste["share_of_people"] * caste["blind_wrong_per_100"]).sum()
     )
@@ -133,12 +138,13 @@ come to {blind_overall:.0f} and {overall:.0f}, the mistakes per hundred a blind
 guess and a name-based guess make across everybody. This is one estimator split
 by who it is applied to, not a new one.
 
-Note what the table does **not** say. The name is not useless for Dalits: it is
-the group it helps most, taking them from wrong about all of them to wrong about
-{sc.wrong_per_100:.0f} in a hundred. It helps people outside the schedules not
-at all, and in fact costs them {-other_gain:.0f} per hundred, because knowing
-nothing already had them right. The trouble is that helping Dalits most still
-leaves them far and away the worst served.
+Note what the table does **not** say. The name is not useless for Dalits: it
+takes them from wrong about all of them to wrong about {sc.wrong_per_100:.0f} in
+a hundred. It does more for Adivasis, {st.blind_wrong_per_100:.0f} down to
+{st.wrong_per_100:.0f}. It does nothing for people outside the schedules and in
+fact costs them {-other_gain:.0f} per hundred, because knowing nothing already
+had them right. The trouble is that a large gain still leaves Dalits far and
+away the worst served.
 
 The last column is a different quantity and is kept because it is the one the
 mistake is easy to make with. It is how vague the names a group carries are --
@@ -192,12 +198,13 @@ error understates the error made on Dalits by about
   supported by Upnaam's `resolver-v1` and present locally. It uses Upnaam's
   recorded surname, not a resolved family surname.
 - **The sex split needs a given name naampy can gender, and a surname the caste
-  table knows.** After both, the estimates rest on {bihar_share:.0f}% of the
-  Bihar roll, {maharashtra_share:.0f}% of the Maharashtra roll and
-  {rajasthan_share:.0f}% of the Rajasthan roll. Resolution alone looks healthier
-  -- {maharashtra_gendered:.0f}% for Maharashtra -- but a surname that is
-  gendered and then has no caste row never reaches the estimate. Bihar is the
-  only one of the three built on most of a state.
+  table knows.** After both, the estimates rest on {bihar_share} of the Bihar
+  roll, {maharashtra_share} of the Maharashtra roll and {rajasthan_share} of the
+  Rajasthan roll. Each earlier step looks healthier: Maharashtra resolves a
+  surname for {maharashtra_resolved} of its roll and genders one for
+  {maharashtra_gendered}, but a surname that is gendered and then has no caste
+  row never reaches the estimate. Bihar is the only one of the three built on
+  most of a state.
 - **Nothing here is per-name.** The tables report groups, never a ranked list of
   which names give which people away.
 

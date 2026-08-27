@@ -90,9 +90,10 @@ every 100 people outside the schedules**, a seventeen-fold gap. Those weight up
 to the 20 mistakes per hundred it makes across everybody, so this is one guess
 split by who it lands on, not a second estimator.
 
-The name is not useless for Dalits — it is the group it helps most, taking them
-from wrong about all of them to wrong about 66 in a hundred. But helping them
-most still leaves them far and away the worst served, and that is what matters
+The name is not useless for Dalits — it takes them from wrong about all of them
+to wrong about 66 in a hundred, and it does more still for Adivasis, 100 down to
+43. But a large gain still leaves Dalits far and away the worst served, and that
+is what matters
 for anyone building on it: a name-based method misses two thirds of the people
 it is usually deployed to find. Use it to test whether Dalits get fewer
 callbacks and two thirds of the real Dalits sit in your comparison group, on

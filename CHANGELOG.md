@@ -21,9 +21,9 @@ One wrong sentence in the most citable claim, and the reversal it forces.
   Dalits and 4 of every 100 people outside the schedules, and those weight up to
   the 20-per-hundred headline exactly.
 
-  This reverses part of the old claim. The name is not useless for Dalits: it is
-  the group it helps most, taking them from wrong about all of them to wrong
-  about 66 in a hundred. What survives, and is stronger, is the disparity --
+  This reverses part of the old claim. The name is not useless for Dalits: it
+  takes them from wrong about all of them to wrong about 66 in a hundred, and it
+  does more still for Adivasis. What survives, and is stronger, is the disparity --
   seventeen-fold -- and the consequence for audits, which now rests on the right
   mechanism: two thirds of Dalits land in the comparison group.
 

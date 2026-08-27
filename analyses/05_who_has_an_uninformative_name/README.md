@@ -10,10 +10,10 @@ to the 20 mistakes per hundred it makes overall. Any method inferring caste from
 an Indian surname misses most Scheduled Caste individuals while classifying
 nearly everyone else correctly.
 
-Note what that does *not* say. The name is not useless for Dalits: it is the
-group it helps most, from wrong about all of them to wrong about 66 in a
-hundred. It still leaves them far and away the worst served, which is the part
-that matters downstream.
+Note what that does *not* say. The name is not useless for Dalits: it takes
+them from wrong about all of them to wrong about 66 in a hundred, and does more
+still for Adivasis. It nonetheless leaves Dalits far and away the worst served,
+which is the part that matters downstream.
 
 **And a null.** The obvious companion prediction — that women fare worse, since
 a woman in the Hindi belt is often recorded under a sex-marking name — does not
