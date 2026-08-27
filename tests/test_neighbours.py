@@ -98,7 +98,11 @@ def test_the_ceiling_scores_every_household():
     s = json.load(open(path))
     if "ceiling" not in s:
         pytest.skip("Mahadalit census unavailable")
-    c = s["ceiling"]
+    # The bracket's own row is scored on held-out villages, to match the rungs
+    # above it. The everyone-scored version is kept beside it and is what this
+    # test guards, because it is the one that can silently shrink to the easy
+    # third.
+    c = s["ceiling_all_households"]
 
     assert c["households"] > 2_000_000
     # The finest cue resolves a minority. If this ever reads high, the fallback
@@ -126,3 +130,24 @@ def test_the_ceiling_beats_the_name_but_does_not_reach_zero():
     held = pd.read_csv(base / "held_out.csv").set_index("ladder")
     name_only = held.loc["Mahadalit census", "surname_only"]
     assert s["ceiling"]["mistakes_per_100"] < name_only
+
+
+def test_every_bracket_row_uses_the_same_held_out_villages():
+    """The bracket puts four numbers side by side, so they must answer one
+    question. Splitting naampata's 27,687 villages and the raw files' 28,602
+    independently put only 2,509 of ~8,300 test villages in common, and the rows
+    silently described different people."""
+    import json
+    import pathlib
+
+    path = (
+        pathlib.Path(__file__).resolve().parent.parent
+        / "analyses/06_neighbours/out/tab/summary.json"
+    )
+    if not path.exists():
+        pytest.skip("analysis 06 not built")
+    s = json.load(open(path))
+    if "ceiling" not in s:
+        pytest.skip("Mahadalit census unavailable")
+    assert s["ceiling"].get("shares_split_with_neighbour_rungs") is True
+    assert s["ceiling"]["scored_on"] == "held-out villages"

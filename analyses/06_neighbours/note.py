@@ -79,6 +79,11 @@ def main() -> None:
     mah_blind, mah_name = mah["blind"], mah["surname_only"]
     mah_nb = mah["surname_plus_neighbours"]
     ceiling = ceil["mistakes_per_100"] if ceil else float("nan")
+    ceiling_all = summary.get("ceiling_all_households", {}).get(
+        "mistakes_per_100", float("nan")
+    )
+    ceil_households = ceil["households"] if ceil else 0
+    neigh_households = int(mah["test_households"])
     ceil_groups = ceil["groups"] if ceil else 0
     fine_cover = ceil["coverage"][0]["resolves"] if ceil else 0
     fallback = ceil["share_needing_the_global_fallback"] if ceil else 0
@@ -191,8 +196,15 @@ The question this repo keeps asking is what a surname gives away when it is all
 you have. The answer is a floor. It is worth finishing the sentence and asking
 what the *most* an ordinary reader of a public document could do.
 
-Every cue below is printed on an electoral roll page: the name, the father's or
-husband's name, and the hamlet.
+Be precise about who this adversary is, because an earlier draft of this
+section overstated it. The **cues** are all printed on an electoral roll page:
+the name, the father's or husband's name, and the hamlet. The **labels** are
+not. Caste appears on no roll, so knowing which name-and-hamlet combinations go
+with which jati has to come from a caste-labelled register -- a census, or a
+state caste survey. Both exist.
+
+So this is not a stranger with a roll page. It is someone holding a caste
+register for the same population and reading your entry in the roll.
 
 ![The whole bracket]({FIG}/ceiling.png)
 
@@ -201,16 +213,30 @@ husband's name, and the hamlet.
 | nothing | {mah_blind:.0f} |
 | the surname alone | {mah_name:.0f} |
 | surname + neighbours | {mah_nb:.0f} |
-| **everything on the roll** | **{ceiling:.0f}** |
+| **+ a caste register of the same population** | **{ceiling:.0f}** |
 
-**The name is weak. The roll is not.** A surname alone leaves
-{mah_name:.0f} mistakes per hundred across {ceil_groups} jatis; the page it is
-printed on leaves {ceiling:.0f}.
+**The name is weak. The name joined to a register is not.** A surname alone
+leaves {mah_name:.0f} mistakes per hundred across {ceil_groups} jatis. The same
+surname, plus the father's name and the hamlet from the roll, matched against a
+caste register, leaves {ceiling:.0f}.
+
+All four rows are scored on **the same held-out villages**, so they answer one
+question rather than two. That alignment had to be forced: naampata's ladder
+covers 27,687 villages and the raw census files 28,602, and splitting the two
+lists independently put only 2,509 of some 8,300 test villages in common, which
+had the bracket describing different people in different rows.
+
+The two sources still count households slightly differently inside those
+villages -- {neigh_households:,} in the ladder against {ceil_households:,} in the
+raw files, because the ladder retains about six percent fewer. Scoring every
+household rather than the held-out ones moves the ceiling from {ceiling:.2f} to
+{ceiling_all:.2f}, so nothing here turns on the choice.
 
 That reframes what the repo has been measuring. The finding is not that caste is
 hard to infer in India. It is that the *name* is a poor instrument and the
-*record* is a good one, and the exposure belongs to the document rather than to
-the word.
+*join* is a good one. The exposure is not in the word, and not in any single
+document: it is in the fact that a public roll and a caste register describe the
+same people and can be laid on top of each other.
 
 ### The number that was nearly published instead
 

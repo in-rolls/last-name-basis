@@ -111,8 +111,15 @@ The question this repo keeps asking is what a surname gives away when it is all
 you have. The answer is a floor. It is worth finishing the sentence and asking
 what the *most* an ordinary reader of a public document could do.
 
-Every cue below is printed on an electoral roll page: the name, the father's or
-husband's name, and the hamlet.
+Be precise about who this adversary is, because an earlier draft of this section
+overstated it. The **cues** are all printed on an electoral roll page: the name,
+the father's or husband's name, and the hamlet. The **labels** are not. Caste
+appears on no roll, so knowing which name-and-hamlet combinations go with which
+jati has to come from a caste-labelled register -- a census, or a state caste
+survey. Both exist.
+
+So this is not a stranger with a roll page. It is someone holding a caste
+register for the same population and reading your entry in the roll.
 
 ![The whole bracket](out/fig/ceiling.png)
 
@@ -121,15 +128,30 @@ husband's name, and the hamlet.
 | nothing | 59 |
 | the surname alone | 30 |
 | surname + neighbours | 26 |
-| **everything on the roll** | **9** |
+| **+ a caste register of the same population** | **9** |
 
-**The name is weak. The roll is not.** A surname alone leaves 30 mistakes per
-hundred across 22 jatis; the page it is printed on leaves 9.
+**The name is weak. The name joined to a register is not.** A surname alone
+leaves 30 mistakes per hundred across 22 jatis. The same surname, plus the
+father's name and the hamlet from the roll, matched against a caste register,
+leaves 9.
+
+All four rows are scored on **the same held-out villages**, so they answer one
+question rather than two. That alignment had to be forced: naampata's ladder
+covers 27,687 villages and the raw census files 28,602, and splitting the two
+lists independently put only 2,509 of some 8,300 test villages in common, which
+had the bracket describing different people in different rows.
+
+The two sources still count households slightly differently inside those
+villages -- 834,908 in the ladder against 887,512 in the raw files, because the
+ladder retains about six percent fewer. Scoring every household rather than the
+held-out ones moves the ceiling from 9.04 to 9.12, so nothing here turns on the
+choice.
 
 That reframes what the repo has been measuring. The finding is not that caste is
 hard to infer in India. It is that the *name* is a poor instrument and the
-*record* is a good one, and the exposure belongs to the document rather than to
-the word.
+*join* is a good one. The exposure is not in the word, and not in any single
+document: it is in the fact that a public roll and a caste register describe the
+same people and can be laid on top of each other.
 
 ### The number that was nearly published instead
 
@@ -144,7 +166,7 @@ and flattered it eightfold.
 The fix is to make the guesser answer for everybody: when the finest cue cannot
 resolve someone, fall back to a coarser one, and when nothing resolves, fall
 back to the commonest jati. Only 1.3% of households need that last resort. That
-is the difference between 9.1 and 1.2.
+is the difference between 9.0 and 1.2.
 
 ## Limits
 

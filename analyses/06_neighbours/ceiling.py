@@ -44,9 +44,20 @@ def _leave_one_out(cell: pd.Series, group: np.ndarray, n_groups: int):
 
 
 def ceiling(
-    frame: pd.DataFrame, chain: list[list[str]], group_col: str = "jati"
+    frame: pd.DataFrame,
+    chain: list[list[str]],
+    group_col: str = "jati",
+    test_mask: np.ndarray | None = None,
+    villages_held_out: int | None = None,
 ) -> dict:
-    """Best achievable error using a fallback chain of cues, scoring everyone."""
+    """Best achievable error using a fallback chain of cues, scoring everyone.
+
+    `test_mask` restricts *scoring* to a held-out set while the cells are still
+    built from everybody, which is what a reader of the whole roll actually has.
+    Without it the ceiling is a leave-one-household-out number and cannot be put
+    in the same table as the held-out-village figures: those answer "a village
+    you have never seen", this one answers "a village you can read".
+    """
     groups = sorted(frame[group_col].unique())
     gmap = {g: i for i, g in enumerate(groups)}
     truth = frame[group_col].map(gmap).to_numpy()
@@ -64,10 +75,13 @@ def ceiling(
     unresolved = float((final < 0).mean())
     final[final < 0] = fallback
 
+    keep = np.ones(len(frame), dtype=bool) if test_mask is None else test_mask
     return {
-        "mistakes_per_100": float(100 * (final != truth).mean()),
-        "households": int(len(frame)),
+        "mistakes_per_100": float(100 * (final[keep] != truth[keep]).mean()),
+        "households": int(keep.sum()),
         "groups": len(groups),
         "coverage": coverage,
         "share_needing_the_global_fallback": unresolved,
+        "scored_on": "held-out villages" if test_mask is not None else "everyone",
+        "villages_held_out": villages_held_out,
     }

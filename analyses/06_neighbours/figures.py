@@ -119,21 +119,26 @@ def ceiling(result: dict, held: pd.DataFrame, out: Path) -> None:
         ("knowing nothing", mah["blind"], MUTED),
         ("the surname alone", mah["surname_only"], INK),
         ("surname + neighbours", mah["surname_plus_neighbours"], "#8d9aa8"),
-        ("everything on the roll", result["mistakes_per_100"], ACCENT),
+        (
+            "+ a caste register of\nthe same population",
+            result["mistakes_per_100"],
+            ACCENT,
+        ),
     ]
     y = np.arange(len(steps))[::-1]
-    fig, ax = plt.subplots(figsize=(8.4, 4.3))
+    fig, ax = plt.subplots(figsize=(8.6, 4.6))
     ax.barh(y, [v for _, v, _ in steps], color=[c for _, _, c in steps], height=0.56)
     for yi, (_, v, _) in zip(y, steps):
         ax.text(v + 1.0, yi, f"{v:.0f}", va="center", fontsize=10.5, color=INK)
     ax.set_yticks(y)
     ax.set_yticklabels([lab for lab, _, _ in steps], fontsize=10)
-    ax.set_xlim(0, 68)
+    ax.set_xlim(0, 72)
     ax.set_xlabel("of 100 households, how many you get wrong")
     ax.set_title(
-        "The name is weak. The roll is not.\n"
-        f"{result['households']:,} Scheduled Caste households, "
-        f"{result['groups']} jatis.\nEvery cue is printed on a public roll page.",
+        "The name is weak. The name plus a register is not.\n"
+        f"{result['villages_held_out']:,} Bihar villages never seen during "
+        f"fitting, {result['groups']} jatis, Scheduled Caste households.\n"
+        "Caste is not printed on any roll -- the labels come from a census.",
         color=INK,
         loc="left",
         fontsize=11.5,

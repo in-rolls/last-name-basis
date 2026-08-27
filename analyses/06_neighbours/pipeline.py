@@ -71,12 +71,15 @@ def main() -> None:
     source = ladders()
 
     results, surname_tables = [], []
+    census_test_villages = None
     for label, loader, weight, parts in LADDERS:
         ladder = getattr(source, loader)()
         if ladder is None:
             continue
         vsj = nb.village_surname_jati(ladder, "surname+village", weight, parts)
         scored = nb.fit_and_score(vsj, weight)
+        if label == "Mahadalit census":
+            _, census_test_villages = nb.split_villages(vsj["village"].unique())
         scored["ladder"] = label
         results.append(scored)
 
@@ -94,13 +97,29 @@ def main() -> None:
     # The other end of the bracket: everything the roll prints. Only the
     # Mahadalit census carries the father's name and the hamlet on the same row.
     mahadalit = _mahadalit()
-    if mahadalit is not None:
+    if mahadalit is not None and census_test_villages is not None:
+        mahadalit.attrs["test_villages"] = census_test_villages
         chain = [
             ["surname", "fat_last", "fat_first"] + mahadalit.attrs["geo"],
             ["surname"] + mahadalit.attrs["geo"],
             ["surname"],
         ]
-        summary["ceiling"] = C.ceiling(mahadalit, chain)
+        # Score on the very same held-out villages the neighbour rungs use.
+        # Deriving a split independently does NOT do this: naampata's ladder
+        # covers 27,687 villages and the raw files 28,602, so shuffling the two
+        # lists put only 2,509 of ~8,300 test villages in common and the bracket
+        # rows described different people.
+        # str.cat, not .agg(axis=1): the latter is row-wise Python and turned
+        # a two-minute pipeline into an hour on 2.98M rows.
+        geo4 = [mahadalit[c] for c in mahadalit.attrs["geo"][:4]]
+        village = geo4[0].str.cat(geo4[1:], sep="|")
+        test_v = mahadalit.attrs["test_villages"]
+        mask = village.isin(test_v).to_numpy()
+        summary["ceiling"] = C.ceiling(
+            mahadalit, chain, test_mask=mask, villages_held_out=len(test_v)
+        )
+        summary["ceiling"]["shares_split_with_neighbour_rungs"] = True
+        summary["ceiling_all_households"] = C.ceiling(mahadalit, chain)
     (TAB / "summary.json").write_text(json.dumps(summary, indent=2))
 
     import figures
