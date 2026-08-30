@@ -140,6 +140,18 @@ def _karnataka(key: str):
     return get
 
 
+def _coverage(key: str):
+    """From the pipeline's own output, so the README cannot drift from it."""
+
+    def get():
+        c = _json(A01 / "headline.json").get("coverage_national")
+        if not c:
+            pytest.skip("roll frequencies unavailable")
+        return 100 * c[key] if key == "share_of_roll_covered" else c[key]
+
+    return get
+
+
 def claims():
     """(label, regex with one capture group, callable giving the value).
 
@@ -153,33 +165,33 @@ def claims():
         # which is how the front page ended up self-contradictory.
         (
             "01 roll Dalit share",
-            r"about (\d+) are Dalit",
+            r"room is (\d+) Dalit",
             lambda: _roll("base_rates")()["sc"] * 100,
         ),
         (
             "01 roll Adivasi share",
-            r"(\d+) Adivasi",
+            r"(\d+)\s*\n?Adivasi, \d+ neither",
             lambda: _roll("base_rates")()["st"] * 100,
         ),
         (
             "01 roll blind",
-            r"you get \*\*(\d+) of 100 wrong\*\*",
+            r"you are wrong \*\*(\d+)\*\*\s*\ntimes",
             lambda: _roll("err_blind")() * 100,
         ),
         (
             "01 roll with name",
-            r"You get \*\*(\d+) wrong\*\*",
+            r"hear the last name and you are wrong \*\*(\d+)\*\*",
             lambda: _roll("err_per_person")() * 100,
         ),
         (
             "01 share unchanged",
-            r"for \*\*(\d+)% of people the name does\s+not change",
+            r"For \*\*(\d+)% of people the\s+surname does not change the guess",
             lambda: _roll("share_guess_unchanged")() * 100,
         ),
         (
             "01 share made worse",
-            r"for \*\*(\d+)% it makes the guess harder\*\*",
-            lambda: _roll("share_less_sure")() * 100,
+            r"For a further \*\*(\d+)% of people\*\*",
+            lambda: _roll("share_whose_name_is_more_mixed_than_the_population")() * 100,
         ),
         # The skew: the commonest names cover a third of India and none of
         # them changes the answer. Both halves are pinned, because the pairing
@@ -198,6 +210,16 @@ def claims():
             "01 tail gainers",
             r"\| 1001–3930 \| 2,930 \| \d+% \| (\d+) \|",
             _band("1001-3930", "names_gain_gt0"),
+        ),
+        (
+            "01 names in table",
+            r"leaves \*\*([\d,]+) surnames\*\*",
+            _coverage("names_in_table"),
+        ),
+        (
+            "01 roll coverage",
+            r"are (\d+)% of all the names people",
+            _coverage("share_of_roll_covered"),
         ),
         # The rung with median cell size 1, so the one where plug-in bias is
         # worst and leave-one-out is not optional.
@@ -238,7 +260,7 @@ def claims():
         ),
         (
             "05 Bihar sex gap",
-            r"\*\*(\d+\.\d) more mistakes per hundred than men's in Bihar\*\*",
+            r"\*\*(\d+\.\d)\s+more mistakes per hundred than men's in Bihar\*\*",
             lambda: _sex_gap("bihar"),
         ),
         (
@@ -256,7 +278,7 @@ def claims():
         # 66% for Maharashtra where the analytic share is 36%.
         (
             "05 Rajasthan coverage",
-            r"(\d+)% of the Rajasthan roll",
+            r"(\d+)% of the\s+Rajasthan roll",
             lambda: _analytic_share("rajasthan"),
         ),
         (
@@ -281,12 +303,12 @@ def claims():
         ),
         (
             "06 prasad alone",
-            r"Prasad from (\d+) to \d+",
+            r"Prasad from (\d+)\s+to \d+",
             lambda: _surname_pair("\u092a\u094d\u0930\u0938\u093e\u0926")[0],
         ),
         (
             "06 prasad rescued",
-            r"Prasad from \d+ to (\d+)",
+            r"Prasad from \d+\s+to (\d+)",
             lambda: _surname_pair("\u092a\u094d\u0930\u0938\u093e\u0926")[1],
         ),
         (

@@ -7,7 +7,9 @@ over 19 states and over adults. How common each name is comes from
 
 **Finding.** Guess a stranger's caste and you are wrong 25 times in 100. Hear
 their surname and you are wrong 20. For 91% of people the name does not change
-the answer at all, and for 32% it makes the guess harder.
+the answer at all. For a further 16% the surname says only that they sit in
+a more mixed pool than the population, which leaves the best guess, and its
+error rate, exactly where they were.
 
 Read [`note.md`](note.md). Run with `make a01`.
 

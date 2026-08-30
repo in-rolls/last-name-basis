@@ -46,7 +46,12 @@ def weighted_summary(
         "err_per_person": float((w * (1.0 - p.max(axis=1))).sum()),
         "uncertainty_removed_bits": float((w * cut).sum()),
         "share_guess_unchanged": float(w[p.argmax(axis=1) == blind].sum()),
-        "share_less_sure": float(w[cut < 0].sum()),
+        # NOT an error rate, and it does not mean the name makes you wronger:
+        # max(p) >= p[blind] always, so no name can beat the blind guess
+        # downward. This is the share of people whose surname has a MORE evenly
+        # spread caste mix than the population does, which reads as "be less
+        # certain", not "you get more wrong".
+        "share_whose_name_is_more_mixed_than_the_population": float(w[cut < 0].sum()),
     }
 
 

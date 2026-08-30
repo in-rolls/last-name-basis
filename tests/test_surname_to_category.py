@@ -150,7 +150,9 @@ def test_cut_averages_to_the_mutual_information_under_its_own_prior():
     assert float((table["cut"] * w).sum()) == pytest.approx(
         summary["uncertainty_removed_bits"]
     )
-    assert float(w[table["cut"] < 0].sum()) == pytest.approx(summary["share_less_sure"])
+    assert float(w[table["cut"] < 0].sum()) == pytest.approx(
+        summary["share_whose_name_is_more_mixed_than_the_population"]
+    )
 
 
 def test_cut_never_exceeds_total_uncertainty(named):
@@ -178,3 +180,31 @@ def test_chain_rule_holds(cells):
         d["state_alone_bits"] + d["name_given_state_bits"]
     )
     assert d["name_and_state_bits"] >= d["name_alone_bits"] - 1e-12
+
+
+def test_no_surname_can_make_the_guess_wronger_than_blind(named):
+    """The fact that made "for 16% it makes the guess harder" impossible.
+
+    The blind guess names the population's largest category; the name-based
+    guess names the surname's. Since max(p) >= p[blind] for every row, using
+    the name can never raise the error rate. The 16% was an entropy comparison
+    -- the surname's caste mix is more evenly spread than the population's --
+    written up as if it were an error rate, and in error terms it points the
+    other way: those people average 42.8 mistakes per 100 against 45.9 blind.
+    """
+    d = with_roll_frequency(named)
+    w = d["share_roll"].fillna(0).to_numpy(float)
+    if w.sum() <= 0:
+        pytest.skip("roll frequencies unavailable")
+    p = d[PROB_COLS].to_numpy()
+    prior = (p * (w / w.sum())[:, None]).sum(axis=0)
+    err_name = 1 - p.max(axis=1)
+    err_blind = 1 - p[:, int(prior.argmax())]
+    assert (err_name > err_blind + 1e-12).sum() == 0
+
+    # And the group the old sentence was about is better off, not worse.
+    mixed = entropy_bits(p) > entropy_bits(prior)
+    wm = w[mixed]
+    assert (wm * err_name[mixed]).sum() / wm.sum() < (
+        wm * err_blind[mixed]
+    ).sum() / wm.sum()

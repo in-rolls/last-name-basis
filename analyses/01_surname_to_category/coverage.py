@@ -114,6 +114,30 @@ def national_frequency() -> pd.DataFrame | None:
     )
 
 
+def national_coverage(named: pd.DataFrame) -> dict | None:
+    """What share of the names people actually carry the table can speak to.
+
+    The front page says a hundred people drawn at roll frequency are 19 Dalit,
+    6 Adivasi, 75 neither. `with_roll_frequency` renormalises its weights over
+    matched names, so that room is built only from surnames the table covers.
+    This is how large that restriction is, and it belongs beside the claim.
+    """
+    freq = national_frequency()
+    if freq is None:
+        return None
+    matched = named.merge(freq, on="last_name", how="inner")
+    total = float(freq["n_roll"].sum())
+    covered = float(matched["n_roll"].sum())
+    return {
+        "names_in_table": int(len(named)),
+        "names_on_the_roll": int(len(freq)),
+        "names_matched": int(len(matched)),
+        "roll_tokens_total": total,
+        "roll_tokens_covered": covered,
+        "share_of_roll_covered": covered / total,
+    }
+
+
 def with_roll_frequency(named: pd.DataFrame) -> pd.DataFrame:
     """Attach roll counts to the per-name table, and a roll-weighted share.
 

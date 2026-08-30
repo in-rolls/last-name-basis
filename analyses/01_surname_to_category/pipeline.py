@@ -105,6 +105,7 @@ def main() -> None:
     # Two weightings of the same table. SECC weights by whose household the
     # census recorded; roll weights by who you would actually meet. Each is
     # summarised against its own prior -- mixing them breaks the arithmetic.
+    h["coverage_national"] = cov.national_coverage(build("secc"))
     h["weighted"] = {
         "secc": weighted_summary(secc, "share"),
         "roll": weighted_summary(secc, "share_roll"),
