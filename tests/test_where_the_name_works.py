@@ -10,7 +10,7 @@ import pytest
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 A07 = ROOT / "analyses/07_where_the_name_works/out/tab"
-A08 = ROOT / "analyses/08_karnataka_initials/out/tab"
+A08 = ROOT / "analyses/08_karnataka_psc/out/tab"
 
 
 @pytest.fixture(scope="module")
@@ -84,6 +84,39 @@ def test_karnataka_last_tokens_are_mostly_initials():
     assert (tokens["clean"].head(10).str.len() > 1).all()
 
 
+def test_the_karnataka_error_is_far_larger_for_scheduled_candidates():
+    """Analysis 05's finding, on a different state, source and label set.
+
+    This is why the analysis is in the repo. Karnataka is absent from SECC, so
+    these lists are the only caste-linked name data for the state, and what they
+    show is the differential the rest of the repo finds nationally.
+    """
+    path = A08 / "by_category.csv"
+    if not path.exists():
+        pytest.skip("analysis 08 not built")
+    d = pd.read_csv(path).set_index("category")
+    assert d.loc["General", "wrong_per_100"] < 25
+    assert d.loc["Scheduled Caste", "wrong_per_100"] > 55
+    assert (
+        d.loc["Scheduled Caste", "wrong_per_100"]
+        > 2 * d.loc["General", "wrong_per_100"]
+    )
+    # The blind guess names the largest category, so its own blind rate is 0.
+    assert d.loc["General", "blind_wrong_per_100"] == 0
+    assert (d.drop(index="General")["blind_wrong_per_100"] == 100).all()
+
+
+def test_the_karnataka_split_reconstructs_the_overall_error():
+    """One estimator split by whom it lands on, the identity analysis 05 uses."""
+    path = A08 / "by_category.csv"
+    if not path.exists():
+        pytest.skip("analysis 08 not built")
+    d = pd.read_csv(path)
+    implied = (d["share_of_candidates"] * d["wrong_per_100"]).sum()
+    overall = pd.read_csv(A08 / "scores.csv").set_index("cue")
+    assert abs(implied - overall.loc["clean_surname", "mistakes_per_100"]) < 0.5
+
+
 def test_cleaning_karnataka_surnames_helps_a_little():
     """Reported as a null on 14,854 candidates; the sign flipped at 48,395.
 
@@ -105,8 +138,11 @@ def test_cleaning_karnataka_surnames_helps_a_little():
     )
     # The cleaned column still resolves fewer people, which is what shows the
     # naive rule was pooling on initials rather than predicting from surnames.
-    # Neither cue is close to useless *or* good: both sit between the blind
-    # rate and a long way short of it.
+    # And the surname helps without resolving: it closes some of the gap to the
+    # blind rate and nothing close to all of it. Stated as a share of the gap
+    # rather than a bound on the level, because the level moves with the
+    # resolve rule and the share is what analysis 07 compares across states.
     blind = sc.loc["naive_surname", "blind_per_100"]
     for cue in ("naive_surname", "clean_surname"):
-        assert 0.8 * blind < sc.loc[cue, "mistakes_per_100"] < blind
+        closed = 100 * (blind - sc.loc[cue, "mistakes_per_100"]) / blind
+        assert 5 < closed < 50, f"{cue} closes {closed:.0f}% of the gap"

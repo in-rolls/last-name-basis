@@ -8,6 +8,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- **Analysis 08 rebuilt around the repo's question, and its stated purpose
+  corrected.** It had reported an initials measurement and a prediction exercise
+  without connecting either to what the repo asks. The justification given for
+  it was also wrong: the initials were said to contaminate analysis 03's
+  Karnataka concentration figure, and they do not, because analysis 03 reads
+  instate and instate contains no single-letter last names at all, 1.9M entries
+  with a minimum length of six. The real reason the analysis belongs is that
+  Karnataka is absent from SECC. The directory is renamed
+  `08_karnataka_psc`, the finding is now the differential by category, and the
+  resolve rule is aligned with analysis 09's, which moves the headline from 43.9
+  to 40.0.
 - **Analysis 08's null reversed on more data.** Cleaning initials out of
   Karnataka's last-token column was reported as making prediction slightly
   worse, on 14,854 candidates. The collection has since reached 48,395 and the
@@ -45,11 +56,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   Assam has two and closes 67%, because one of them is `das`. Each state's
   coverage is printed beside its result, and the ordering survives cutting every
   state to its 25 commonest names.
-- **Analysis 08, Karnataka.** 34% of last tokens there are a single letter, and
-  the ten commonest all are. Cleaning them changes the surname inventory
-  completely and the prediction not at all, 49.2 against 49.6 per 100 with a
-  blind rate of 54.5 -- slightly worse, because smaller cells resolve fewer
-  people. Reported as the null it is.
+- **Analysis 08, what a surname reveals about caste in Karnataka.** Karnataka is
+  absent from SECC, so the Public Service Commission select lists are the only
+  caste-linked name data the project has for the state. Recovering a surname
+  takes a step first, because the last token is a single letter 34% of the time.
+  The guess is then wrong about 62 of every 100 Scheduled Caste candidates and
+  17 of every 100 General ones, which is analysis 05's national finding
+  reproduced on a different state, source and label set.
 
 - The front page now shows the skew. Sorted by frequency, the ten commonest
   surnames in India cover 32% of everybody and not one of them moves the guess

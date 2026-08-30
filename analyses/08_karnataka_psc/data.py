@@ -1,8 +1,12 @@
-"""Karnataka recruitment lists: when the last token is not a surname.
+"""What a surname reveals about caste in Karnataka.
 
-Analysis 04 found that Maharashtra writes the surname first, so instate's
-last-token column held a given name there. Karnataka fails the same assumption
-by a different route: its commonest last tokens are single initials.
+Karnataka is absent from SECC. outkast covers nineteen states and Karnataka is
+not among them, and in the south it holds only Kerala and Tamil Nadu, so these
+recruitment lists are the only caste-linked name data this project has for the
+state.
+
+Recovering the surname takes a step first, because the commonest last tokens
+here are single initials.
 
     S 772   R 550   K 534   N 514   B 375   G 304 ...   PATIL 161
 
@@ -85,12 +89,17 @@ def initial_share(d: pd.DataFrame) -> dict:
     }
 
 
-def score(d: pd.DataFrame, key: str, min_cell: int = 2) -> dict:
+def score(d: pd.DataFrame, key: str, min_cell: int = 1) -> dict:
     """Leave-one-out error guessing category from `key`.
 
     Leave-one-out is not optional here. Most surnames appear once or twice, so
     scoring a person against a table their own row built would report a number
     about memorisation.
+
+    `min_cell` is how many *other* candidates must share a cue before it is used
+    instead of the blind guess. One, matching analysis 09, so the two are
+    comparable. At two the headline reads 43.9 instead of 40.0, which is why the
+    rule is stated rather than left to a default.
     """
     frame = d[d[key].notna()].copy()
     cats = sorted(frame["category"].unique())
@@ -120,3 +129,44 @@ def score(d: pd.DataFrame, key: str, min_cell: int = 2) -> dict:
         "mistakes_per_100": float(100 * (guess != truth).mean()),
         "share_resolved": float(100 * resolved.mean()),
     }
+
+
+def by_category(d: pd.DataFrame, key: str = "clean_surname") -> pd.DataFrame:
+    """The same guess, split by the candidate's own category.
+
+    Analysis 05's decomposition, applied to a different source and a different
+    set of categories. The blind guess names the largest category, so it is
+    right about all of that one and wrong about every other.
+    """
+    frame = d[d[key].notna()].copy()
+    cats = sorted(frame["category"].unique())
+    index = {c: i for i, c in enumerate(cats)}
+    truth = frame["category"].map(index).to_numpy()
+
+    counts = (
+        pd.crosstab(frame[key], frame["category"])
+        .reindex(columns=cats, fill_value=0)
+        .astype(float)
+    )
+    cell = counts.loc[frame[key]].to_numpy()
+    own = np.zeros_like(cell)
+    own[np.arange(len(frame)), truth] = 1
+    left = cell - own
+
+    prior = counts.to_numpy().sum(axis=0)
+    blind = int(prior.argmax())
+    guess = np.where(left.sum(axis=1) >= 1, left.argmax(axis=1), blind)
+
+    rows = []
+    for category, i in index.items():
+        mine = truth == i
+        rows.append(
+            {
+                "category": category,
+                "share_of_candidates": float(mine.mean()),
+                "blind_wrong_per_100": 0.0 if i == blind else 100.0,
+                "wrong_per_100": float(100 * (guess[mine] != truth[mine]).mean()),
+                "candidates": int(mine.sum()),
+            }
+        )
+    return pd.DataFrame(rows).sort_values("wrong_per_100")

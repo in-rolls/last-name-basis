@@ -26,7 +26,7 @@ A03 = ROOT / "analyses/03_how_few_names/out/tab"
 A05 = ROOT / "analyses/05_who_has_an_uninformative_name/out/tab"
 A06 = ROOT / "analyses/06_neighbours/out/tab"
 A07 = ROOT / "analyses/07_where_the_name_works/out/tab"
-A08 = ROOT / "analyses/08_karnataka_initials/out/tab"
+A08 = ROOT / "analyses/08_karnataka_psc/out/tab"
 
 
 def _json(path: Path) -> dict:
@@ -135,7 +135,11 @@ def _karnataka(key: str):
         if not path.exists():
             pytest.skip("analysis 08 not built")
         s = _json(path)
-        return s[key] if key in s else float(s["scores"][key]["mistakes_per_100"])
+        if key in s:
+            return s[key]
+        if key in s.get("by_category", {}):
+            return s["by_category"][key]["wrong_per_100"]
+        return float(s["scores"][key]["mistakes_per_100"])
 
     return get
 
@@ -190,7 +194,7 @@ def claims():
         ),
         (
             "01 share made worse",
-            r"For a further \*\*(\d+)% of people\*\*",
+            r"A further \*\*(\d+)% of people\*\*",
             lambda: _roll("share_whose_name_is_more_mixed_than_the_population")() * 100,
         ),
         # The skew: the commonest names cover a third of India and none of
@@ -225,12 +229,12 @@ def claims():
         # worst and leave-one-out is not optional.
         (
             "02 surname+village",
-            r"leaves you wrong \*\*(\d+) times in 100\*\*",
+            r"leave \*\*(\d+) mistakes per 100\*\*",
             lambda: _ladder("jati", "surname+village"),
         ),
         (
             "02 surname alone",
-            r"drop the village, and it is \*\*(\d+)\*\*",
+            r"the\s+surname alone leaves \*\*(\d+)\*\*",
             lambda: _ladder("jati", "surname"),
         ),
         (
@@ -346,18 +350,23 @@ def claims():
         ),
         (
             "08 initial share",
-            r"\*\*(\d+)% of last tokens there are a single letter\*\*",
+            r"single\s+letter \*\*(\d+)% of the time\*\*",
             _karnataka("naive_is_single_letter"),
         ),
         (
-            "08 naive",
-            r"naive token leaves (\d+\.\d) mistakes",
-            _karnataka("naive_surname"),
+            "08 SC error",
+            r"wrong about \*\*(\d+) of every 100 Scheduled Caste candidates",
+            _karnataka("Scheduled Caste"),
         ),
         (
-            "08 clean",
-            r"cleaned surname (\d+\.\d)",
-            _karnataka("clean_surname"),
+            "08 General error",
+            r"Scheduled Caste candidates and\s+(\d+) of every 100 General ones\*\*",
+            _karnataka("General"),
+        ),
+        (
+            "08 gap closed",
+            r"the surname closes (\d+)% of the gap",
+            _karnataka("gap_closed_share"),
         ),
     ]
 

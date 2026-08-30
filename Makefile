@@ -9,7 +9,7 @@ A04 := analyses/04_which_token_is_the_surname
 A05 := analyses/05_who_has_an_uninformative_name
 A06 := analyses/06_neighbours
 A07 := analyses/07_where_the_name_works
-A08 := analyses/08_karnataka_initials
+A08 := analyses/08_karnataka_psc
 A09 := analyses/09_odisha_village_premium
 
 all: a01 a02 a03 a05 a06 a07 a08 a09
