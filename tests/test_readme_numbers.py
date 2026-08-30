@@ -249,7 +249,7 @@ def claims():
         ),
         (
             "03 names for a quarter",
-            r"\*\*(\d+)\*\* if\s+you count only names a brother",
+            r"and \*\*(\d+)\*\* if you count only names a\s+brother",
             _a03("levels", "minus_all", "names_for_25"),
         ),
         (
