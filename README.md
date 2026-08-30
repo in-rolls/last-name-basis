@@ -268,6 +268,33 @@ candidates into a small number of large buckets keyed on an initial.
 
 [![What a last-token rule calls a surname](analyses/08_karnataka_initials/out/fig/naive_vs_clean.png)](analyses/08_karnataka_initials/note.md)
 
+### [09 Does the village premium travel outside Bihar?](analyses/09_odisha_village_premium)
+
+Analysis 02 is the strongest result here, and it rests on one state. Whether the
+30-point gain from adding a village describes surnames and villages generally,
+or describes Bihar, was untested. The Odisha Record of Rights records a jati and
+a village for every tenant, which permits the same measurement elsewhere.
+
+Scored on the same protocol in Gajapati district, **a village adds 20 points
+where in Bihar it adds 30**. Against what the surname leaves unresolved, the
+village closes 42% of the remainder in Gajapati and 64% in Bihar.
+
+The levels are not comparable, because Bihar sorts people among 141 curated
+jatis and Gajapati among several hundred labels as recorded, and a harder
+target costs mistakes whatever the surname does. The distance between the rungs is what
+carries across. Three analyst's choices were varied to see whether they produced
+the result: collapsing the labels to little more than half as many moves the premium by
+half a mistake,
+stripping the religion suffix from the jati label moves it from 19.7 to 15.8,
+and changing which token is taken as the surname moves it by 0.2.
+
+This is one district of thirty and is still being scraped, at 40 khatiyans per
+village. Gajapati is small, heavily Adivasi and on the Andhra border, so it is
+not an Odisha result. The village sampling biases the premium downward, which
+makes the gap to Bihar an upper bound rather than an estimate.
+
+[![What a village adds, in Bihar and in Gajapati](analyses/09_odisha_village_premium/out/fig/village_premium.png)](analyses/09_odisha_village_premium/note.md)
+
 ## 3. Reading the results
 
 **Caste is a local fact, and a name is a poor carrier of it.** A surname reveals
@@ -322,8 +349,8 @@ a screening tool.
 uv venv .venv
 uv pip install --python .venv/bin/python -e '.[dev]'
 
-make all      # the seven scripted analyses: tables, figures, notes
-make a01      # just the first, and so on through a08
+make all      # the eight scripted analyses: tables, figures, notes
+make a01      # just the first, and so on through a09
 make a04      # runs the notebook
 make test
 make lint

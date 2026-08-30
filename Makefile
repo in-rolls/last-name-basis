@@ -10,8 +10,9 @@ A05 := analyses/05_who_has_an_uninformative_name
 A06 := analyses/06_neighbours
 A07 := analyses/07_where_the_name_works
 A08 := analyses/08_karnataka_initials
+A09 := analyses/09_odisha_village_premium
 
-all: a01 a02 a03 a05 a06 a07 a08
+all: a01 a02 a03 a05 a06 a07 a08 a09
 
 a01:
 	$(PY) $(A01)/pipeline.py
@@ -33,7 +34,7 @@ fmt:
 	$(BLACK) --fast src analyses tests
 	$(ISORT) src analyses tests
 
-.PHONY: all a01 a02 a03 a04 a05 a06 a07 a08 test lint fmt ci ci-docker
+.PHONY: all a01 a02 a03 a04 a05 a06 a07 a08 a09 test lint fmt ci ci-docker
 
 ci: lint test
 
@@ -62,3 +63,7 @@ a07:
 a08:
 	$(PY) $(A08)/pipeline.py
 	$(PY) $(A08)/note.py
+
+a09:
+	$(PY) $(A09)/pipeline.py
+	$(PY) $(A09)/note.py

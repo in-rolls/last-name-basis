@@ -27,7 +27,12 @@ test is run per state and never carried over.
 
 from __future__ import annotations
 
+import gzip
+import importlib.util
+import json
+import os
 import re
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -54,9 +59,58 @@ def normalise(value: str) -> str:
     return _SPACE.sub(" ", value).strip()
 
 
+def _github() -> Path:
+    return Path(os.environ.get("GITHUB_DIR", Path.home() / "Documents/GitHub"))
+
+
+def checkpoints() -> Path:
+    return _github() / "pranaam/scripts/data-acquisition/odisha_ror"
+
+
+def materialise() -> bool:
+    """Parse pranaam's fetched checkpoints into this repo's own table.
+
+    The parser lives in pranaam and is imported rather than copied, so a fix
+    there reaches here. Nothing is written back into that repository: a scrape
+    runs in it, and its own `tenants.parquet` is a build artefact of a process
+    this analysis does not own.
+    """
+    source = checkpoints() / "parse_ror.py"
+    if not source.exists():
+        return False
+    spec = importlib.util.spec_from_file_location("parse_ror", source)
+    if spec is None or spec.loader is None:
+        return False
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["parse_ror"] = module
+    spec.loader.exec_module(module)
+    # File discovery is done here rather than by `read_checkpoints`, which
+    # globs `district_*/village_*.jsonl.gz`. The fetcher now writes a tahsil
+    # level between the two, so that glob matches nothing and the upstream
+    # parser silently returns zero records against a live scrape. Reported
+    # upstream; this keeps working either way.
+    root = checkpoints() / "raw" / "ror"
+    records = []
+    for path in sorted(root.glob("**/village_*.jsonl.gz")):
+        try:
+            with gzip.open(path, "rt", encoding="utf8") as handle:
+                for line in handle:
+                    try:
+                        records.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        continue  # a partial final line from a live writer
+        except (OSError, EOFError):
+            continue  # a file being written right now
+    if not records:
+        return False
+    TENANTS.parent.mkdir(parents=True, exist_ok=True)
+    module.build(records).to_parquet(TENANTS, index=False)
+    return True
+
+
 def load() -> pd.DataFrame | None:
     """Tenant rows with a jati, a village and a surname."""
-    if not TENANTS.exists():
+    if not TENANTS.exists() and not materialise():
         return None
     d = pd.read_parquet(TENANTS)
     d["jati"] = d["caste_or"].map(normalise)

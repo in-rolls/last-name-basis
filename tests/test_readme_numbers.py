@@ -395,3 +395,16 @@ def test_the_readme_says_none_only_while_none_is_true() -> None:
     assert says_none == (
         gainers == 0
     ), f"README says none={says_none}, but {gainers} of the top ten gain"
+
+
+def test_the_readme_premium_numbers_match_analysis_09() -> None:
+    """The front page states both premia; neither may drift from its output."""
+    path = ROOT / "analyses/09_odisha_village_premium/out/tab/summary.json"
+    if not path.exists():
+        pytest.skip("analysis 09 not built")
+    s = json.loads(path.read_text())
+    text = README.read_text()
+    match = re.search(r"village adds (\d+) points\s+where in Bihar it adds (\d+)", text)
+    assert match, "README no longer states the two premia"
+    assert abs(float(match.group(1)) - s["gajapati"]["as recorded"]["premium"]) < 0.5
+    assert abs(float(match.group(2)) - s["bihar"]["premium"]) < 0.5

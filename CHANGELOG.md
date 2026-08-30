@@ -8,6 +8,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- **Analysis 09, whether the village premium travels outside Bihar.** Analysis
+  02 is the strongest result here and it rested on one state. Scored on the same
+  protocol in Gajapati district, Odisha, a village adds 20 points where in Bihar
+  it adds 30; against what the surname leaves unresolved, it closes 42% of the
+  remainder against Bihar's 64%. Three analyst's choices were varied and none
+  produces the result: the jati merge threshold moves it by half a mistake,
+  stripping the religion suffix from the label moves it from 19.7 to 15.8, and
+  changing which token is taken as the surname moves it by 0.2. The surname
+  position is measured from the father's name rather than assumed, and in
+  Gajapati the surname is last, the opposite of Maharashtra.
+
 - **Analysis 07, where a surname works and where it does not.** The national
   figure hides a spread from 67% of the gap closed in Assam to 0% in Haryana.
   What carries a state is one or two large decisive names, not many of them:
