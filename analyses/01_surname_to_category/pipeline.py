@@ -107,6 +107,20 @@ def main() -> None:
     # census recorded; roll weights by who you would actually meet. Each is
     # summarised against its own prior -- mixing them breaks the arithmetic.
     h["coverage_national"] = cov.national_coverage(build("secc"))
+
+    # The quiz's table. Committed, unlike out/tab, because the deployed app
+    # needs it; generated here so it cannot drift from the analysis.
+    app = HERE.parent.parent / "app" / "data"
+    app.mkdir(parents=True, exist_ok=True)
+    quiz = (
+        secc[secc["n_roll"].notna()]
+        .sort_values("n_roll", ascending=False)
+        .head(1000)
+        .assign(
+            n_not_sc=lambda d: d[["n_st", "n_other"]].sum(axis=1),
+        )[["last_name", "n_sc", "n_not_sc", "p_sc", "n_roll"]]
+    )
+    quiz.to_csv(app / "names.csv", index=False)
     # Accuracy against the mode is dominated by the base rate; this is not.
     h["discrimination"] = {
         "secc": metrics.discrimination(secc),

@@ -62,6 +62,7 @@ was my prediction. It does not hold.
 | state | mistakes on men | on women | gap |
 |---|---|---|---|
 | Bihar | 17 | 20 | +3.3 |
+| Punjab | 25 | 26 | +0.6 |
 | Maharashtra | 17 | 17 | -0.2 |
 | Rajasthan | 24 | 22 | -1.4 |
 
@@ -89,9 +90,9 @@ error understates the error made on Dalits by about 62 mistakes per hundred.
   decomposition of a known distribution, not an out-of-sample test, so it
   describes the ceiling a perfect user of this table would hit rather than the
   performance of any fitted model.
-- **The sex split covers only Bihar, Rajasthan, and Maharashtra**, the states
-  supported by Upnaam's `resolver-v1` and present locally. It uses Upnaam's
-  recorded surname, not a resolved family surname.
+- **The sex split covers Bihar, Rajasthan, Maharashtra and Punjab**, the states
+  Upnaam's `resolver-v1` has resolved and which are present locally. It uses
+  Upnaam's recorded surname, not a resolved family surname.
 - **The sex split needs a given name naampy can gender, and a surname the caste
   table knows.** After both, the estimates rest on 57% of the Bihar roll, 36% of
   the Maharashtra roll and 20% of the Rajasthan roll. Each earlier step looks

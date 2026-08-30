@@ -12,3 +12,6 @@ analyses/*/out/tab/
 !analyses/04_which_token_is_the_surname/out/tab/
 !analyses/04_which_token_is_the_surname/out/tab/*.csv
 *.egg-info/
+
+# The quiz log is per-deployment, not part of the repo.
+app/data/rounds.csv

@@ -239,7 +239,15 @@ ranking measure beside it, and the two disagree in a way worth seeing. Kerala
 closes under 1% of the gap while its surnames separate Dalit from non-Dalit
 about as well as Maharashtra's, 0.85 against 0.86, because only 8% of Kerala's
 extract is Scheduled Caste. Punjab and Haryana are the states whose surnames
-genuinely carry little, at 0.55 and 0.59 against a floor of 0.50. What carries a state is one or two large, decisive names rather
+genuinely carry little, at 0.55 and 0.59 against a floor of 0.50.
+
+Punjab's electoral roll says why. Its two commonest surnames, `singh` at 38% and
+`kaur` at 26%, cover **64% of the state**, nearer 71% once a common misspelling
+of Kaur is counted with it. Neither is a family name: Kaur is carried by Sikh
+women and Singh by Sikh men, across castes. A state where two names that were
+never lineage markers cover two thirds of the population cannot have surnames
+that identify caste, whatever its composition, which ties the weakest state here
+back to the sex-marking names of claim 2. What carries a state is one or two large, decisive names rather
 than many of them: Assam has two majority-Dalit surnames among its commonest and
 closes two thirds of the gap, because one of them is `das`. Punjab has five and
 closes 3%, because its biggest are `ram` at 62% and `lal` at 52%. Haryana has
@@ -320,10 +328,12 @@ discrimination is unchanged; your estimate of it shrinks.
 
 The same question asked about sex has no such answer. Women's names cost **3.3
 more mistakes per hundred than men's in Bihar**, but 1.4 *fewer* in Rajasthan
-and 0.2 fewer in Maharashtra. There is no direction here to report. Read those
-three with care: after matching Upnaam's resolved surnames to the caste table
-they rest on **57% of the Bihar roll, 36% of the Maharashtra roll and 20% of the
-Rajasthan roll**.
+and 0.2 fewer in Maharashtra. Punjab, where Kaur and Singh make the most
+sex-marked naming system in the country, adds 0.6. Four states, no direction.
+
+Read them with care: after matching Upnaam's resolved surnames to the caste
+table they rest on **57% of the Bihar roll, 36% of Maharashtra's, 20% of
+Rajasthan's and 19% of Punjab's**. Only Bihar is built on most of a state.
 
 *Analyses: [05](analyses/05_who_has_an_uninformative_name),
 [08](analyses/08_karnataka_psc).*
@@ -374,12 +384,27 @@ Each owns its pipeline, data loading, figures, note and `out/`.
   you: a real person also has your first name, your father's or husband's name,
   and your neighbourhood.
 
-## What is deliberately not here
+## What is and is not published
 
-No table ranked by how well a name identifies caste. Everything published is
-ranked by name frequency, by geography, or looked up by name. The finding is
-that a surname alone is a weak signal, and a ranked diagnosticity list would be
-a screening tool.
+The [quiz](app/) ships the caste composition of the **1,000 commonest
+surnames**, which is 93% of the names people carry. Until it existed this repo
+published no per-name table at all, on the reasoning that a ranked list of how
+much each name gives away is a screening tool. Shipping the thousand is a
+deliberate change to that position, not an oversight, and it is worth being
+plain about what it costs: those names sorted by composition are such a list.
+
+What still holds. The analyses publish results by frequency band, by geography
+and by group, never a ranked diagnosticity table. Nothing here infers a caste
+for a named individual, and the app is built so it cannot be used to: it shows a
+pair and asks a question, with no lookup box and no way to ask about a name of
+your choosing.
+
+The quiz also drops two kinds of name that would make it a worse instrument than
+it looks. Religion-marked surnames are near-perfect "not Dalit" tells, carrying
+4.8% of non-Dalit draws against 0.1% of Dalit ones, so a player who recognises
+them wins without knowing anything about caste. And one surname spelled two
+ways, `sing` against `singh`, asks about transliteration. Removing both costs
+one point of the score the data achieves.
 
 ## Run it
 

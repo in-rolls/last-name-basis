@@ -146,3 +146,69 @@ def test_cleaning_karnataka_surnames_helps_a_little():
     for cue in ("naive_surname", "clean_surname"):
         closed = 100 * (blind - sc.loc[cue, "mistakes_per_100"]) / blind
         assert 5 < closed < 50, f"{cue} closes {closed:.0f}% of the gap"
+
+
+@pytest.fixture(scope="module")
+def summary():
+    path = A07 / "summary.json"
+    if not path.exists():
+        pytest.skip("analysis 07 not built")
+    return json.loads(path.read_text())
+
+
+@pytest.fixture(scope="module")
+def rolls(summary):
+    if "roll_concentration" not in summary or not summary["roll_concentration"]:
+        pytest.skip("upnaam rolls not present")
+    return summary["roll_concentration"]
+
+
+def test_two_names_cover_most_of_punjab(rolls):
+    """The mechanism for the weakest surnames in the country.
+
+    Analysis 07 reports that Punjab ranks 0.55 against a floor of 0.50 and does
+    not say why. Singh and Kaur together are most of the state, and neither is a
+    family name: Kaur is carried by Sikh women and Singh by Sikh men, across
+    castes. A state where two names that were never lineage markers cover two
+    thirds of the population cannot have informative surnames.
+    """
+    punjab = rolls["punjab"]
+    top = {c["surname"]: c["share"] for c in punjab["commonest"]}
+    assert {"singh", "kaur"} <= set(top)
+    assert top["singh"] + top["kaur"] > 0.60, top
+    assert punjab["names_for_half"] <= 2
+
+
+def test_the_two_sources_agree_where_the_resolver_covers_the_state(summary):
+    """The only cross-source check here, and it behaves.
+
+    Every concentration figure in analysis 03 comes from instate. These come
+    from upnaam, a different collection through a different pipeline. Where the
+    resolver covers nearly all of a state the two agree closely; where it
+    covers a third they diverge twentyfold, which is the check doing its job
+    rather than failing.
+    """
+    compared = summary.get("instate_comparison", {})
+    if not compared:
+        pytest.skip("analysis 03 not built")
+    for state in ("bihar", "punjab"):
+        if state not in compared:
+            continue
+        c = compared[state]
+        assert abs(c["names_for_half_instate"] - c["names_for_half_roll"]) <= 2, c
+        assert abs(c["top10_share_instate"] - c["top10_share_roll"]) < 0.06, c
+
+
+def test_rajasthan_is_where_the_sources_part_company(summary):
+    """Flagged rather than quietly reported, because one of them is wrong.
+
+    The resolver abstains on two thirds of Rajasthan, so the roll's surname
+    distribution is computed on a selected third and is not a description of the
+    state. If this ever starts agreeing, the resolver's Rajasthan coverage has
+    changed and the note needs rereading.
+    """
+    compared = summary.get("instate_comparison", {})
+    if "rajasthan" not in compared:
+        pytest.skip("rajasthan not compared")
+    c = compared["rajasthan"]
+    assert c["names_for_half_instate"] > 10 * c["names_for_half_roll"], c

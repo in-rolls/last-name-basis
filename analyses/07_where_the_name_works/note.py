@@ -30,6 +30,24 @@ def main() -> None:
         for r in t.itertuples()
     )
     by_rank = t.set_index("state")["ranks_dalit_higher"]
+    rolls = s.get("roll_concentration", {})
+    compared = s.get("instate_comparison", {})
+    pun = rolls.get("punjab")
+    pun_top = (
+        ", ".join(
+            f"`{c['surname']}` {100 * c['share']:.0f}%" for c in pun["commonest"][:3]
+        )
+        if pun
+        else ""
+    )
+    pun_two = (
+        f"{100 * sum(c['share'] for c in pun['commonest'][:2]):.0f}" if pun else "0"
+    )
+    cross = "\n".join(
+        f"| {k} | {v['names_for_half_instate']} | {v['names_for_half_roll']} | "
+        f"{100 * v['top10_share_instate']:.0f}% | {100 * v['top10_share_roll']:.0f}% |"
+        for k, v in compared.items()
+    )
     kerala_rank = f"{by_rank.get('kerala', float('nan')):.2f}"
     maharashtra_rank = f"{by_rank.get('maharashtra', float('nan')):.2f}"
     punjab_rank = f"{by_rank.get('punjab', float('nan')):.2f}"
@@ -97,6 +115,45 @@ caste. Grouping them with
 Kerala, as the gap-closed column alone does, puts two unlike things together.
 
 ![Deciding badly is not the same as carrying nothing]({FIG}/discriminates.png)
+
+## Why Punjab's surnames carry so little
+
+Punjab ranks {by_rank.get('punjab', float('nan')):.2f}, the lowest of the
+fifteen and barely above the 0.50 a surname carrying nothing would give. The
+electoral roll says why. Its three commonest surnames are
+
+{pun_top}
+
+The third is the second misspelled. `kanr` is `kaur`, and one name entered two
+ways accounts for seven electors in a hundred here. That is the variant problem
+this repo has discussed since its first analysis and never measured on a
+romanised source: it inflates how many distinct surnames a place appears to
+have, and so how informative they look.
+
+The first two alone cover **{pun_two}% of the state**, nearer 71% once `kanr` is
+counted with `kaur`. Neither is a family
+name in the sense the rest of this repo assumes: Kaur is carried by Sikh women
+and Singh by Sikh men, across castes. A state in which two names that were never
+lineage markers cover two thirds of the population cannot have surnames that
+identify caste, whatever its composition. That connects the weakest state here
+to analysis 03, which found that India's least informative names are the ones
+assigned by sex.
+
+## Two sources, and where they stop agreeing
+
+Every concentration figure in analysis 03 comes from instate. These come from
+upnaam's resolved rolls, a different collection through a different pipeline, so
+for the first time a number here can be checked against a second source.
+
+| state | names for half, instate | roll | top ten, instate | roll |
+|---|---|---|---|---|
+{cross}
+
+Bihar and Punjab agree closely. Rajasthan does not, and the reason is known: the
+resolver abstains on two thirds of that state, so the roll's distribution
+describes a selected third rather than Rajasthan. The disagreement is the check
+working. Maharashtra cannot be compared at all, because analysis 04 found it
+writes the surname first and analysis 03 withdrew it.
 
 ## The obvious objection, tested
 

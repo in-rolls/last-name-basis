@@ -282,8 +282,13 @@ def claims():
         # 66% for Maharashtra where the analytic share is 36%.
         (
             "05 Rajasthan coverage",
-            r"(\d+)% of the\s+Rajasthan roll",
+            r"(\d+)% of\s+Rajasthan\'s",
             lambda: _analytic_share("rajasthan"),
+        ),
+        (
+            "05 Punjab coverage",
+            r"and (\d+)% of Punjab's",
+            lambda: _analytic_share("punjab"),
         ),
         (
             "05 Bihar coverage",
@@ -292,7 +297,7 @@ def claims():
         ),
         (
             "05 Maharashtra coverage",
-            r"(\d+)% of the Maharashtra roll",
+            r"(\d+)% of Maharashtra\'s",
             lambda: _analytic_share("maharashtra"),
         ),
         (

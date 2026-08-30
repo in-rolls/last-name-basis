@@ -65,6 +65,47 @@ Kerala, as the gap-closed column alone does, puts two unlike things together.
 
 ![Deciding badly is not the same as carrying nothing](out/fig/discriminates.png)
 
+## Why Punjab's surnames carry so little
+
+Punjab ranks 0.55, the lowest of the
+fifteen and barely above the 0.50 a surname carrying nothing would give. The
+electoral roll says why. Its three commonest surnames are
+
+`singh` 38%, `kaur` 26%, `kanr` 7%
+
+The third is the second misspelled. `kanr` is `kaur`, and one name entered two
+ways accounts for seven electors in a hundred here. That is the variant problem
+this repo has discussed since its first analysis and never measured on a
+romanised source: it inflates how many distinct surnames a place appears to
+have, and so how informative they look.
+
+The first two alone cover **64% of the state**, nearer 71% once `kanr` is
+counted with `kaur`. Neither is a family
+name in the sense the rest of this repo assumes: Kaur is carried by Sikh women
+and Singh by Sikh men, across castes. A state in which two names that were never
+lineage markers cover two thirds of the population cannot have surnames that
+identify caste, whatever its composition. That connects the weakest state here
+to analysis 03, which found that India's least informative names are the ones
+assigned by sex.
+
+## Two sources, and where they stop agreeing
+
+Every concentration figure in analysis 03 comes from instate. These come from
+upnaam's resolved rolls, a different collection through a different pipeline, so
+for the first time a number here can be checked against a second source.
+
+| state | names for half, instate | roll | top ten, instate | roll |
+|---|---|---|---|---|
+| bihar | 5 | 4 | 65% | 67% |
+| punjab | 2 | 2 | 85% | 88% |
+| rajasthan | 116 | 5 | 31% | 67% |
+
+Bihar and Punjab agree closely. Rajasthan does not, and the reason is known: the
+resolver abstains on two thirds of that state, so the roll's distribution
+describes a selected third rather than Rajasthan. The disagreement is the check
+working. Maharashtra cannot be compared at all, because analysis 04 found it
+writes the surname first and analysis 03 withdrew it.
+
 ## The obvious objection, tested
 
 The floor keeps a state's *commonest* names, and this repo's own finding is that

@@ -136,3 +136,30 @@ def test_no_group_is_claimed_to_gain_most_without_checking(caste):
     assert gain["Scheduled Tribe"] > gain["Scheduled Caste"]
     # And the point that does hold: biggest gain, still worst outcome.
     assert caste.loc["Scheduled Caste", "wrong_per_100"] == caste["wrong_per_100"].max()
+
+
+def test_adding_punjab_left_the_other_states_where_they_were():
+    """Punjab was a pure addition to the sex split, not a recomputation.
+
+    It is the most sex-marked naming system in the country, Kaur for women and
+    Singh for men, and it was the one resolved state this analysis was not
+    using. Adding it must not move Bihar, Rajasthan or Maharashtra.
+    """
+    import json
+    import pathlib
+
+    path = (
+        pathlib.Path(__file__).resolve().parent.parent
+        / "analyses/05_who_has_an_uninformative_name/out/tab/summary.json"
+    )
+    if not path.exists():
+        pytest.skip("analysis 05 not built")
+    gaps = json.loads(path.read_text()).get("by_sex", {})
+    if "punjab" not in gaps:
+        pytest.skip("punjab artifact unavailable")
+    assert gaps["bihar"]["gap"] == pytest.approx(3.33, abs=0.05)
+    assert gaps["maharashtra"]["gap"] == pytest.approx(-0.20, abs=0.05)
+    assert gaps["rajasthan"]["gap"] == pytest.approx(-1.37, abs=0.05)
+    # And the null holds across four states rather than three: no direction.
+    signs = {k: v["gap"] > 0 for k, v in gaps.items()}
+    assert len(set(signs.values())) == 2, signs

@@ -6,6 +6,29 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **A mechanism for the weakest state in analysis 07, from upnaam's Punjab
+  roll.** Punjab ranks 0.55 against a floor of 0.50 and the analysis did not say
+  why. The roll does: `singh` at 38% and `kaur` at 26% cover 64% of the state,
+  nearer 71% once `kanr`, which is Kaur misspelled, is counted with it. Neither
+  is a family name, so a state where two names that were never lineage markers
+  cover two thirds of the population cannot have surnames that identify caste.
+  That connects the weakest state to the sex-marking names of analysis 03, which
+  were unconnected before.
+- **The first cross-source check in the repo.** Every concentration figure came
+  from instate. upnaam's resolved rolls give a second read from a different
+  collection: Bihar agrees at 5 names against 4 and 65% against 67%, Punjab at 2
+  against 2 and 85% against 88%. Rajasthan disagrees twentyfold, and the reason
+  is known, since the resolver abstains on two thirds of that state, so the roll
+  describes a selected third. Maharashtra cannot be compared, because analysis
+  04 found it writes the surname first and analysis 03 withdrew it. Tests hold
+  all three outcomes, including the disagreement.
+- **Punjab in analysis 05's sex split**, the one resolved state it was not
+  using and the most sex-marked naming system in the country. Women's names cost
+  0.6 more mistakes per hundred than men's there. Four states now, still no
+  consistent direction, and Punjab's estimate rests on 19% of the state.
+
 ### Changed
 
 - **The headline measure was accuracy against the largest category, which the

@@ -34,7 +34,7 @@ fmt:
 	$(BLACK) --fast src analyses tests
 	$(ISORT) src analyses tests
 
-.PHONY: all a01 a02 a03 a04 a05 a06 a07 a08 a09 test lint fmt ci ci-docker
+.PHONY: all app app-data a01 a02 a03 a04 a05 a06 a07 a08 a09 test lint fmt ci ci-docker
 
 ci: lint test
 
@@ -67,3 +67,9 @@ a08:
 a09:
 	$(PY) $(A09)/pipeline.py
 	$(PY) $(A09)/note.py
+
+app-data:
+	$(PY) $(A01)/pipeline.py
+
+app:
+	.venv/bin/streamlit run app/streamlit_app.py

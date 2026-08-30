@@ -11,7 +11,9 @@ import pandas as pd
 
 HERE = Path(__file__).resolve().parent
 TAB, FIG = HERE / "out/tab", HERE / "out/fig"
-SEX_STATES = ["bihar", "rajasthan", "maharashtra"]
+# Punjab is the most sex-marked naming system in the country, Kaur for women
+# and Singh for men, and it was the resolved state this analysis was not using.
+SEX_STATES = ["bihar", "rajasthan", "maharashtra", "punjab"]
 
 
 def _load(name: str, path: Path):

@@ -6,10 +6,37 @@ import json
 from pathlib import Path
 
 import data as source
+import pandas as pd
 
 HERE = Path(__file__).resolve().parent
 TAB, FIG = HERE / "out/tab", HERE / "out/fig"
 SPOTLIGHT = ["assam", "bihar", "punjab", "haryana"]
+# The states upnaam has resolved. Their rolls give a second, independent read on
+# how concentrated a state's surnames are, which every figure in analysis 03
+# otherwise takes from instate alone.
+RESOLVED = ["bihar", "maharashtra", "punjab", "rajasthan"]
+INSTATE = HERE.parent / "03_how_few_names/out/tab/by_state.csv"
+
+
+def compare_with_instate(rolls: list[dict]) -> dict:
+    """Do instate and upnaam agree on how concentrated a state's names are?"""
+    if not INSTATE.exists():
+        return {}
+    d = pd.read_csv(INSTATE)
+    d["key"] = d["state"].str.lower().str.replace(" ", "_", regex=False)
+    d = d.set_index("key")
+    out = {}
+    for roll in rolls:
+        state = roll["state"]
+        if state not in d.index:
+            continue
+        out[state] = {
+            "names_for_half_instate": int(d.loc[state, "names_for_half"]),
+            "names_for_half_roll": roll["names_for_half"],
+            "top10_share_instate": float(d.loc[state, "top10_share"]),
+            "top10_share_roll": roll["top10_share"],
+        }
+    return out
 
 
 def main() -> None:
@@ -30,8 +57,23 @@ def main() -> None:
             TAB / "decisive_names.csv", index=False
         )
 
+    rolls = [r for r in (source.roll_concentration(x) for x in RESOLVED) if r]
+    if rolls:
+        pd.DataFrame(
+            [{k: v for k, v in r.items() if k != "commonest"} for r in rolls]
+        ).to_csv(TAB / "roll_concentration.csv", index=False)
+        pd.DataFrame(
+            [{"state": r["state"], **c} for r in rolls for c in r["commonest"]]
+        ).to_csv(TAB / "roll_commonest.csv", index=False)
+
     best, worst = table.iloc[0], table.iloc[-1]
     summary = {
+        # Two collections, two pipelines, one answer. The only cross-source
+        # check in the repo.
+        "roll_concentration": {
+            r["state"]: {k: v for k, v in r.items() if k != "state"} for r in rolls
+        },
+        "instate_comparison": compare_with_instate(rolls),
         "states": int(len(table)),
         "names_total": int(table["names"].sum()),
         "coverage_share_range": [

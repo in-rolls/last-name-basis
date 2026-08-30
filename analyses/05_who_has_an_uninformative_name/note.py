@@ -194,8 +194,8 @@ error understates the error made on Dalits by about
   decomposition of a known distribution, not an out-of-sample test, so it
   describes the ceiling a perfect user of this table would hit rather than the
   performance of any fitted model.
-- **The sex split covers only Bihar, Rajasthan, and Maharashtra**, the states
-  supported by Upnaam's `resolver-v1` and present locally. It uses Upnaam's
+- **The sex split covers Bihar, Rajasthan, Maharashtra and Punjab**, the states
+  Upnaam's `resolver-v1` has resolved and which are present locally. It uses Upnaam's
   recorded surname, not a resolved family surname.
 - **The sex split needs a given name naampy can gender, and a surname the caste
   table knows.** After both, the estimates rest on {bihar_share} of the Bihar

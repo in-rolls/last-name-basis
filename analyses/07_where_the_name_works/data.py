@@ -136,3 +136,47 @@ def decisive_names(per: pd.DataFrame, state: str, k: int = 3) -> pd.DataFrame:
 
 def github_dir() -> Path:
     return Path(os.environ.get("GITHUB_DIR", Path.home() / "Documents/GitHub"))
+
+
+def roll_concentration(state: str) -> dict | None:
+    """How concentrated a state's surnames are, from upnaam's resolved roll.
+
+    Analysis 07 reports that Punjab's surnames rank 0.55, barely above the 0.50
+    a surname carrying nothing would give, and does not say why. The roll
+    answers it: two names cover most of the state, and neither is a family name.
+
+    This is also the one cross-source check in the repo. Every concentration
+    figure in analysis 03 comes from instate; this comes from a different
+    collection through a different pipeline, and the two can be compared.
+    """
+    from last_name_basis.upnaam import iter_resolved_roll, resolved_roll_path
+
+    path = resolved_roll_path(state, github_dir=github_dir())
+    if not path.exists():
+        return None
+
+    weight: dict[str, float] = {}
+    for frame in iter_resolved_roll(path, state=state):
+        resolved = frame.loc[~frame["abstained"]]
+        if resolved.empty:
+            continue
+        grouped = resolved.groupby("surname")["weight"].sum()
+        for name, w in grouped.items():
+            weight[str(name)] = weight.get(str(name), 0.0) + float(w)
+
+    counts = pd.Series(weight).sort_values(ascending=False)
+    total = counts.sum()
+    if total <= 0:
+        return None
+    share = counts / total
+    cumulative = share.cumsum()
+    return {
+        "state": state,
+        "electors": float(total),
+        "distinct_surnames": int(len(counts)),
+        "top10_share": float(share.head(10).sum()),
+        "names_for_half": int((cumulative < 0.5).sum() + 1),
+        "commonest": [
+            {"surname": str(n), "share": float(s)} for n, s in share.head(10).items()
+        ],
+    }
