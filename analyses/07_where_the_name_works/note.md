@@ -222,6 +222,13 @@ there. Compare the ranking column across states instead, which is what it is
 for; the gap-closed column is comparable only among states of similar
 composition.
 
+**Kerala's figure, without a caveat.** It ranks
+0.85 here, on instate's last names:
+`nair`, `joseph`, `pillai`, 21.2M tokens against a state of 33.4M. Analysis 10
+finds that in Kerala PSC lists 78% of last tokens are a single letter and only
+27% of people have a written surname. This figure therefore describes Keralans
+who have a surname, which is not most of them.
+
 **Any claim about people whose surnames were suppressed.** The floor removes
 rare names, and analysis 01 shows rare names are the informative ones. These
 figures are a floor on what surnames reveal, not a ceiling.

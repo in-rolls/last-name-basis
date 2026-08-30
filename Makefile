@@ -11,8 +11,9 @@ A06 := analyses/06_neighbours
 A07 := analyses/07_where_the_name_works
 A08 := analyses/08_karnataka_psc
 A09 := analyses/09_odisha_village_premium
+A10 := analyses/10_kerala_psc
 
-all: a01 a02 a03 a05 a06 a07 a08 a09
+all: a01 a02 a03 a05 a06 a07 a08 a09 a10
 
 a01:
 	$(PY) $(A01)/pipeline.py
@@ -34,7 +35,7 @@ fmt:
 	$(BLACK) --fast src analyses tests
 	$(ISORT) src analyses tests
 
-.PHONY: all app app-data a01 a02 a03 a04 a05 a06 a07 a08 a09 test lint fmt ci ci-docker
+.PHONY: all app app-data a01 a02 a03 a04 a05 a06 a07 a08 a09 a10 test lint fmt ci ci-docker
 
 ci: lint test
 
@@ -73,3 +74,7 @@ app-data:
 
 app:
 	.venv/bin/streamlit run app/streamlit_app.py
+
+a10:
+	$(PY) $(A10)/pipeline.py
+	$(PY) $(A10)/note.py

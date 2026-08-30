@@ -203,12 +203,25 @@ surnames" from one set of 48,395 names.
 
 [![What a last-token rule calls a surname](analyses/08_karnataka_psc/out/fig/naive_vs_clean.png)](analyses/08_karnataka_psc/note.md)
 
+**And it can be an initial with nothing behind it.** Kerala is the limiting
+case. **78% of last tokens there are a single letter** and only 27% of people
+have a written surname at all: a name is a given name followed by initials
+standing for a father and a house, as in `KALPANA A` or `SHYLAJA E T`. Scoring
+Kerala PSC candidates on Scheduled Caste against the other caste categories, the
+last token ranks a Dalit's higher **59 times in 100**, a written surname 70, and
+the **given name 69, which everybody has**. The informative part of a Kerala name
+is the part no surname-based method reads.
+
+[![What each part of a Kerala name gives away](analyses/10_kerala_psc/out/fig/cues.png)](analyses/10_kerala_psc/note.md)
+
 Any pipeline that takes the last token and calls it a surname is therefore
-measuring something different in each of those places.
+measuring something different in each of those places, and in Kerala measuring
+almost nothing.
 
 *Analyses: [03](analyses/03_how_few_names),
 [04](analyses/04_which_token_is_the_surname),
-[08](analyses/08_karnataka_psc).*
+[08](analyses/08_karnataka_psc),
+[10](analyses/10_kerala_psc).*
 
 ## 3. The place carries what the name does not
 
@@ -384,6 +397,7 @@ Each owns its pipeline, data loading, figures, note and `out/`.
 | [07 where the name works](analyses/07_where_the_name_works) | the spread across fifteen states |
 | [08 Karnataka PSC](analyses/08_karnataka_psc) | the only caste-linked name data for a state absent from SECC |
 | [09 Odisha village premium](analyses/09_odisha_village_premium) | whether the village premium travels outside Bihar |
+| [10 Kerala PSC](analyses/10_kerala_psc) | the state where most people have no surname to read |
 
 ## Limits
 

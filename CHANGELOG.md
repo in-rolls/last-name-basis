@@ -6,6 +6,25 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Analysis 10, Kerala, where the question often has no object.** 1.4M PSC
+  select lists, the largest caste-linked name file here. 78% of last tokens are
+  a single letter and only 27% of candidates have a written surname: a name is a
+  given name plus initials standing for a father and a house. Scoring Scheduled
+  Caste against the other caste categories, the last token ranks a Dalit's
+  higher 59 times in 100, a written surname 70, and the given name 69. The
+  informative part of a Kerala name is the part no surname method reads, which
+  is a stronger version of analyses 04 and 08: there a last-token rule reads the
+  wrong token, here it reads a letter because there is no other token.
+
+  The Muslim and Christian buckets are set aside, since Kerala reserves for both
+  and scoring them would make religion a predictor. Blanks are dropped as
+  missing at random by instruction, and the note records that the label pattern
+  contradicts it: `MENON` and `NAMBOOTHIRI` appear zero times because a forward
+  caste has no reservation to claim, so dropping blanks removes the most
+  distinctive non-Dalit names and pushes every figure down. They are a floor.
+
 ### Changed
 
 - **Name concentration is the mechanism, not an artifact, and the first attempt
