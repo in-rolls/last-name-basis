@@ -288,8 +288,8 @@ half a mistake,
 stripping the religion suffix from the jati label moves it from 19.7 to 15.8,
 and changing which token is taken as the surname moves it by 0.2.
 
-This is one district of thirty and is still being scraped, at 40 khatiyans per
-village. Gajapati is small, heavily Adivasi and on the Andhra border, so it is
+This is one district of thirty and is still being scraped, a median of 35
+khatiyans per village rather than a census of each. Gajapati is small, heavily Adivasi and on the Andhra border, so it is
 not an Odisha result. The village sampling biases the premium downward, which
 makes the gap to Bihar an upper bound rather than an estimate.
 

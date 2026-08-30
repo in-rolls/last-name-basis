@@ -101,12 +101,15 @@ several people, moves the premium by 0.2.
 border; its castes are not the state's. Nothing here may be reported as an
 Odisha result, and the comparison is between one Bihar and one district.
 
-**Each village is a sample.** The fetch runs at {s['per_village_cap']} khatiyans
-per village, so a village cell holds at most {s['per_village_cap']} households
-rather than all of them. Leave-one-out is used throughout for that reason, but a
-sampled village is a weaker cue than a complete one, which biases the premium
-measured here **downward**. The gap to Bihar is therefore an upper bound on the
-true difference, not a point estimate of it.
+**Each village is a sample, not a census.** The fetch caps how many khatiyans it
+takes per village and the cap has already changed mid-collection, so the
+realised figure is measured rather than assumed: a median of
+{s['sampling']['khatiyans_per_village_median']:.0f} khatiyans per village across
+{s['sampling']['villages']:,} villages, with a maximum of
+{s['sampling']['khatiyans_per_village_max']}. Bihar's ladder is built from a
+complete record. A sampled village is a weaker cue than a complete one, so the
+premium measured here is biased **downward**, and the gap to Bihar is an upper
+bound on the true difference rather than a point estimate of it.
 
 **The normalisation layer under-merges.** It leaves `ସଉରା` and `ସୌରା` separate,
 because a one-character difference in a four-character string falls below any

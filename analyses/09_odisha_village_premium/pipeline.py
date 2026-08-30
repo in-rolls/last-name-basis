@@ -143,7 +143,7 @@ def main() -> None:
         "district": frame.attrs["district"],
         "ladder": ladder,
         "ladder_levels": [name for name, _ in LADDER],
-        "per_village_cap": frame.attrs["per_village_cap"],
+        "sampling": frame.attrs["sampling"],
         "villages": int(frame["village"].nunique()),
         "surnames": int(frame["surname"].nunique()),
         "surname_position": position,

@@ -21,8 +21,8 @@ labels to little more than half as many moves the premium by half a mistake. Str
 from the jati label lowers it from 19.7 to 15.8 and leaves the conclusion
 standing. Changing which token is taken as the surname moves it by 0.2.
 
-**Scope.** One district of thirty, still being scraped, sampled at 40 khatiyans
-per village. Gajapati is small, heavily Adivasi and on the Andhra border; this
+**Scope.** One district of thirty, still being scraped, sampled at a median of
+35 khatiyans per village rather than censused. Gajapati is small, heavily Adivasi and on the Andhra border; this
 is not an Odisha result. The village sampling biases the premium downward, so
 the gap to Bihar is an upper bound.
 

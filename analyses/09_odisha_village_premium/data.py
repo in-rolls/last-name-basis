@@ -14,9 +14,12 @@ a footnote:
 Gajapati, and no further. Gajapati is small, heavily Adivasi and on the Andhra
 border; its castes are not Odisha's. Nothing here may be labelled "Odisha".
 
-**Each village is a sample.** The fetch runs at 40 khatiyans per village, so a
-village cell holds at most 40 households rather than all of them. Village-level
-cells are therefore small, and leave-one-out is not optional.
+**Each village is a sample.** The fetch caps khatiyans per village, and the cap
+has changed between runs, so villages accumulate rather than being censused. The
+realised distribution is measured from the data rather than assumed from a
+command line, because a constant written here goes stale the moment the scrape
+is restarted with a different flag. Village cells are small either way, so
+leave-one-out is not optional.
 
 The surname is the **last** token, which is measured rather than assumed. A
 token appearing in both a tenant's name and their father's or husband's is an
@@ -40,7 +43,6 @@ import pandas as pd
 
 HERE = Path(__file__).resolve().parent
 TENANTS = HERE / "out/tab/tenants.parquet"
-PER_VILLAGE_CAP = 40
 DISTRICT = "Gajapati"
 
 _SPACE = re.compile(r"\s+")
@@ -127,8 +129,25 @@ def load() -> pd.DataFrame | None:
     keep = d["jati"].ne("") & d["surname"].ne("")
     out = d.loc[keep].reset_index(drop=True)
     out.attrs["district"] = DISTRICT
-    out.attrs["per_village_cap"] = PER_VILLAGE_CAP
+    out.attrs["sampling"] = village_sampling(out)
     return out
+
+
+def village_sampling(d: pd.DataFrame) -> dict:
+    """How many khatiyans each village actually contributed.
+
+    Not the `--per-village` flag: that is a per-run cap, villages accumulate
+    across runs, and the flag has already changed from 40 to 10 mid-collection.
+    """
+    per = d.groupby(["district_code", "tahsil_code", "village_code"])[
+        "khatiyan"
+    ].nunique()
+    return {
+        "villages": int(len(per)),
+        "khatiyans_per_village_median": float(per.median()),
+        "khatiyans_per_village_mean": float(per.mean()),
+        "khatiyans_per_village_max": int(per.max()),
+    }
 
 
 def surname_position(d: pd.DataFrame) -> dict:

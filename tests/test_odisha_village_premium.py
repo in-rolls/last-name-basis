@@ -82,8 +82,17 @@ def test_the_district_is_never_labelled_as_the_state(summary):
 
 
 def test_the_sampling_limit_is_recorded(summary):
-    """40 khatiyans per village biases the premium downward, so it is stated."""
-    assert summary["per_village_cap"] == 40
+    """The sampling depth biases the premium downward, so it is measured.
+
+    Not read off the --per-village flag: that is a per-run cap, it has already
+    changed from 40 to 10 mid-collection, and villages accumulate across runs.
+    """
+    sampling = summary["sampling"]
+    assert sampling["khatiyans_per_village_median"] > 0
+    assert (
+        sampling["khatiyans_per_village_max"]
+        >= sampling["khatiyans_per_village_median"]
+    )
     assert summary["villages"] > 100
 
 
