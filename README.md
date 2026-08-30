@@ -40,20 +40,23 @@ comparable.
 
 Indian electoral rolls do not record caste, and the caste census does not record
 where a household sits relative to its neighbours. Given that no single source
-carries both, the analyses below combine four.
+carries both, the analyses below combine five.
 
 | what it gives | what it cannot give | source |
 |---|---|---|
 | caste composition of a surname, nationally | fine categories; who actually carries the name today | SECC 2011 |
 | how common a name is, and who a person's father or husband is | any caste at all | electoral rolls, 2017 |
 | jati and hamlet for every household | anywhere outside Bihar; the landless | Bihar land records, Mahadalit census |
+| jati and village per tenant in a second state | one district so far; still being scraped | Odisha Record of Rights |
 | a third population with its own category labels | a population sample of anything | Karnataka PSC lists |
 
 The national picture needs the first two joined. Whether the *place* does the
 work the name gets credit for needs the third, because only there can you put a
-name and a village together and take the village away. Whether "last name" even
-means the same thing across India needs the second and fourth, because that is
-where a name can be checked against a relative's name or against an initial.
+name and a village together and take the village away. Whether the premium that
+produces is a fact about villages or a fact about Bihar needs the fourth, which
+records the same two things in another state. Whether "last name" even means
+the same thing across India needs the second and fifth, because those are where
+a name can be checked against a relative name or against an initial.
 
 ### Joining caste to frequency
 
@@ -91,7 +94,10 @@ is the recorded surname, versioned, for Bihar, Rajasthan and Maharashtra
 [**land**](https://github.com/in-rolls/land) hold the Bihar land records and the
 Mahadalit census, with a jati and a hamlet for each household (analyses 02 and
 06). [**pranaam**](https://github.com/appeler/pranaam) holds the Karnataka
-Public Service Commission select lists (analysis 08).
+Public Service Commission select lists (analysis 08), and
+[**odisha-ror**](https://github.com/in-rolls/odisha-ror) the Odisha Record of
+Rights (analysis 09). That last one publishes the scraper and not the records,
+so analysis 09 needs a local fetch to reproduce.
 
 Because analyses 02 and 06 read from a local clone of `jati`, those two cannot
 be reproduced from a clean checkout. The other six can.

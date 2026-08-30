@@ -66,7 +66,27 @@ def _github() -> Path:
 
 
 def checkpoints() -> Path:
-    return _github() / "pranaam/scripts/data-acquisition/odisha_ror"
+    """Where the Odisha scraper and its checkpoints live.
+
+    The scraper moved to its own repository, but a fetch was running in
+    pranaam at the time and could not be interrupted, so both locations exist
+    during the cutover. The first that holds a parser wins, and the fallback
+    can be deleted once nothing is fetching from the old path.
+    """
+    root = _github()
+    candidates = [
+        root / "odisha-ror",
+        root / "pranaam/scripts/data-acquisition/odisha_ror",
+    ]
+    for candidate in candidates:
+        if (candidate / "parse_ror.py").exists() and (
+            candidate / "raw" / "ror"
+        ).exists():
+            return candidate
+    for candidate in candidates:
+        if (candidate / "parse_ror.py").exists():
+            return candidate
+    return candidates[-1]
 
 
 def materialise() -> bool:
