@@ -36,7 +36,7 @@ Given that both vary across the analyses below, each result is reported with its
 target and its cues. Error rates computed against different targets are not
 comparable.
 
-## 1. The data, and why it takes several kinds
+## The data, and why it takes several kinds
 
 Indian electoral rolls do not record caste, and the caste census does not record
 where a household sits relative to its neighbours. Given that no single source
@@ -96,17 +96,23 @@ Public Service Commission select lists (analysis 08).
 Because analyses 02 and 06 read from a local clone of `jati`, those two cannot
 be reproduced from a clean checkout. The other six can.
 
-## 2. The analyses
-
-### [01 The surname alone, across India](analyses/01_surname_to_category)
+## 1. A surname reveals little, and the average overstates it
 
 Guess "neither" for everyone in that room of a hundred and you are wrong **25**
 times. Let yourself hear the last name and you are wrong **20**.
 
-The five mistakes you save are not spread around. For **91% of people the
-surname does not change the guess at all**. A few names settle it outright, and
-Jha and Yadav cost you 0 and 1, but almost nobody carries them. Sort every
-surname by how many people have it and the two facts run in opposite directions:
+The five mistakes are not spread evenly, and separating two properties of a
+surname explains why. A surname is **predictive** when few of its bearers fall
+outside its largest category. It **changes the guess** only when that largest
+category differs from the population's. The two are not the same, and the
+commonest surnames are often the first without being the second. Yadav is the
+fifth commonest surname in India at 2.6% of the roll, and 99% of its bearers
+fall outside the schedules, so it leaves 1 mistake per 100. It nonetheless
+changes nothing, because "outside the schedules" is what one would have guessed
+without it.
+
+For **91% of people the surname does not change the guess at all**. The
+surnames that do change it are concentrated in the tail:
 
 | rank by frequency | names | share of India | how many change your answer |
 |---|---|---|---|
@@ -115,9 +121,9 @@ surname by how many people have it and the two facts run in opposite directions:
 | 26–50 | 25 | 10% | 8 |
 | 1001–3930 | 2,930 | 6% | 625 |
 
-The ten commonest surnames in the country cover a third of everybody and not one
-of them moves your guess off the base rate. The names that settle the question
-sit in the tail, carried by a few people each.
+The ten commonest surnames cover a third of the country, and none of them moves
+the guess off the base rate. The 2,930 surnames ranked 1001 and below cover 6%
+of people, and 625 of them do move it.
 
 [![The commonest names in India tell you almost nothing](analyses/01_surname_to_category/out/fig/common_and_empty.png)](analyses/01_surname_to_category/note.md)
 
@@ -128,7 +134,51 @@ someone named Ram is still "neither", and it is wrong 53 times per 100, the same
 rate as guessing without the name. Such a surname warrants less confidence in an
 answer it does not alter.
 
-### [02 The surname plus a place, in Bihar](analyses/02_jati_by_geography)
+*Analysis: [01](analyses/01_surname_to_category).*
+
+## 2. "Last name" is not one thing across India
+
+Part of the answer to claim 1 is that the thing being measured is not stable.
+The last token of an Indian name is a family name in some places and something
+else in others, and three of the analyses here found it failing in three
+different ways.
+
+**It can mark sex rather than family.** The commonest last name in India is
+**devi**, at 6.5% of the electoral roll. On the Bihar rolls **81% of women carry
+a name from this group against 10% of men**, and the family names in the same
+state read as 84 to 89% male, because those families' women are on the roll as
+Devi. A woman and her brother do not share a last name, and a name assigned by
+sex cannot track a lineage. The clear cases cover **10.5% of the country**, and
+adding Singh and Kumar takes it to 19%. Eighteen names cover a quarter of India,
+but **103** if you count only names a brother and sister share.
+
+[![Who carries a sex-marking last name](analyses/03_how_few_names/out/fig/sex_marked.png)](analyses/03_how_few_names/note.md)
+
+**It can be in the other position.** Every electoral roll record carries the
+elector's father or husband, and a token appearing in both names is one that
+passed between two family members. That test confirms the ten sex-marking names,
+which all transmit under 1% of the time, and splits the two the hand list called
+ambiguous: **Singh transmits 78% of the time and Kumar 8%**. It also found that
+**Maharashtra writes the surname first**, as in `patil ashwini` with father
+`patil ashok`, so instate's last-token column holds a *given* name there.
+Analysis 03's Maharashtra and Gujarat figures were withdrawn.
+
+**It can be an initial.** In Karnataka's Public Service Commission select lists
+the last token is a single letter **34% of the time**, and the six commonest are
+`S`, `R`, `K`, `N`, `B`, `C`. Drop single letters and the list becomes `Kumar`,
+`Patil`, `Naik`, `Manjunatha`: two inventories of "Karnataka's commonest
+surnames" from one set of 48,395 names.
+
+[![What a last-token rule calls a surname](analyses/08_karnataka_psc/out/fig/naive_vs_clean.png)](analyses/08_karnataka_psc/note.md)
+
+Any pipeline that takes the last token and calls it a surname is therefore
+measuring something different in each of those places.
+
+*Analyses: [03](analyses/03_how_few_names),
+[04](analyses/04_which_token_is_the_surname),
+[08](analyses/08_karnataka_psc).*
+
+## 3. The place carries what the name does not
 
 The national figure averages over people whose location is unknown, so it cannot
 separate the surname from the place. Bihar's land records identify both. A
@@ -145,60 +195,89 @@ depends on.
 
 [![How caste information atrophies with distance](analyses/02_jati_by_geography/out/fig/atrophy.png)](analyses/02_jati_by_geography/note.md)
 
-### [03 India's commonest last name tells you nothing](analyses/03_how_few_names)
+**That comparison knows the village in advance**, which is the position of
+someone who already knows the place and not of a stranger. Holding whole
+villages out of the fitting leaves only the surnames of the *other* households
+there as a cue. On the Bihar land records those neighbours save about four
+mistakes per 100. The average hides the case: **Chaudhary goes from 80 mistakes
+to 56, Prasad from 72 to 54**, while Paswan, which already identifies you at 6,
+gains nothing. **The names that carry no caste information alone are the ones
+the neighbourhood rescues.**
 
-The commonest last name in India is **devi**, at 6.5% of the electoral roll. It
-is a real last name, but it records the bearer's sex rather than her family. On
-the Bihar rolls **81% of women carry a name from this group against 10% of
-men**, and the family names in the same state read as 84 to 89% male, because
-those families' women are on the roll as Devi. A woman and her brother do not
-share a last name.
+[![Which names get rescued](analyses/06_neighbours/out/fig/per_surname.png)](analyses/06_neighbours/note.md)
 
-That is why these names carry no caste signal: a name assigned by sex cannot
-track a lineage. The clear cases cover **10.5% of the country**, and adding
-Singh and Kumar takes it to 19%. Counting them makes Indian naming look far more
-concentrated than it is. Eighteen names cover a quarter of India, but **103** if
-you count only names a brother and sister share.
+**How much the place is worth varies enormously by state.** Sorting people into
+Dalit, Adivasi or neither, the same guess closes **67% of the gap in Assam and
+0% in Haryana**. What carries a state is one or two large, decisive names rather
+than many of them: Assam has two majority-Dalit surnames among its commonest and
+closes two thirds of the gap, because one of them is `das`. Punjab has five and
+closes 3%, because its biggest are `ram` at 62% and `lal` at 52%. Haryana has
+none at all. Every state's coverage is printed beside its result, because these
+are surnames that cleared a 100-record disclosure floor and they cover between
+3% and 19% of a state.
 
-[![Who carries a sex-marking last name](analyses/03_how_few_names/out/fig/sex_marked.png)](analyses/03_how_few_names/note.md)
+[![How much of the gap a surname closes, by state](analyses/07_where_the_name_works/out/fig/where_it_works.png)](analyses/07_where_the_name_works/note.md)
 
-### [04 Which token is actually the surname?](analyses/04_which_token_is_the_surname)
+**And the village premium is smaller outside Bihar.** The Odisha Record of
+Rights records a jati and a village for every tenant, so the same measurement is
+possible elsewhere. In Gajapati district, on the same protocol, **a village adds
+20 points where in Bihar it adds 30**. Put as a share of the errors the surname
+leaves behind, adding the village removes 42% of them in Gajapati and 64% in
+Bihar.
 
-The analyses above lean on a list of names I wrote by hand. The rolls can
-measure it instead. Every record carries the elector's **father or husband**,
-and a token appearing in both names is one that **passed between two family
-members**.
+The two levels are not comparable: Bihar sorts people among 141 curated jatis
+and Gajapati among several hundred labels as recorded, and a harder target costs
+mistakes whatever the surname does. Given that, the comparable quantity is the
+distance between the rungs, and both places converge at 47 once the place is
+discarded.
 
-The hand list was right about the ten sex-marking names, which all transmit
-under 1% of the time, and wrong about the two it called ambiguous. **Singh
-transmits 78% of the time and Kumar 8%**, so Singh is mostly a real inherited
-surname and Kumar mostly is not. The test also found a category the list never
-contemplated: given names sitting in the last-name slot, larger than everything
-on it.
+[![Error rising as the place gets bigger, in both places](analyses/09_odisha_village_premium/out/fig/atrophy.png)](analyses/09_odisha_village_premium/note.md)
 
-And it caught a defect. **Maharashtra writes the surname first**, as in `patil
-ashwini` with father `patil ashok`, so instate's last-token column holds a
-*given* name there. Analysis 03's Maharashtra and Gujarat figures were
-withdrawn.
+Three of the analyst's choices could have produced that difference, so each was
+varied. Collapsing the labels to little more than half as many moves the premium
+by half a mistake. Stripping the religion suffix from the jati label moves it
+from 19.7 to 15.8. Changing which token is taken as the surname moves it by 0.2.
+Gajapati is one district of thirty and is still being scraped, a median of 35
+khatiyans per village rather than a census of each, so this is not an Odisha
+result, and the sampling biases the premium downward.
 
-[Read the notebook.](analyses/04_which_token_is_the_surname/investigate.ipynb)
+*Analyses: [02](analyses/02_jati_by_geography),
+[06](analyses/06_neighbours),
+[07](analyses/07_where_the_name_works),
+[09](analyses/09_odisha_village_premium).*
 
-### [05 Whose name tells you nothing](analyses/05_who_has_an_uninformative_name)
+## 4. The failure is not spread evenly, and the direction is the worst one
 
-The analyses above report an average. This asks who carries the uninformative
-names, because if they are not spread evenly then every name-based caste method
-has differential error in a knowable direction.
+An average error rate conceals who bears it. If the uninformative names are not
+spread evenly, every name-based caste method has differential error in a knowable
+direction.
 
-They are not. The guess is wrong about **66 of every 100 Dalits** and **4 of
-every 100 people outside the schedules**, a seventeen-fold gap. Those weight up
-to the 20 mistakes per hundred it makes across everybody, so this is one guess
-split by who it lands on rather than a second estimator.
+They are not. Nationally, the guess is wrong about **66 of every 100 Dalits** and
+**4 of every 100 people outside the schedules**, a seventeen-fold gap. Those
+weight up to the 20 mistakes per hundred it makes across everybody, so this is
+one guess split by who it lands on rather than a second estimator.
 
 The name is not useless for Dalits. It takes them from wrong about all of them
 to wrong about 66 in a hundred, and it does more still for Adivasis, 100 down to
 43. But a large gain still leaves Dalits far and away the worst served.
 
 [![Mistakes by the carrier's own caste](analyses/05_who_has_an_uninformative_name/out/fig/by_caste.png)](analyses/05_who_has_an_uninformative_name/note.md)
+
+**The same pattern appears on independent data.** Karnataka is absent from the
+census extract the rest of this repo runs on, so its Public Service Commission
+select lists are the only caste-linked name data available for the state. The
+guess there is wrong about **62 of every 100 Scheduled Caste candidates and 17
+of every 100 General ones**, an error 3.6 times larger for the group the quota
+exists for. That is a different state, a different source and a different set of
+labels, pointing the same way. Overall the surname closes 24% of the gap there,
+from 52.5 mistakes per 100 to 40.0.
+
+[![What the guess gets wrong, by the candidate's own category](analyses/08_karnataka_psc/out/fig/by_category.png)](analyses/08_karnataka_psc/note.md)
+
+**This is the result with consequences.** Use a name-based method to test whether
+Dalits get fewer callbacks, and two thirds of the real Dalits sit in your
+comparison group, on both sides of the gap you are trying to measure. The
+discrimination is unchanged; your estimate of it shrinks.
 
 The same question asked about sex has no such answer. Women's names cost **3.3
 more mistakes per hundred than men's in Bihar**, but 1.4 *fewer* in Rajasthan
@@ -207,131 +286,38 @@ three with care: after matching Upnaam's resolved surnames to the caste table
 they rest on **57% of the Bihar roll, 36% of the Maharashtra roll and 20% of the
 Rajasthan roll**.
 
-### [06 Does knowing your neighbours give you away?](analyses/06_neighbours)
+*Analyses: [05](analyses/05_who_has_an_uninformative_name),
+[08](analyses/08_karnataka_psc).*
 
-Analysis 02 scores a household against a table built partly from its own
-village, so the village's jati mix is known in advance. That is the position of
-someone who already knows the place, and not of a stranger. To score the
-stranger's position instead, whole villages are held out of the fitting, leaving
-only the surnames of the *other* households there as a cue.
+## 5. The exposure is in the linkage, not the word
 
-On the Bihar land records neighbours save about four mistakes per 100. The
-average hides the case: **Chaudhary goes from 80 mistakes to 56, Prasad from 72
-to 54**, while Paswan, which already identifies you at 6, gains nothing. **The
-names that carry no caste information alone are the ones the neighbourhood
-rescues.**
+Caste is printed on no electoral roll, so the question a roll actually poses is
+what its cues are worth to someone who can match them against a caste register
+of the same population. Across 887,512 Scheduled Caste households in 8,307
+held-out villages, sorted into 22 jatis: knowing nothing leaves 59 mistakes per
+100, the surname alone leaves **30**, neighbours bring that to **26**, and the
+name, the father's name and the hamlet together with a caste register leave
+**9**.
 
-[![Which names get rescued](analyses/06_neighbours/out/fig/per_surname.png)](analyses/06_neighbours/note.md)
+A surname is a weak instrument. A surname joined to a register is a strong one.
 
-**And it finishes the bracket.** Caste is printed on no electoral roll, so the
-real question is what the roll's cues are worth to someone who can match them
-against a caste register of the same population. Across 887,512 Scheduled Caste
-households in 8,307 held-out villages, sorted into 22 jatis: knowing nothing
-leaves 59 mistakes per 100, the surname alone leaves **30**, neighbours bring
-that to **26**, and the name, the father's name and the hamlet together with a
-caste register leave **9**.
+*Analysis: [06](analyses/06_neighbours).*
 
-### [07 Where a surname works, and where it does not](analyses/07_where_the_name_works)
+## The analyses
 
-The national figure hides an enormous spread. Sorting people into Dalit, Adivasi
-or neither, the same guess closes **67% of the gap in Assam and 0% in
-Haryana**. What carries a state is one or two large,
-decisive names rather than many of them: Assam has two majority-Dalit surnames
-among its commonest and closes two thirds of the gap, because one of them is
-`das`. Punjab has five and closes 3%, because its biggest are `ram` at 62% and
-`lal` at 52%. Haryana has none at all.
+Each owns its pipeline, data loading, figures, note and `out/`.
 
-Every state's coverage is printed beside its result, because these are surnames
-that cleared a 100-record disclosure floor and they cover between 3% and 19% of
-a state. A state retaining few names could look uninformative by construction,
-so the ordering is retested with every state cut to its 25 commonest names. It
-survives.
-
-[![How much of the gap a surname closes, by state](analyses/07_where_the_name_works/out/fig/where_it_works.png)](analyses/07_where_the_name_works/note.md)
-
-### [08 What a surname reveals about caste in Karnataka](analyses/08_karnataka_psc)
-
-Karnataka is absent from the census extract the rest of this repo runs on:
-outkast covers nineteen states and Karnataka is not among them. Its Public
-Service Commission select lists are the only caste-linked name data available
-for the state. They are select lists, so the candidates are people who obtained
-state government jobs, and the category is one they declared to claim a quota.
-
-Getting a surname out of them takes a step first. The last token is a single
-letter **34% of the time**, and the six commonest are `S`, `R`, `K`, `N`, `B`,
-`C`. Drop single letters and the list becomes `Kumar`, `Patil`, `Naik`,
-`Manjunatha`. Analysis 04 found Maharashtra failing the last-token assumption by
-writing the surname first; this is the same assumption failing by abbreviation.
-
-The guess is then wrong about **62 of every 100 Scheduled Caste candidates and
-17 of every 100 General ones**, an error 3.6 times larger for the group the
-quota exists for. Analysis 05 found that direction nationally from SECC and the
-electoral rolls; this is a different state, a different source and a different
-set of labels, pointing the same way.
-
-[![What the guess gets wrong, by the candidate's own category](analyses/08_karnataka_psc/out/fig/by_category.png)](analyses/08_karnataka_psc/note.md)
-
-Overall the surname closes 24% of the gap, from 52.5 mistakes per 100 to 40.0.
-Against analysis 07's states that would sit between Tamil Nadu and Uttarakhand,
-well below Bihar, though four quota categories are not three census categories
-and job applicants are not a population.
-
-### [09 Does the village premium travel outside Bihar?](analyses/09_odisha_village_premium)
-
-Analysis 02 is the strongest result here, and it rests on one state. Whether the
-30-point gain from adding a village describes surnames and villages generally,
-or describes Bihar, was untested. The Odisha Record of Rights records a jati and
-a village for every tenant, which permits the same measurement elsewhere.
-
-Scored on the same protocol in Gajapati district, **a village adds 20 points
-where in Bihar it adds 30**. Put as a share of the errors the surname leaves
-behind, adding the village removes 42% of them in Gajapati and 64% in Bihar.
-
-The two levels are not comparable: Bihar sorts people among 141 curated jatis
-and Gajapati among several hundred labels as recorded, and a harder target costs
-mistakes whatever the surname does. Given that, the comparable quantity is the
-distance between the rungs.
-
-Three of the analyst's choices could have produced the difference, so each was
-varied. Collapsing the labels to little more than half as many moves the premium
-by half a mistake. Stripping the religion suffix from the jati label moves it
-from 19.7 to 15.8. Changing which token is taken as the surname moves it by
-0.2.
-
-This is one district of thirty and is still being scraped, a median of 35
-khatiyans per village rather than a census of each. Gajapati is small, heavily Adivasi and on the Andhra border, so it is
-not an Odisha result. The village sampling biases the premium downward, which
-makes the gap to Bihar an upper bound rather than an estimate.
-
-Put on analysis 02's axis, the two places give the same shape at different
-depths. They converge where the place is discarded and separate as it is
-restored.
-
-[![Error rising as the place gets bigger, in both places](analyses/09_odisha_village_premium/out/fig/atrophy.png)](analyses/09_odisha_village_premium/note.md)
-
-## 3. Reading the results
-
-**Caste is a local fact, and a name is a poor carrier of it.** A surname reveals
-a great deal where people know the village and very little where they do not,
-which is why the same name reads as informative in a Bihar village and nearly
-empty in a city. Analysis 02 measures what the village is worth; analysis 01
-measures what is left once the village is gone.
-
-**A name-based method is accurate about the advantaged and poor about the
-disadvantaged.** Use such a method to test whether Dalits get fewer callbacks, and two thirds of the
-real Dalits sit in your comparison group, on both sides of the gap you are
-trying to measure. The discrimination is unchanged; your estimate of it shrinks.
-
-**The exposure belongs to the linkage, not the word.** A surname alone leaves 30
-mistakes per 100 across 22 jatis. The same surname, with a father's name and a
-hamlet, matched against a caste register of the same population, leaves 9. The
-name is a weak instrument. The name joined to a register is a strong one.
-
-**Sometimes "last name" is not even the right question.** Maharashtra writes the
-surname first, Karnataka abbreviates it to an initial a third of the time, and
-in Bihar the commonest last name marks sex rather than family. Any pipeline that
-takes the last token and calls it a surname is measuring something different in
-each of those places.
+| | what it does |
+|---|---|
+| [01 surname to category](analyses/01_surname_to_category) | what a surname alone reveals, nationally |
+| [02 jati by geography](analyses/02_jati_by_geography) | surname against surname-plus-village, Bihar, 141 jatis |
+| [03 how few names](analyses/03_how_few_names) | how concentrated Indian naming is, and what a sex-marking name does to that count |
+| [04 which token is the surname](analyses/04_which_token_is_the_surname) | which token transmits between family members |
+| [05 who has an uninformative name](analyses/05_who_has_an_uninformative_name) | who the guess fails, by their own caste and by sex |
+| [06 neighbours](analyses/06_neighbours) | held-out villages, the neighbour cue, and the ceiling with a caste register |
+| [07 where the name works](analyses/07_where_the_name_works) | the spread across fifteen states |
+| [08 Karnataka PSC](analyses/08_karnataka_psc) | the only caste-linked name data for a state absent from SECC |
+| [09 Odisha village premium](analyses/09_odisha_village_premium) | whether the village premium travels outside Bihar |
 
 ## Limits
 

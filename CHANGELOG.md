@@ -8,6 +8,26 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- **The README is organised by claim rather than by analysis.** It had nine
+  sections, one per analysis, numbered in the order the analyses were built,
+  which is a table of contents and not an argument. The structure also could not
+  hold: analysis 08 is both a measurement result and a differential result, and
+  analysis 06 is both a place result and the ceiling, so a section per analysis
+  had to repeat them or split them arbitrarily. Karnataka in particular read as
+  a stray section because it was the eighth thing built.
+
+  Five claims now carry it: a surname reveals little and the average overstates
+  it; "last name" is not one thing across India; the place carries what the name
+  does not; the failure is not spread evenly; the exposure is in the linkage.
+  Each cites the analyses behind it, and an index table keeps the repository
+  navigable. The section formerly called "Reading the results" is gone, since it
+  existed only to state the argument after nine sections had failed to.
+
+  Nothing was dropped in the move: every number and every figure survives, and
+  the Karnataka naive-versus-cleaned figure is now used, illustrating the third
+  way the last-token assumption breaks alongside sex-marking names and
+  Maharashtra's ordering.
+
 - **Analysis 08 rebuilt around the repo's question, and its stated purpose
   corrected.** It had reported an initials measurement and a prediction exercise
   without connecting either to what the repo asks. The justification given for

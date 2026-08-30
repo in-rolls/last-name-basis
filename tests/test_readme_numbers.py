@@ -302,7 +302,7 @@ def claims():
         ),
         (
             "06 chaudhary rescued",
-            r"Chaudhary goes from \d+ mistakes to (\d+)",
+            r"Chaudhary goes from \d+ mistakes\s+to (\d+)",
             lambda: _surname_pair("\u091a\u094c\u0927\u0930\u0940")[1],
         ),
         (
@@ -329,7 +329,7 @@ def claims():
         # the roll's cues against a caste register of the same population.
         (
             "06 ceiling",
-            r"caste register leave \*\*(\d+)\*\*",
+            r"caste register leave\s+\*\*(\d+)\*\*",
             _ceil("mistakes_per_100"),
         ),
         (
@@ -337,7 +337,7 @@ def claims():
             r"([\d,]+) Scheduled Caste\s+households",
             _ceil("households"),
         ),
-        ("06 villages", r"([\d,]+) held-out villages", _ceil("villages_held_out")),
+        ("06 villages", r"([\d,]+)\s*\nheld-out villages", _ceil("villages_held_out")),
         (
             "07 assam",
             r"closes \*\*(\d+)% of the\s+gap in Assam",
@@ -345,7 +345,7 @@ def claims():
         ),
         (
             "07 haryana",
-            r"gap in Assam and (\d+)% in\s+Haryana\*\*",
+            r"gap in Assam and\s+(\d+)% in Haryana\*\*",
             _state("haryana", "removed"),
         ),
         (
@@ -360,7 +360,7 @@ def claims():
         ),
         (
             "08 General error",
-            r"Scheduled Caste candidates and\s+(\d+) of every 100 General ones\*\*",
+            r"Scheduled Caste candidates and\s+(\d+)\s+of every 100 General ones\*\*",
             _karnataka("General"),
         ),
         (
@@ -413,7 +413,7 @@ def test_the_readme_premium_numbers_match_analysis_09() -> None:
         pytest.skip("analysis 09 not built")
     s = json.loads(path.read_text())
     text = README.read_text()
-    match = re.search(r"village adds (\d+) points\s+where in Bihar it adds (\d+)", text)
+    match = re.search(r"village adds\s+(\d+) points where in Bihar it adds (\d+)", text)
     assert match, "README no longer states the two premia"
     assert abs(float(match.group(1)) - s["gajapati"]["as recorded"]["premium"]) < 0.5
     assert abs(float(match.group(2)) - s["bihar"]["premium"]) < 0.5
