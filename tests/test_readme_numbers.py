@@ -351,7 +351,7 @@ def claims():
         ),
         (
             "08 naive",
-            r"naive token leaves (\d+\.\d)\s*\nmistakes per 100",
+            r"naive token leaves (\d+\.\d) mistakes",
             _karnataka("naive_surname"),
         ),
         (

@@ -258,12 +258,13 @@ and the six commonest are `S`, `R`, `K`, `N`, `B`, `G`. Drop single letters and
 the list becomes `Kumar`, `Patil`, `Naik`, `Manjunatha`, two different
 inventories of "Karnataka's commonest surnames" from one set of names.
 
-Cleaning them changes the prediction not at all. Sorting candidates into
-General, OBC, Scheduled Caste or Scheduled Tribe, the naive token leaves 49.2
-mistakes per 100 and the cleaned surname 49.6, against 54.5 knowing nothing. Slightly *worse*, because splitting the
-initial-buckets leaves fewer people sharing a cell with anyone. The naive rule
-was never predicting from surnames. It was pooling people into a few enormous
-initial-buckets.
+Cleaning them does not improve prediction. Sorting candidates into General,
+OBC, Scheduled Caste or Scheduled Tribe, the naive token leaves 49.2 mistakes
+per 100 and the cleaned surname 49.6, against 54.5 with no name at all. The
+cleaned version is marginally worse because splitting the initial-buckets
+reduces the share of candidates sharing a cell with anyone else, from 74% to
+69%. The naive rule was therefore not predicting from surnames. It was pooling
+candidates into a small number of large buckets keyed on an initial.
 
 [![What a last-token rule calls a surname](analyses/08_karnataka_initials/out/fig/naive_vs_clean.png)](analyses/08_karnataka_initials/note.md)
 
