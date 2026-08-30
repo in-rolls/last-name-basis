@@ -78,3 +78,69 @@ def premium(summary: dict, out: Path) -> None:
     fig.tight_layout()
     fig.savefig(out, dpi=170)
     plt.close(fig)
+
+
+def atrophy(ladders: dict, blinds: dict, out: Path) -> None:
+    """Both places on analysis 02's axis: error rising as the place gets bigger.
+
+    The administrative units are not equivalent across the two states, so the
+    axis is the rank of a unit's size rather than a common unit, and each rung
+    is labelled with both names. What the figure shows is the shape: the two
+    lines meet where the place is thrown away and separate as it is restored.
+    """
+    rungs = ["village", "middle", "larger", "alone"]
+    x = range(len(rungs))
+    colour = {"Bihar": INK, "Gajapati district, Odisha": ACCENT}
+
+    fig, ax = plt.subplots(figsize=(9.4, 5.4))
+    for place, values in ladders.items():
+        c = colour[place]
+        ax.plot(x, values, "-o", color=c, lw=2.2, ms=8, label=place)
+        for xi, v in zip(x, values):
+            ax.annotate(
+                f"{v:.0f}",
+                (xi, v),
+                textcoords="offset points",
+                xytext=(0, 9),
+                ha="center",
+                fontsize=10,
+                color=c,
+            )
+    for place, value in blinds.items():
+        c = colour[place]
+        ax.axhline(value, color=c, ls=":", lw=1.1, alpha=0.6)
+        ax.text(
+            -0.06,
+            value + 1.2,
+            f"knowing nothing, {place.split(' ')[0]} \u2014 {value:.0f}",
+            fontsize=8.5,
+            color=c,
+        )
+
+    ax.set_xticks(list(x))
+    ax.set_xticklabels(
+        [
+            "surname\n+ village",
+            "surname\n+ zone / RI circle",
+            "surname\n+ district / tahsil",
+            "surname alone",
+        ],
+        fontsize=9.5,
+    )
+    ax.set_xlim(-0.15, len(rungs) - 0.85)
+    ax.set_ylim(0, 90)
+    ax.set_ylabel("of 100 people, how many you get wrong")
+    ax.set_title(
+        "Caste is a local fact in both places, and more local in Bihar\n"
+        "The two lines meet once the place is thrown away. The units are not "
+        "equivalent\nacross states, so the axis ranks them by size rather "
+        "than naming one thing.",
+        color=INK,
+        loc="left",
+        fontsize=11.5,
+    )
+    ax.legend(frameon=False, fontsize=10, loc="lower right")
+    style_axes(ax)
+    fig.tight_layout()
+    fig.savefig(out, dpi=170)
+    plt.close(fig)

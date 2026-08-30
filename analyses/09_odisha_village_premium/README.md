@@ -26,4 +26,9 @@ per village. Gajapati is small, heavily Adivasi and on the Andhra border; this
 is not an Odisha result. The village sampling biases the premium downward, so
 the gap to Bihar is an upper bound.
 
+On analysis 02's axis, both places give the same shape at different depths: they
+converge at 47 once the place is discarded and separate as it is restored.
+
+![Error rising as the place gets bigger](out/fig/atrophy.png)
+
 Run with `make a09`. Read [the note](note.md).

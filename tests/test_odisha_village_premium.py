@@ -85,3 +85,29 @@ def test_the_sampling_limit_is_recorded(summary):
     """40 khatiyans per village biases the premium downward, so it is stated."""
     assert summary["per_village_cap"] == 40
     assert summary["villages"] > 100
+
+
+def test_the_ladder_rises_monotonically_with_the_size_of_the_place(summary):
+    """Analysis 02's shape, reproduced in a second state.
+
+    If a coarser place ever scored better than a finer one, the cue would be
+    doing something other than locating the person, and the comparison with
+    Bihar would not mean what it says.
+    """
+    ladder = summary["ladder"]
+    assert ladder == sorted(ladder), ladder
+    assert summary["ladder_levels"][0].endswith("village")
+    assert summary["ladder_levels"][-1] == "surname alone"
+
+
+def test_both_places_converge_once_the_place_is_discarded(summary):
+    """The two lines meet at the surname alone and separate at the village.
+
+    That is the whole comparison: equal without a place, unequal with one. If
+    they stopped converging, the two datasets would no longer be measuring
+    comparable surname signal and the premium difference would be confounded.
+    """
+    bihar = summary["bihar_ladder"]
+    gajapati = summary["ladder"]
+    assert abs(bihar[-1] - gajapati[-1]) < 2, "surname-alone rungs should agree"
+    assert gajapati[0] - bihar[0] > 5, "village rungs should differ"

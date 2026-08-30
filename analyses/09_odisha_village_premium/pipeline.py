@@ -36,6 +36,34 @@ def bihar() -> dict | None:
     }
 
 
+LADDER = [
+    ("surname + village", ["surname", "village"]),
+    ("surname + RI circle", ["surname", "ri"]),
+    ("surname + tahsil", ["surname", "tahsil"]),
+    ("surname alone", ["surname"]),
+]
+
+
+def bihar_ladder() -> list[float] | None:
+    """Bihar's rungs at the same four sizes of place, leave-one-out."""
+    if not A02.exists():
+        return None
+    d = pd.read_csv(A02)
+    d = d[(d["target"] == "jati") & (d["ladder"] == "records")].set_index("level")
+    order = ["surname+village", "surname+zone", "surname+district", "surname"]
+    return [float(d.loc[k, "mistakes_per_100_loo"]) for k in order]
+
+
+def bihar_blind() -> float | None:
+    """Bihar's blind rate, from analysis 02's own summary rather than typed."""
+    path = A02.parent / "summary.json"
+    if not path.exists():
+        return None
+    return float(
+        json.loads(path.read_text())["baselines_mistakes_per_100"]["records/jati"]
+    )
+
+
 def score_all(frame: pd.DataFrame, group: str) -> dict:
     alone = source.score(frame, ["surname"], group=group)
     village = source.score(frame, ["surname", "village"], group=group)
@@ -93,8 +121,28 @@ def main() -> None:
     norm.MIN_SIMILARITY = THRESHOLDS[0]
     pd.DataFrame(sensitivity).to_csv(TAB / "sensitivity.csv", index=False)
 
+    frame["ri"] = (
+        frame["district_code"].astype(str)
+        + "|"
+        + frame["tahsil_code"].astype(str)
+        + "|"
+        + frame["ri_code"].astype(str)
+    )
+    frame["tahsil"] = (
+        frame["district_code"].astype(str) + "|" + frame["tahsil_code"].astype(str)
+    )
+    ladder = [
+        source.score(frame, keys, group="jati_norm")["mistakes_per_100"]
+        for _, keys in LADDER
+    ]
+    pd.DataFrame(
+        {"level": [name for name, _ in LADDER], "mistakes_per_100": ladder}
+    ).to_csv(TAB / "ladder.csv", index=False)
+
     summary = {
         "district": frame.attrs["district"],
+        "ladder": ladder,
+        "ladder_levels": [name for name, _ in LADDER],
         "per_village_cap": frame.attrs["per_village_cap"],
         "villages": int(frame["village"].nunique()),
         "surnames": int(frame["surname"].nunique()),
@@ -110,6 +158,8 @@ def main() -> None:
         },
         "gajapati": scored,
         "bihar": bihar(),
+        "bihar_ladder": bihar_ladder(),
+        "bihar_blind": bihar_blind(),
         "sensitivity": sensitivity,
     }
     (TAB / "summary.json").write_text(json.dumps(summary, indent=2))
@@ -118,6 +168,16 @@ def main() -> None:
     import figures
 
     figures.premium(summary, FIG / "village_premium.png")
+    bl = bihar_ladder()
+    if bl is not None:
+        figures.atrophy(
+            {"Bihar": bl, "Gajapati district, Odisha": summary["ladder"]},
+            {
+                "Bihar": bihar_blind() or 0.0,
+                "Gajapati district, Odisha": scored["as recorded"]["blind"],
+            },
+            FIG / "atrophy.png",
+        )
     print(f"wrote {TAB} and {FIG}")
 
 

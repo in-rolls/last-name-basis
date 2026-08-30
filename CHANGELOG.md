@@ -17,7 +17,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   stripping the religion suffix from the label moves it from 19.7 to 15.8, and
   changing which token is taken as the surname moves it by 0.2. The surname
   position is measured from the father's name rather than assumed, and in
-  Gajapati the surname is last, the opposite of Maharashtra.
+  Gajapati the surname is last, the opposite of Maharashtra. Both places are
+  also drawn on analysis 02's axis: error rises monotonically as the place gets
+  bigger in each, the two converge at 47 once the place is discarded, and they
+  separate as it is restored.
 
 - **Analysis 07, where a surname works and where it does not.** The national
   figure hides a spread from 67% of the gap closed in Assam to 0% in Haryana.

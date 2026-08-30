@@ -47,6 +47,12 @@ against {b['premium_share']:.0f}% in Bihar.
 
 ![What a village adds, in Bihar and in Gajapati]({FIG}/village_premium.png)
 
+Put on analysis 02's axis, the two places produce the same shape and different
+depths. Both leave the same number of mistakes once the place is discarded, and
+they separate as it is restored.
+
+![Error rising as the place gets bigger, in both places]({FIG}/atrophy.png)
+
 ## What is being compared, and what is not
 
 The two levels are not comparable and the figure is drawn so as not to invite
@@ -55,9 +61,9 @@ sorts them among {g['groups']} labels as recorded. A harder target produces more
 mistakes whatever the surname does, so the quantity that carries across places
 is the distance between the two rungs rather than the height of either.
 
-The coincidence that both places leave 47 mistakes at the surname alone is a
-coincidence. It should not be read as evidence that surnames are equally
-informative in the two.
+Both places happen to leave 47 mistakes at the surname alone. Nothing follows
+from that. The two are counting against different numbers of groups, so equal
+heights there are not evidence that surnames are equally informative.
 
 ## Three choices that could have produced this result, and did not
 
