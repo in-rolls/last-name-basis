@@ -43,6 +43,20 @@ def main() -> None:
     pun_two = (
         f"{100 * sum(c['share'] for c in pun['commonest'][:2]):.0f}" if pun else "0"
     )
+    splits = s.get("dominant_names", {})
+    singh = pd.DataFrame(s.get("singh_across_states", []))
+    singh_rows = "\n".join(
+        f"| {r.state} | {100 * r.share_of_state:.0f}% | {r.p_sc:.2f} | "
+        f"{r.state_base:.2f} | {r.distance_from_base:+.2f} |"
+        for r in singh.sort_values("share_of_state").itertuples()
+    )
+    delta_rows = "\n".join(
+        f"| {k} | {', '.join(v['dominant'][:3])} | "
+        f"{100 * v['pairs_touching_a_dominant_name']:.0f}% | "
+        f"{v['ranks_all_names']:.2f} | {v['ranks_without_dominant']:.2f} | "
+        f"{v['delta']:+.2f} |"
+        for k, v in sorted(splits.items(), key=lambda kv: -kv[1]["delta"])
+    )
     cross = "\n".join(
         f"| {k} | {v['names_for_half_instate']} | {v['names_for_half_roll']} | "
         f"{100 * v['top10_share_instate']:.0f}% | {100 * v['top10_share_roll']:.0f}% |"
@@ -119,25 +133,69 @@ Kerala, as the gap-closed column alone does, puts two unlike things together.
 ## Why Punjab's surnames carry so little
 
 Punjab ranks {by_rank.get('punjab', float('nan')):.2f}, the lowest of the
-fifteen and barely above the 0.50 a surname carrying nothing would give. The
-electoral roll says why. Its three commonest surnames are
+fifteen and barely above the 0.50 a surname carrying nothing would give. Its
+three commonest surnames on the electoral roll are
 
 {pun_top}
 
-The third is the second misspelled. `kanr` is `kaur`, and one name entered two
-ways accounts for seven electors in a hundred here. That is the variant problem
-this repo has discussed since its first analysis and never measured on a
-romanised source: it inflates how many distinct surnames a place appears to
-have, and so how informative they look.
+and the first two cover **{pun_two}% of the state**, nearer 71% once `kanr`,
+which is `kaur` misspelled, is counted with `kaur`.
 
-The first two alone cover **{pun_two}% of the state**, nearer 71% once `kanr` is
-counted with `kaur`. Neither is a family
-name in the sense the rest of this repo assumes: Kaur is carried by Sikh women
-and Singh by Sikh men, across castes. A state in which two names that were never
-lineage markers cover two thirds of the population cannot have surnames that
-identify caste, whatever its composition. That connects the weakest state here
-to analysis 03, which found that India's least informative names are the ones
-assigned by sex.
+The obvious reading is that concentration is the cause, and it is not, or not on
+its own. Bihar's three commonest names touch 78% of its pairs and Bihar ranks
+0.96. Assam is more concentrated than Punjab by that measure and ranks 0.96. A
+state can have very few names and very informative ones.
+
+What separates them is whether the dominant names sit where the state sits.
+
+| state | its dominant names | pairs touching one | all names | without them | change |
+|---|---|---|---|---|---|
+{delta_rows}
+
+A positive change means the dominant names were dead weight and the guess
+improves once they are gone. A negative one means they were carrying the signal.
+Kerala's `nair` and `pillai` are 0.00 and 0.00 Dalit against a state base of
+0.08, so they identify a great deal and removing them makes the guess worse.
+Punjab's `singh` does not.
+
+## One name, doing opposite work
+
+The mechanism is clearest in a single surname, and needs no index at all.
+
+| state | singh's share of the state | singh's Dalit share | the state's | difference |
+|---|---|---|---|---|
+{singh_rows}
+
+In Bihar, `singh` is carried by 9% of the extract and almost none of them are
+Dalit, against a state that is 18% Dalit. Knowing someone there is called Singh
+tells you a great deal. In Punjab it is carried by 73% and its Dalit share is
+0.38 against a state of 0.38. Knowing someone there is called Singh tells you
+what you already knew.
+
+Across these states the correlation between how much of a state a name covers
+and how far its composition sits from the state's is
+{s.get('singh_share_vs_distance', float('nan')):.2f}. **A name that spreads to
+everyone stops distinguishing anyone**, and that is a process rather than a
+measurement problem: Singh and Kaur were adopted across castes, and the caste
+information a surname once carried went with the adoption. Haryana, at 47% and
+a difference of -0.03, sits where that account predicts.
+
+The correlation is moderate and the table shows why: Uttarakhand carries `singh`
+on 41% of its extract and it still sits 0.13 from the state, which the account
+does not explain. Ten states is also few enough that one such case moves the
+number appreciably. The two ends are the solid part of this, and the middle is
+not.
+
+What this is not is an identified mediation. Nothing here is randomised and no
+counterfactual is estimated. It describes where the pairs sit, and the residual
+is real: Punjab's other names reach only
+{splits.get('punjab', {}).get('ranks_without_dominant', float('nan')):.2f}
+against Bihar's
+{splits.get('bihar', {}).get('ranks_without_dominant', float('nan')):.2f}, and
+Punjab retains 28 non-dominant names against Bihar's 547 because the disclosure
+floor keeps 29 Punjabi surnames covering 9% of the state.
+
+![What removing a state's commonest names does]({FIG}/dominant_names.png)
 
 ## Two sources, and where they stop agreeing
 

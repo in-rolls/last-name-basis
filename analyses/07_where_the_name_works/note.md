@@ -68,25 +68,92 @@ Kerala, as the gap-closed column alone does, puts two unlike things together.
 ## Why Punjab's surnames carry so little
 
 Punjab ranks 0.55, the lowest of the
-fifteen and barely above the 0.50 a surname carrying nothing would give. The
-electoral roll says why. Its three commonest surnames are
+fifteen and barely above the 0.50 a surname carrying nothing would give. Its
+three commonest surnames on the electoral roll are
 
 `singh` 38%, `kaur` 26%, `kanr` 7%
 
-The third is the second misspelled. `kanr` is `kaur`, and one name entered two
-ways accounts for seven electors in a hundred here. That is the variant problem
-this repo has discussed since its first analysis and never measured on a
-romanised source: it inflates how many distinct surnames a place appears to
-have, and so how informative they look.
+and the first two cover **64% of the state**, nearer 71% once `kanr`,
+which is `kaur` misspelled, is counted with `kaur`.
 
-The first two alone cover **64% of the state**, nearer 71% once `kanr` is
-counted with `kaur`. Neither is a family
-name in the sense the rest of this repo assumes: Kaur is carried by Sikh women
-and Singh by Sikh men, across castes. A state in which two names that were never
-lineage markers cover two thirds of the population cannot have surnames that
-identify caste, whatever its composition. That connects the weakest state here
-to analysis 03, which found that India's least informative names are the ones
-assigned by sex.
+The obvious reading is that concentration is the cause, and it is not, or not on
+its own. Bihar's three commonest names touch 78% of its pairs and Bihar ranks
+0.96. Assam is more concentrated than Punjab by that measure and ranks 0.96. A
+state can have very few names and very informative ones.
+
+What separates them is whether the dominant names sit where the state sits.
+
+| state | its dominant names | pairs touching one | all names | without them | change |
+|---|---|---|---|---|---|
+| rajasthan | ram, singh, lal | 80% | 0.81 | 0.92 | +0.11 |
+| punjab | singh | 93% | 0.55 | 0.64 | +0.08 |
+| madhya pradesh | singh, lal, bai | 71% | 0.88 | 0.96 | +0.07 |
+| uttar pradesh | singh, lal, kumar | 80% | 0.74 | 0.81 | +0.07 |
+| odisha | behera, sahu, nayak | 79% | 0.89 | 0.95 | +0.06 |
+| uttarakhand | singh, devi | 82% | 0.84 | 0.88 | +0.05 |
+| chhattisgarh | ram, sahu, bai | 72% | 0.87 | 0.91 | +0.04 |
+| west bengal | sk, mondal, das | 76% | 0.91 | 0.93 | +0.02 |
+| gujarat | patel, parmar, vasava | 70% | 0.86 | 0.88 | +0.02 |
+| tamilnadu | perumal, arumugam, ramasamy | 75% | 0.69 | 0.70 | +0.02 |
+| bihar | singh, yadav, devi | 78% | 0.96 | 0.96 | +0.01 |
+| haryana | singh, ram | 83% | 0.59 | 0.59 | +0.00 |
+| maharashtra | patil, jadhav, pawar | 73% | 0.86 | 0.86 | -0.00 |
+| assam | ali, das, uddin | 84% | 0.96 | 0.94 | -0.02 |
+| kerala | nair, pillai, joseph | 62% | 0.85 | 0.79 | -0.06 |
+
+A positive change means the dominant names were dead weight and the guess
+improves once they are gone. A negative one means they were carrying the signal.
+Kerala's `nair` and `pillai` are 0.00 and 0.00 Dalit against a state base of
+0.08, so they identify a great deal and removing them makes the guess worse.
+Punjab's `singh` does not.
+
+## One name, doing opposite work
+
+The mechanism is clearest in a single surname, and needs no index at all.
+
+| state | singh's share of the state | singh's Dalit share | the state's | difference |
+|---|---|---|---|---|
+| west bengal | 1% | 0.25 | 0.29 | -0.04 |
+| odisha | 1% | 0.08 | 0.19 | -0.12 |
+| chhattisgarh | 6% | 0.03 | 0.11 | -0.08 |
+| bihar | 9% | 0.00 | 0.18 | -0.18 |
+| rajasthan | 18% | 0.09 | 0.18 | -0.09 |
+| uttar pradesh | 18% | 0.14 | 0.21 | -0.07 |
+| madhya pradesh | 22% | 0.08 | 0.14 | -0.06 |
+| uttarakhand | 41% | 0.07 | 0.20 | -0.13 |
+| haryana | 47% | 0.20 | 0.24 | -0.03 |
+| punjab | 73% | 0.38 | 0.38 | -0.01 |
+
+In Bihar, `singh` is carried by 9% of the extract and almost none of them are
+Dalit, against a state that is 18% Dalit. Knowing someone there is called Singh
+tells you a great deal. In Punjab it is carried by 73% and its Dalit share is
+0.38 against a state of 0.38. Knowing someone there is called Singh tells you
+what you already knew.
+
+Across these states the correlation between how much of a state a name covers
+and how far its composition sits from the state's is
+-0.51. **A name that spreads to
+everyone stops distinguishing anyone**, and that is a process rather than a
+measurement problem: Singh and Kaur were adopted across castes, and the caste
+information a surname once carried went with the adoption. Haryana, at 47% and
+a difference of -0.03, sits where that account predicts.
+
+The correlation is moderate and the table shows why: Uttarakhand carries `singh`
+on 41% of its extract and it still sits 0.13 from the state, which the account
+does not explain. Ten states is also few enough that one such case moves the
+number appreciably. The two ends are the solid part of this, and the middle is
+not.
+
+What this is not is an identified mediation. Nothing here is randomised and no
+counterfactual is estimated. It describes where the pairs sit, and the residual
+is real: Punjab's other names reach only
+0.64
+against Bihar's
+0.96, and
+Punjab retains 28 non-dominant names against Bihar's 547 because the disclosure
+floor keeps 29 Punjabi surnames covering 9% of the state.
+
+![What removing a state's commonest names does](out/fig/dominant_names.png)
 
 ## Two sources, and where they stop agreeing
 

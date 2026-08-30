@@ -6,6 +6,33 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Name concentration is the mechanism, not an artifact, and the first attempt
+  at saying so was wrong too.** The repo had been writing about sex-marking and
+  universal names as measurement problems: analysis 03 said counting them makes
+  Indian naming "look far more concentrated than it is", which implies the real
+  figure is the one with them removed. Devi, Singh and Kaur are the names people
+  write on forms. Their spread is a process that removed caste information, not
+  noise hiding it.
+
+  The correction to that was also too simple. Concentration alone does not
+  predict which states have weak surnames: Bihar's dominant names touch 78% of
+  its pairs and Bihar ranks 0.96, while Punjab's touch 93% and Punjab ranks
+  0.55. What separates them is whether the dominant names sit where the state
+  sits. Removing Kerala's `nair` and `pillai`, which are 0.00 Dalit against a
+  state of 0.08, makes the guess *worse*; removing Punjab's `singh` makes it
+  better.
+
+  Stated without an index: `singh` is 9% of Bihar's extract and almost never
+  Dalit there against a state that is 18% Dalit, and 73% of Punjab's with a
+  Dalit share of 0.38 against a state of 0.38. Across ten states the correlation
+  between a name's coverage and its distance from the state is -0.51. A name
+  that spreads to everyone stops distinguishing anyone. Uttarakhand does not fit
+  and is named as not fitting.
+
+  This is a decomposition and not an identified mediation, which the note says.
+
 ### Added
 
 - **A mechanism for the weakest state in analysis 07, from upnaam's Punjab

@@ -57,6 +57,17 @@ def main() -> None:
             TAB / "decisive_names.csv", index=False
         )
 
+    splits = [r for r in (source.decompose(per, x) for x in table["state"]) if r]
+    if splits:
+        pd.DataFrame(
+            [{**r, "dominant": ", ".join(r["dominant"])} for r in splits]
+        ).sort_values("delta", ascending=False).to_csv(
+            TAB / "dominant_names.csv", index=False
+        )
+
+    singh = source.one_name_across_states(per, "singh")
+    singh.to_csv(TAB / "one_name_across_states.csv", index=False)
+
     rolls = [r for r in (source.roll_concentration(x) for x in RESOLVED) if r]
     if rolls:
         pd.DataFrame(
@@ -74,6 +85,13 @@ def main() -> None:
             r["state"]: {k: v for k, v in r.items() if k != "state"} for r in rolls
         },
         "instate_comparison": compare_with_instate(rolls),
+        "dominant_names": {r["state"]: r for r in splits},
+        # The mechanism without an index: as a name covers more of a state, its
+        # caste composition converges on that state's own.
+        "singh_across_states": singh.to_dict("records"),
+        "singh_share_vs_distance": float(
+            singh["share_of_state"].corr(singh["distance_from_base"].abs())
+        ),
         "states": int(len(table)),
         "names_total": int(table["names"].sum()),
         "coverage_share_range": [
@@ -124,6 +142,8 @@ def main() -> None:
     figures.where_it_works(table, FIG / "where_it_works.png")
     figures.decisive(spotlight, FIG / "decisive_names.png")
     figures.decides_versus_discriminates(table, FIG / "discriminates.png")
+    if splits:
+        figures.dominant_names(splits, FIG / "dominant_names.png")
     print(f"wrote {TAB} and {FIG}")
 
 

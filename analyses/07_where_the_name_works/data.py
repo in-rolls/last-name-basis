@@ -180,3 +180,101 @@ def roll_concentration(state: str) -> dict | None:
             {"surname": str(n), "share": float(s)} for n, s in share.head(10).items()
         ],
     }
+
+
+def dominant_names(frame: pd.DataFrame, cols: list[str], cover: float = 0.5) -> list:
+    """The fewest commonest surnames that together cover `cover` of a state."""
+    people = frame[cols].to_numpy(float).sum(axis=1)
+    order = np.argsort(people)[::-1]
+    share = np.cumsum(people[order]) / people.sum()
+    keep = int((share < cover).sum() + 1)
+    return list(frame["last_name"].to_numpy()[order][:keep])
+
+
+def decompose(per: pd.DataFrame, state: str, cover: float = 0.5) -> dict | None:
+    """Split the ranking statistic by whether a pair involves a dominant name.
+
+    Concentration is not a nuisance to net out of these numbers. Devi, Singh and
+    Kaur are the names people write on forms, and their spread is a process that
+    removed caste information from names rather than noise hiding it.
+
+    But concentration alone does not do the work, and this is what shows it.
+    `delta`, the change from removing the dominant names, is positive where they
+    are dead weight and negative where they carry the signal. Kerala's dominant
+    names are `nair` and `pillai`, which are caste names, so removing them makes
+    the guess worse. Punjab's is `singh`, a title carried across castes, so
+    removing it makes the guess better. What matters is not how concentrated a
+    state's naming is but whether the concentration sits in names that mark a
+    lineage.
+
+    A decomposition, not an identified mediation: nothing is randomised and no
+    counterfactual is estimated. It describes where the pairs sit.
+    """
+    cols = per.attrs["count_cols"]
+    g = per[per["state"] == state]
+    if len(g) < 3:
+        return None
+    n = g[cols].to_numpy(float)
+    total = n.sum(axis=1)
+    p_sc, sc, other = n[:, 0] / total, n[:, 0], total - n[:, 0]
+
+    top = dominant_names(g, cols, cover)
+    is_top = g["last_name"].isin(top).to_numpy()
+
+    # Share of (Dalit, non-Dalit) pairs in which at least one carries one.
+    dalit_side = sc / sc.sum()
+    other_side = other / other.sum()
+    touching = 1 - (1 - dalit_side[is_top].sum()) * (1 - other_side[is_top].sum())
+
+    rest = ~is_top
+    without = (
+        ranks_above(p_sc[rest], sc[rest], other[rest])
+        if rest.sum() > 1
+        else float("nan")
+    )
+    return {
+        "state": state,
+        "dominant": top,
+        "dominant_share_of_records": float(total[is_top].sum() / total.sum()),
+        "pairs_touching_a_dominant_name": float(touching),
+        "ranks_all_names": float(ranks_above(p_sc, sc, other)),
+        "ranks_without_dominant": float(without),
+        "names_outside_the_dominant": int(rest.sum()),
+        # Positive: the dominant names are dead weight. Negative: they carry
+        # the signal. This is the diagnostic, not the touch share.
+        "delta": float(without - ranks_above(p_sc, sc, other)),
+    }
+
+
+def one_name_across_states(per: pd.DataFrame, name: str = "singh") -> pd.DataFrame:
+    """The same surname's caste composition against each state's own.
+
+    The clearest statement of the mechanism, and it needs no index. As a name's
+    coverage of a state rises, its composition converges on the state's, because
+    a name carried by everyone describes everyone. Singh is 9% of Bihar and
+    never Dalit there; it is 73% of Punjab and exactly as Dalit as Punjab is.
+    """
+    cols = per.attrs["count_cols"]
+    rows = []
+    for state, g in per.groupby("state"):
+        n = g[cols].to_numpy(float)
+        total = n.sum(axis=1)
+        hit = g["last_name"] == name
+        if not hit.any():
+            continue
+        mine = n[hit.to_numpy()][0]
+        carried = mine.sum()
+        if carried < 20000:
+            continue
+        rows.append(
+            {
+                "state": state,
+                "records": float(carried),
+                "share_of_state": float(carried / total.sum()),
+                "p_sc": float(mine[0] / carried),
+                "state_base": float(n[:, 0].sum() / total.sum()),
+            }
+        )
+    out = pd.DataFrame(rows)
+    out["distance_from_base"] = out["p_sc"] - out["state_base"]
+    return out.sort_values("share_of_state")

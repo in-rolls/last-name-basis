@@ -212,3 +212,54 @@ def test_rajasthan_is_where_the_sources_part_company(summary):
         pytest.skip("rajasthan not compared")
     c = compared["rajasthan"]
     assert c["names_for_half_instate"] > 10 * c["names_for_half_roll"], c
+
+
+def test_concentration_alone_does_not_explain_the_weak_states(summary):
+    """The claim the write-up had to be corrected into.
+
+    An earlier version said Punjab's surnames carry nothing because two names
+    cover the state. Bihar's dominant names touch a comparable share of its
+    pairs and Bihar ranks 0.96, so concentration on its own is not the cause.
+    """
+    splits = summary.get("dominant_names", {})
+    if not {"punjab", "bihar"} <= set(splits):
+        pytest.skip("analysis 07 not built")
+    punjab, bihar = splits["punjab"], splits["bihar"]
+    assert bihar["pairs_touching_a_dominant_name"] > 0.7
+    assert bihar["ranks_all_names"] > 0.9
+    assert punjab["ranks_all_names"] < 0.6
+
+
+def test_dominant_names_help_in_some_states_and_hurt_in_others(summary):
+    """The sign of the change is the finding, not its size.
+
+    Removing Kerala's `nair` and `pillai` makes the guess worse because they
+    are 0.00 Dalit against a state of 0.08. Removing Punjab's `singh` makes it
+    better. If every state moved the same way, the explanation would be about
+    concentration and not about what the names are.
+    """
+    splits = summary.get("dominant_names", {})
+    if not splits:
+        pytest.skip("analysis 07 not built")
+    deltas = {k: v["delta"] for k, v in splits.items()}
+    assert any(d > 0.05 for d in deltas.values()), deltas
+    assert any(d < 0 for d in deltas.values()), deltas
+    assert deltas.get("punjab", 0) > 0 > deltas.get("kerala", 0)
+
+
+def test_a_name_that_covers_a_state_carries_that_state(summary):
+    """The mechanism, stated in one surname and needing no index.
+
+    Singh is 9% of Bihar and never Dalit there; it is 73% of Punjab and exactly
+    as Dalit as Punjab is. If this ever inverts, the account in the note is
+    wrong and the prose has to change with it.
+    """
+    rows = {r["state"]: r for r in summary.get("singh_across_states", [])}
+    if not {"bihar", "punjab"} <= set(rows):
+        pytest.skip("analysis 07 not built")
+    bihar, punjab = rows["bihar"], rows["punjab"]
+    assert punjab["share_of_state"] > 3 * bihar["share_of_state"]
+    assert abs(punjab["distance_from_base"]) < 0.05
+    assert abs(bihar["distance_from_base"]) > 0.15
+    # Moderate and reported as such: Uttarakhand does not fit.
+    assert -0.9 < summary["singh_share_vs_distance"] < -0.2

@@ -11,9 +11,15 @@ the family names in the same state read as 84–89% male because those families'
 women are on the roll as Devi. A woman and her brother do not share a last name.
 
 That is why these names carry no caste signal: a name assigned by sex cannot
-track a lineage. Thirteen of them cover 19% of the country, and counting them
-makes Indian names look far more concentrated than they are — 18 names cover a
-quarter of India, but 103 if you count only names a brother and sister share.
+track a lineage. Thirteen of them cover 19% of the country.
+
+Counting them does not overstate how concentrated Indian naming is; it is that
+concentrated, and Devi is genuinely what tens of millions of women are called on
+a roll. What the count changes is what it is a count *of*. Eighteen names cover
+a quarter of India, and 103 if you count only names a brother and sister share,
+so the first figure describes names and the second describes lineages. The
+spread of a name like Devi across castes is not noise obscuring a caste signal.
+It is one of the ways the signal was removed.
 
 Read [`note.md`](note.md). Run with `make a03`.
 

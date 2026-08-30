@@ -175,8 +175,14 @@ a name from this group against 10% of men**, and the family names in the same
 state read as 84 to 89% male, because those families' women are on the roll as
 Devi. A woman and her brother do not share a last name, and a name assigned by
 sex cannot track a lineage. The clear cases cover **10.5% of the country**, and
-adding Singh and Kumar takes it to 19%. Eighteen names cover a quarter of India,
-but **103** if you count only names a brother and sister share.
+adding Singh and Kumar takes it to 19%.
+
+Eighteen names cover a quarter of India, and **103** if you count only names a
+brother and sister share. That gap is not a correction toward a truer figure.
+Indian naming is as concentrated as the first number says, and Devi really is
+what tens of millions of women are called on a roll. The two count different
+things, names and lineages, and the distance between them is the room the caste
+signal used to occupy.
 
 [![Who carries a sex-marking last name](analyses/03_how_few_names/out/fig/sex_marked.png)](analyses/03_how_few_names/note.md)
 
@@ -241,13 +247,24 @@ about as well as Maharashtra's, 0.85 against 0.86, because only 8% of Kerala's
 extract is Scheduled Caste. Punjab and Haryana are the states whose surnames
 genuinely carry little, at 0.55 and 0.59 against a floor of 0.50.
 
-Punjab's electoral roll says why. Its two commonest surnames, `singh` at 38% and
-`kaur` at 26%, cover **64% of the state**, nearer 71% once a common misspelling
-of Kaur is counted with it. Neither is a family name: Kaur is carried by Sikh
-women and Singh by Sikh men, across castes. A state where two names that were
-never lineage markers cover two thirds of the population cannot have surnames
-that identify caste, whatever its composition, which ties the weakest state here
-back to the sex-marking names of claim 2. What carries a state is one or two large, decisive names rather
+Punjab's roll says why, and the reason is not simply that its names are
+concentrated. Bihar's three commonest names touch 78% of its pairs and Bihar
+ranks 0.96. What matters is whether the dominant names sit where the state sits.
+
+The clearest form of it is one surname doing opposite work in two states. In
+Bihar, `singh` is carried by 9% of people and almost none of them are Dalit,
+against a state that is 18% Dalit; knowing someone is called Singh there tells
+you a great deal. In Punjab it is carried by **73%** and its Dalit share is
+**0.38 against a state of 0.38**; there it tells you what you already knew.
+Across ten states, the more of a state a name covers the closer its composition
+sits to that state's own.
+
+**A name that spreads to everyone stops distinguishing anyone.** That is a
+process, not a measurement problem. Singh and Kaur were adopted across castes,
+and the caste information the surname carried went with the adoption. It is the
+same mechanism as claim 2's sex-marking names, seen from the other end: Devi
+spread to women of every caste, and stopped meaning anything about lineage for
+the same reason. What carries a state is one or two large, decisive names rather
 than many of them: Assam has two majority-Dalit surnames among its commonest and
 closes two thirds of the gap, because one of them is `das`. Punjab has five and
 closes 3%, because its biggest are `ram` at 62% and `lal` at 52%. Haryana has

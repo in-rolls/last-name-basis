@@ -176,3 +176,48 @@ def decides_versus_discriminates(table, out: Path) -> None:
     fig.tight_layout()
     fig.savefig(out, dpi=170)
     plt.close(fig)
+
+
+def dominant_names(splits, out: Path) -> None:
+    """What removing a state's dominant names does to the signal.
+
+    Positive means they were dead weight; negative means they were carrying it.
+    Drawn because the sign is the finding, and a table of nine numbers hides a
+    sign change that a chart cannot.
+    """
+    d = sorted(splits, key=lambda r: r["delta"])
+    y = np.arange(len(d), dtype=float)
+    colours = [ACCENT if r["delta"] < 0 else INK for r in d]
+
+    fig, ax = plt.subplots(figsize=(9.0, 5.4))
+    ax.axvline(0, color=MUTED, lw=1.1)
+    ax.barh(y, [r["delta"] for r in d], color=colours, height=0.6)
+    for yi, r in zip(y, d):
+        offset = 0.004 if r["delta"] >= 0 else -0.004
+        ax.text(
+            r["delta"] + offset,
+            yi,
+            ", ".join(r["dominant"][:3]),
+            va="center",
+            ha="left" if r["delta"] >= 0 else "right",
+            fontsize=8.5,
+            color=MUTED,
+        )
+    ax.set_yticks(y)
+    ax.set_yticklabels([r["state"] for r in d], fontsize=10)
+    ax.set_xlim(-0.10, 0.20)
+    ax.set_xlabel("change in how well a surname separates Dalit from non-Dalit")
+    ax.set_title(
+        "What a state's commonest names are, not how common they are\n"
+        "Removing the names that cover half a state. Red: the signal gets "
+        "worse, because\nthose names were caste names. Black: it improves, "
+        "because they were not.",
+        color=INK,
+        loc="left",
+        fontsize=11.5,
+    )
+    style_axes(ax)
+    ax.grid(axis="y", visible=False)
+    fig.tight_layout()
+    fig.savefig(out, dpi=170)
+    plt.close(fig)
