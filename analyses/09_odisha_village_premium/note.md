@@ -69,25 +69,24 @@ several people, moves the premium by 0.2.
 
 **This is one district of thirty, and it is not Odisha.** The scrape has reached
 Gajapati and no further. It is small, heavily Adivasi, and on the Andhra
-border; its castes are not the state's. Nothing here may be reported as an
-Odisha result, and the comparison is between one Bihar and one district.
+border, and its castes are not the state's. The comparison is between one Bihar
+and one district of Odisha.
 
 **Each village is a sample, not a census.** The fetch caps how many khatiyans it
 takes per village and the cap has already changed mid-collection, so the
-realised figure is measured rather than assumed: a median of
+realised figure is measured from the data: a median of
 35 khatiyans per village across
 1,351 villages, with a maximum of
 80. Bihar's ladder is built from a
 complete record. A sampled village is a weaker cue than a complete one, so the
-premium measured here is biased **downward**, and the gap to Bihar is an upper
-bound on the true difference rather than a point estimate of it.
+premium measured here is biased **downward**, and the gap to Bihar is an upper bound
+on the true difference.
 
 **The normalisation layer under-merges.** It leaves `ସଉରା` and `ସୌରା` separate,
 because a one-character difference in a four-character string falls below any
 threshold safe for longer names. 435 label strings become
 378, against Bihar's curated 141. The sensitivity table above
-is the reason this is reported rather than solved: the residual does not move
-the answer. A fuller layer is being built in `upnaam` and will replace this one.
+is why the residual is reported and left: it does not move the answer. A fuller layer is being built in `upnaam` and will replace this one.
 
 ---
 

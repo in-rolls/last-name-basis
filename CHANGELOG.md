@@ -6,6 +6,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Analysis 08's null reversed on more data.** Cleaning initials out of
+  Karnataka's last-token column was reported as making prediction slightly
+  worse, on 14,854 candidates. The collection has since reached 48,395 and the
+  sign is stable the other way: 45.3 mistakes per 100 naive against 43.9
+  cleaned, with a blind rate of 52.5, so cleaning recovers about a sixth of what
+  a name is worth there. The earlier figure was underpowered. What did not
+  change is that a third of last tokens are single letters, that the ten
+  commonest all are, and that the cleaned column resolves fewer candidates than
+  the naive one, which is what shows the naive rule was pooling on initials.
+- **Cut defensive prose.** The front page opened by denying three things it had
+  not been accused of. Removed, along with "and it is not a caveat" in two
+  files, a section headed "Three things this cannot support", and an instruction
+  to the reader about what may be reported.
+
 ### Added
 
 - **Analysis 09, whether the village premium travels outside Bihar.** Analysis

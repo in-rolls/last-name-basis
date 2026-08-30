@@ -104,7 +104,7 @@ barely over the line and covering 6% of its retained surnames between them.
 Bihar's are `paswan` and `manjhi` at 89%. Haryana has none at all: not one of
 its 36 retained surnames is majority Dalit.
 
-## Three things this cannot support
+## What the extract will not tell you
 
 **A state's Scheduled Caste share.** The extract is not a census. It puts Punjab
 at {punjab['sc_share_of_extract']:.0f}% Scheduled Caste,
@@ -114,8 +114,9 @@ before reading anything into a base rate here.
 **A comparison between states with very different base rates.** A surname
 "points Dalit" when over half its bearers are, and that bar sits at
 {kerala['sc_share_of_extract']:.1f}% of the extract in Kerala against
-{punjab['sc_share_of_extract']:.1f}% in Punjab. The test is far more lenient in Punjab. Punjab still fails it, which is
-the one direction the asymmetry can be read safely; Kerala against Punjab is not.
+{punjab['sc_share_of_extract']:.1f}% in Punjab, so the test is far more lenient
+there. Punjab fails it anyway, which is what makes Punjab's result readable. A
+comparison of Kerala against Punjab is not.
 
 **Any claim about people whose surnames were suppressed.** The floor removes
 rare names, and analysis 01 shows rare names are the informative ones. These

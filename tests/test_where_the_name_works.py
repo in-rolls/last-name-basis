@@ -84,23 +84,27 @@ def test_karnataka_last_tokens_are_mostly_initials():
     assert (tokens["clean"].head(10).str.len() > 1).all()
 
 
-def test_cleaning_karnataka_surnames_does_not_improve_prediction():
-    """The null, kept explicitly so a future change cannot quietly invert it.
+def test_cleaning_karnataka_surnames_helps_a_little():
+    """Reported as a null on 14,854 candidates; the sign flipped at 48,395.
 
-    Cleaning changes which names you get completely and moves the error by less
-    than a mistake per hundred, in the wrong direction, because smaller cells
-    resolve fewer people.
+    The earlier reading was underpowered, not wrong about surnames, and this
+    test now pins the direction so a future sample cannot flip it back
+    unremarked. The effect is small either way: neither cue is strong.
     """
     path = A08 / "summary.json"
     if not path.exists():
         pytest.skip("analysis 08 not built")
     s = json.loads(path.read_text())
-    assert abs(s["cleaning_changes_prediction_by"]) < 1.5
+    # Negative means the cleaned surname makes fewer mistakes.
+    assert s["cleaning_changes_prediction_by"] < 0
+    assert abs(s["cleaning_changes_prediction_by"]) < 5
     sc = pd.read_csv(A08 / "scores.csv").set_index("cue")
     assert (
         sc.loc["clean_surname", "share_resolved"]
         < sc.loc["naive_surname", "share_resolved"]
     )
+    # The cleaned column still resolves fewer people, which is what shows the
+    # naive rule was pooling on initials rather than predicting from surnames.
     # Neither cue is close to useless *or* good: both sit between the blind
     # rate and a long way short of it.
     blind = sc.loc["naive_surname", "blind_per_100"]

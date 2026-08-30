@@ -178,7 +178,7 @@ rate. Reported here because it was the prediction going in.
 
 ## What this means for anyone using a name-based method
 
-The caste result is the one to carry away, and it is not a caveat. Any method
+Any method
 that infers caste from an Indian surname — this repo's, outkast's, a
 BISG-style transfer — will **miss most Scheduled Caste individuals while
 classifying nearly everyone else correctly**. An audit that assumes uniform

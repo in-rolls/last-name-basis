@@ -45,33 +45,40 @@ from the same {s['rows']:,} names.
 
 ![What a last-token rule calls a surname]({FIG}/naive_vs_clean.png)
 
-## Cleaning changes the names and not the prediction
-
-This is the part worth reporting carefully, because it is a null and it went
-against what I expected.
+## Cleaning the initials out buys a little, and not much
 
 | cue | distinct values | mistakes per 100 | share resolved |
 |---|---|---|---|
 | knowing nothing | — | {blind:.1f} | — |
-| naive last token | {naive['distinct']:,} | {naive['mistakes_per_100']:.1f} | {naive['share_resolved']:.0f}% |
-| cleaned surname | {clean['distinct']:,} | {clean['mistakes_per_100']:.1f} | {clean['share_resolved']:.0f}% |
-| PIN code | {pin['distinct']:,} | {pin['mistakes_per_100']:.1f} | {pin['share_resolved']:.0f}% |
+| naive last token | {int(naive['distinct']):,} | {naive['mistakes_per_100']:.1f} | {naive['share_resolved']:.0f}% |
+| cleaned surname | {int(clean['distinct']):,} | {clean['mistakes_per_100']:.1f} | {clean['share_resolved']:.0f}% |
+| PIN code | {int(pin['distinct']):,} | {pin['mistakes_per_100']:.1f} | {pin['share_resolved']:.0f}% |
 
-Cleaning moves the error by
-{s['cleaning_changes_prediction_by']:+.1f} mistakes per hundred, which is to
-say it does not move it. It slightly *worsens* it, and the reason is visible in
-the last column: dropping initials splits {naive['distinct']:,} cells into
-{clean['distinct']:,} smaller ones, so fewer people share a cell with anyone
-else and more fall back to the blind guess.
+Dropping the initials improves the guess by
+{-s['cleaning_changes_prediction_by']:.1f} mistakes per hundred. Against a blind
+rate of {blind:.0f}, the naive token is worth
+{blind - naive['mistakes_per_100']:.1f} and the cleaned surname
+{blind - clean['mistakes_per_100']:.1f}, so cleaning recovers roughly a sixth of
+what a name is worth here.
 
-So the naive rule was never predicting well by using real surnames. It was
-pooling people into a handful of enormous initial-buckets, which beats guessing
-blind by a little, exactly as the cleaned surnames do.
+An earlier version of this note reported that difference as a null, and as
+slightly negative. That reading came from 14,854 candidates; the collection has
+since reached {s['rows']:,}, and the sign is now stable and the other way round.
+The earlier figure was underpowered, and the honest lesson is about the sample
+rather than about surnames.
 
-**Neither is worth much.** Against a blind rate of {blind:.0f}, the best of them
-leaves {min(naive['mistakes_per_100'], clean['mistakes_per_100']):.0f}. The PIN
-code is worth almost nothing at all, which is the opposite of what geography does
-in Bihar, where a village takes 47 mistakes down to 17.
+Two things did not change with the extra data. The naive column is still a third
+initials, and the cleaned surname still resolves *fewer* people than the naive
+one, {clean['share_resolved']:.0f}% against {naive['share_resolved']:.0f}%,
+because splitting the initial-buckets leaves more candidates alone in a cell.
+The naive rule was never predicting from surnames. It was pooling candidates
+into a handful of very large buckets keyed on a letter, which beats guessing
+blind by a little.
+
+**Neither cue is strong.** The better of the two still leaves
+{min(naive['mistakes_per_100'], clean['mistakes_per_100']):.0f} mistakes per
+hundred. The PIN code is worth almost nothing, which is the opposite of what
+geography does in Bihar, where a village takes 47 mistakes down to 17.
 
 ## What this does and does not establish
 

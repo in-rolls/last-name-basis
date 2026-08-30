@@ -3,22 +3,18 @@
 **In a village everyone already knows your caste. In a city a stranger has your
 name.**
 
-India is urbanising, and that moves the question of who can identify whom.
-Discriminating against someone by caste requires working out their caste first.
-In a village that is common knowledge: the settlement, the hamlet, whose son you
+India is urbanising, and that moves the question of who can identify whom. In a
+village, caste is common knowledge: the settlement, the hamlet, whose son you
 are, which lane you live on. A city strips most of that away. What survives on a
 rental application or a job form is a name.
 
-So how much does a last name give away? That question sits underneath a lot of
-other ones. Anyone acting on caste has to work it out first, and so does anyone
-auditing them for it: a study that asks whether Dalits get fewer callbacks
-usually infers caste from the applicant's name.
+How much does a last name give away? Anyone acting on caste has to work it out
+first, and so does anyone auditing them for it: a study asking whether Dalits
+get fewer callbacks usually infers caste from the applicant's name.
 
-This repo measures only that inference. It does not measure discrimination, it
-does not measure urbanisation, and it makes no claim about what happens to
-prejudice when people move. It measures what a surname reveals about caste, whom
-it reveals least about, and what has to be added to a name before it reveals a
-lot.
+This repo measures that inference. It measures what a surname reveals about
+caste, whom it reveals least about, and what has to be added to a name before it
+reveals a lot.
 
 The operational question: pick an Indian adult at random, know only their last
 name, and how often are you wrong about their caste?
@@ -258,13 +254,15 @@ and the six commonest are `S`, `R`, `K`, `N`, `B`, `G`. Drop single letters and
 the list becomes `Kumar`, `Patil`, `Naik`, `Manjunatha`, two different
 inventories of "Karnataka's commonest surnames" from one set of names.
 
-Cleaning them does not improve prediction. Sorting candidates into General,
-OBC, Scheduled Caste or Scheduled Tribe, the naive token leaves 49.2 mistakes
-per 100 and the cleaned surname 49.6, against 54.5 with no name at all. The
-cleaned version is marginally worse because splitting the initial-buckets
-reduces the share of candidates sharing a cell with anyone else, from 74% to
-69%. The naive rule was therefore not predicting from surnames. It was pooling
-candidates into a small number of large buckets keyed on an initial.
+Cleaning them buys a little. Sorting candidates into General, OBC, Scheduled
+Caste or Scheduled Tribe, the naive token leaves 45.3 mistakes per 100 and the
+cleaned surname 43.9, against 52.5 with no name at all, so cleaning recovers
+about a sixth of what a name is worth here. Neither cue is strong.
+
+The cleaned surname still resolves *fewer* candidates than the naive one, 86%
+against 88%, because splitting the initial-buckets leaves more of them alone in
+a cell. So the naive rule was never predicting from surnames. It was pooling
+candidates into a handful of very large buckets keyed on a letter.
 
 [![What a last-token rule calls a surname](analyses/08_karnataka_initials/out/fig/naive_vs_clean.png)](analyses/08_karnataka_initials/note.md)
 
@@ -308,8 +306,7 @@ empty in a city. Analysis 02 measures what the village is worth; analysis 01
 measures what is left once the village is gone.
 
 **A name-based method is accurate about the advantaged and poor about the
-disadvantaged.** That is the finding to carry away, and it is not a caveat. Use
-such a method to test whether Dalits get fewer callbacks, and two thirds of the
+disadvantaged.** Use such a method to test whether Dalits get fewer callbacks, and two thirds of the
 real Dalits sit in your comparison group, on both sides of the gap you are
 trying to measure. The discrimination is unchanged; your estimate of it shrinks.
 

@@ -5,44 +5,51 @@ rule picks up a *given* name there. Karnataka breaks the same assumption by a
 different route: **34% of last tokens are a
 single letter**, and the six commonest are
 
-`S` (772), `R` (550), `K` (534), `N` (514), `B` (375), `G` (304)
+`S` (2,601), `R` (1,794), `K` (1,741), `N` (1,682), `B` (1,156), `C` (994)
 
 before any real surname appears. Drop single letters and the same list reads
 
-`Kumar` (315), `Patil` (165), `Naik` (149), `Manjunatha` (114), `Biradar` (69), `Nagaraja` (55)
+`Kumar` (1,079), `Patil` (607), `Naik` (523), `Manjunatha` (375), `Biradar` (230), `Rathod` (177)
 
 Two completely different inventories of "Karnataka's commonest surnames",
-from the same 14,854 names.
+from the same 48,395 names.
 
 ![What a last-token rule calls a surname](out/fig/naive_vs_clean.png)
 
-## Cleaning changes the names and not the prediction
-
-This is the part worth reporting carefully, because it is a null and it went
-against what I expected.
+## Cleaning the initials out buys a little, and not much
 
 | cue | distinct values | mistakes per 100 | share resolved |
 |---|---|---|---|
-| knowing nothing | — | 54.5 | — |
-| naive last token | 4,021.0 | 49.2 | 74% |
-| cleaned surname | 4,919.0 | 49.6 | 69% |
-| PIN code | 1,177.0 | 54.0 | 97% |
+| knowing nothing | — | 52.5 | — |
+| naive last token | 6,979 | 45.3 | 88% |
+| cleaned surname | 8,529 | 43.9 | 86% |
+| PIN code | 1,381 | 51.5 | 99% |
 
-Cleaning moves the error by
-+0.4 mistakes per hundred, which is to
-say it does not move it. It slightly *worsens* it, and the reason is visible in
-the last column: dropping initials splits 4,021.0 cells into
-4,919.0 smaller ones, so fewer people share a cell with anyone
-else and more fall back to the blind guess.
+Dropping the initials improves the guess by
+1.3 mistakes per hundred. Against a blind
+rate of 52, the naive token is worth
+7.2 and the cleaned surname
+8.6, so cleaning recovers roughly a sixth of
+what a name is worth here.
 
-So the naive rule was never predicting well by using real surnames. It was
-pooling people into a handful of enormous initial-buckets, which beats guessing
-blind by a little, exactly as the cleaned surnames do.
+An earlier version of this note reported that difference as a null, and as
+slightly negative. That reading came from 14,854 candidates; the collection has
+since reached 48,395, and the sign is now stable and the other way round.
+The earlier figure was underpowered, and the honest lesson is about the sample
+rather than about surnames.
 
-**Neither is worth much.** Against a blind rate of 55, the best of them
-leaves 49. The PIN
-code is worth almost nothing at all, which is the opposite of what geography does
-in Bihar, where a village takes 47 mistakes down to 17.
+Two things did not change with the extra data. The naive column is still a third
+initials, and the cleaned surname still resolves *fewer* people than the naive
+one, 86% against 88%,
+because splitting the initial-buckets leaves more candidates alone in a cell.
+The naive rule was never predicting from surnames. It was pooling candidates
+into a handful of very large buckets keyed on a letter, which beats guessing
+blind by a little.
+
+**Neither cue is strong.** The better of the two still leaves
+44 mistakes per
+hundred. The PIN code is worth almost nothing, which is the opposite of what
+geography does in Bihar, where a village takes 47 mistakes down to 17.
 
 ## What this does and does not establish
 
@@ -62,7 +69,7 @@ serious enough for the opening rather than a footnote:
   bucket, which also folds in 2B, a religion-defined category this repo does not
   report separately.
 
-With 14,854 rows across four categories, and most surnames appearing once
+With 48,395 rows across four categories, and most surnames appearing once
 or twice, everything above is scored leave-one-out. A plug-in score would report
 memorisation.
 
