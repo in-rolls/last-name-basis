@@ -218,7 +218,7 @@ def claims():
         ),
         (
             "01 roll coverage",
-            r"are (\d+)% of all the names people",
+            r"are\s+\*\*(\d+)% of all the names people",
             _coverage("share_of_roll_covered"),
         ),
         # The rung with median cell size 1, so the one where plug-in bias is
@@ -341,7 +341,7 @@ def claims():
         ),
         (
             "07 haryana",
-            r"gap in Assam and (\d+)% in Haryana\*\*",
+            r"gap in Assam and (\d+)% in\s+Haryana\*\*",
             _state("haryana", "removed"),
         ),
         (
@@ -351,12 +351,12 @@ def claims():
         ),
         (
             "08 naive",
-            r"(\d+\.\d) mistakes per 100 against",
+            r"naive token leaves (\d+\.\d)\s*\nmistakes per 100",
             _karnataka("naive_surname"),
         ),
         (
             "08 clean",
-            r"mistakes per 100 against\s+(\d+\.\d)",
+            r"cleaned surname (\d+\.\d)",
             _karnataka("clean_surname"),
         ),
     ]

@@ -9,20 +9,19 @@ In a village that is common knowledge: the settlement, the hamlet, whose son you
 are, which lane you live on. A city strips most of that away. What survives on a
 rental application or a job form is a name.
 
-So how much does a last name give away? If it gives away a great deal, then
-urbanisation relocates caste prejudice rather than weakening it, and the name is
-doing the work the village used to do. If it gives away little, then a
-name-based inference, whether a landlord's, an employer's, or a researcher's
-auditing for discrimination, is running on a weak signal, and it matters enormously
-whether that weakness falls evenly.
+So how much does a last name give away? That question sits underneath a lot of
+other ones. Anyone acting on caste has to work it out first, and so does anyone
+auditing them for it: a study that asks whether Dalits get fewer callbacks
+usually infers caste from the applicant's name.
 
-This repo measures that one link and nothing more. It does not measure
-discrimination, and it does not measure urbanisation. It measures what a surname
-reveals about caste, who it reveals least about, and what has to be added to a
-name before it reveals a lot.
+This repo measures only that inference. It does not measure discrimination, it
+does not measure urbanisation, and it makes no claim about what happens to
+prejudice when people move. It measures what a surname reveals about caste, whom
+it reveals least about, and what has to be added to a name before it reveals a
+lot.
 
-The operational version of the question: pick an Indian adult at random, know
-only their last name, and how often are you wrong about their caste?
+The operational question: pick an Indian adult at random, know only their last
+name, and how often are you wrong about their caste?
 
 **About 20 times in 100.** Knowing nothing at all, you would be wrong 25 times.
 The name is worth about five mistakes, and almost all of that comes from a
@@ -30,6 +29,18 @@ handful of names hardly anybody carries.
 
 Everything below is measured in that one unit: **of a hundred people, how many
 would you get wrong?**
+
+**Two things drive that number besides the name, so no figure here travels
+without them.** The first is how fine the question is. Sorting people into
+Dalit, Adivasi or neither is a far easier job than placing them among 141 Bihari
+jatis, and the same surname leaves 20 mistakes at the first and 47 at the
+second. The second is what else the guesser knows. A name plus a village is a
+different instrument from a name alone, and a name matched against a caste
+register is different again.
+
+So every number below carries its target and its cues. Comparing one to another
+across different targets says nothing about surnames; it says the two questions
+were not the same question.
 
 ## 1. The data, and why it takes several kinds
 
@@ -70,8 +81,14 @@ common a name is comes from the rolls, and what it means comes from SECC.
 
 Filling a room with a hundred people means drawing surnames at their roll
 frequency and reading each one's caste mix off SECC. **That room is 19 Dalit, 6
-Adivasi, 75 neither.** Those 3,930 surnames are 59% of all the names people
-carry on the rolls, so the room is built from the commoner half of Indian names.
+Adivasi, 75 neither.**
+
+**Read every national number here against one limit.** Those 3,930 surnames are
+**59% of all the names people carry** on the rolls. The other 41% are the rarer
+names, cut by the 100-record floor, and rare names are the informative ones. So
+the room is built from the commoner half of Indian naming, which is the half
+that reveals least. Every figure below is a floor on what a surname gives away,
+not a ceiling.
 
 ### The rest
 
@@ -217,8 +234,9 @@ caste register leave **9**.
 
 ### [07 Where a surname works, and where it does not](analyses/07_where_the_name_works)
 
-The national figure hides an enormous spread. The same guess closes **67% of the
-gap in Assam and 0% in Haryana**. What carries a state is one or two large,
+The national figure hides an enormous spread. Sorting people into Dalit, Adivasi
+or neither, the same guess closes **67% of the gap in Assam and 0% in
+Haryana**. What carries a state is one or two large,
 decisive names rather than many of them: Assam has two majority-Dalit surnames
 among its commonest and closes two thirds of the gap, because one of them is
 `das`. Punjab has five and closes 3%, because its biggest are `ram` at 62% and
@@ -240,8 +258,9 @@ and the six commonest are `S`, `R`, `K`, `N`, `B`, `G`. Drop single letters and
 the list becomes `Kumar`, `Patil`, `Naik`, `Manjunatha`, two different
 inventories of "Karnataka's commonest surnames" from one set of names.
 
-Cleaning them changes the prediction not at all: 49.2 mistakes per 100 against
-49.6, versus 54.5 knowing nothing. Slightly *worse*, because splitting the
+Cleaning them changes the prediction not at all. Sorting candidates into
+General, OBC, Scheduled Caste or Scheduled Tribe, the naive token leaves 49.2
+mistakes per 100 and the cleaned surname 49.6, against 54.5 knowing nothing. Slightly *worse*, because splitting the
 initial-buckets leaves fewer people sharing a cell with anyone. The naive rule
 was never predicting from surnames. It was pooling people into a few enormous
 initial-buckets.
@@ -279,9 +298,6 @@ each of those places.
   The finer categories exist only in analysis 02, and only for Bihar.
 - Analysis 02 is **Bihar landowners**, so it under-represents the landless, who
   are disproportionately Dalit and EBC.
-- The 3,930 surnames outkast ships are the ones with at least 100 records, so
-  they are the commoner names, and rare names are the informative ones. Every
-  figure here is a floor on what surnames reveal rather than a ceiling.
 - Analysis 03's title list is a judgment call, published in
   [`analyses/03_how_few_names/titles.py`](analyses/03_how_few_names/titles.py)
   with a reason beside each token and reported at three levels so you can take
