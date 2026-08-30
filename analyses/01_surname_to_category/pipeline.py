@@ -7,6 +7,7 @@ from pathlib import Path
 
 import coverage as cov
 import figures
+import metrics
 import pandas as pd
 import report
 from data import base_rates, load_cells, per_name
@@ -106,6 +107,15 @@ def main() -> None:
     # census recorded; roll weights by who you would actually meet. Each is
     # summarised against its own prior -- mixing them breaks the arithmetic.
     h["coverage_national"] = cov.national_coverage(build("secc"))
+    # Accuracy against the mode is dominated by the base rate; this is not.
+    h["discrimination"] = {
+        "secc": metrics.discrimination(secc),
+        "roll": metrics.discrimination(secc, "share_roll"),
+        "note": (
+            "share of (member, non-member) pairs in which the member's surname "
+            "ranks higher; 0.5 is no information"
+        ),
+    }
     h["weighted"] = {
         "secc": weighted_summary(secc, "share"),
         "roll": weighted_summary(secc, "share_roll"),

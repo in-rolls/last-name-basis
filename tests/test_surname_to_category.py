@@ -208,3 +208,55 @@ def test_no_surname_can_make_the_guess_wronger_than_blind(named):
     assert (wm * err_name[mixed]).sum() / wm.sum() < (
         wm * err_blind[mixed]
     ).sum() / wm.sum()
+
+
+def test_a_score_carrying_nothing_gives_exactly_a_half():
+    """Calibration. Without this the statistic could be silently mis-scaled."""
+    from last_name_basis.scoring import ranks_above
+
+    flat = np.array([0.3, 0.3, 0.3])
+    assert (
+        ranks_above(flat, np.array([5.0, 3.0, 2.0]), np.array([4.0, 1.0, 6.0])) == 0.5
+    )
+    assert (
+        ranks_above(np.array([0.0, 1.0]), np.array([0.0, 9.0]), np.array([9.0, 0.0]))
+        == 1.0
+    )
+    assert (
+        ranks_above(np.array([0.0, 1.0]), np.array([9.0, 0.0]), np.array([0.0, 9.0]))
+        == 0.0
+    )
+
+
+def test_two_implementations_of_the_rank_statistic_agree(named):
+    """The headline claim now rests on this number, so it gets two routes.
+
+    One sorts individuals and splits ties in a single pass; the other groups by
+    distinct score first. They share nothing beyond their inputs.
+    """
+    table = with_roll_frequency(named)
+    for weight in (None, "share_roll"):
+        if weight == "share_roll" and table["share_roll"].fillna(0).sum() <= 0:
+            continue
+        a = metrics.discrimination(table, weight)
+        b = metrics.discrimination_by_levels(table, weight)
+        for category in a:
+            assert abs(a[category] - b[category]) < 1e-3, (category, weight, a, b)
+
+
+def test_the_surname_discriminates_far_better_than_it_decides(named):
+    """The point the accuracy figures conceal.
+
+    Accuracy against the largest category is mostly a statement about the base
+    rate: a rule naming the majority is right 70 times in 100 in a population
+    that is 70% one group, whatever surnames reveal. Ranking is not inflatable
+    that way, and it says a surname separates Dalit from non-Dalit well while
+    changing the decision for almost nobody.
+    """
+    table = with_roll_frequency(named)
+    ranked = metrics.discrimination(table)
+    assert ranked["sc"] > 0.75, ranked
+    assert ranked["st"] > 0.75, ranked
+    # And the decision rule still leaves most people where the base rate put them.
+    summary = weighted_summary(table, "share")
+    assert summary["share_guess_unchanged"] > 0.8

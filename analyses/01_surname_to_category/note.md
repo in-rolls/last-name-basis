@@ -20,6 +20,20 @@ hundred.
 
 That is the number to beat.
 
+## First, does the name carry anything at all?
+
+Accuracy cannot answer that. A rule naming the largest category is right 70
+times in 100 in a population that is 70% one group, whatever surnames reveal, so
+an accuracy figure is mostly a statement about the base rate.
+
+Rank people instead. Take one Dalit and one non-Dalit at random and order the
+pair by what their surnames say about caste. **The Dalit ranks higher 80 times
+in 100**, and 85 weighting people as SECC records them. For Adivasi against
+everyone else it is 91. A surname carrying nothing would give 50.
+
+So the name is far from silent. What follows is what happens when that
+information has to become a single answer.
+
 ## Now you get to hear the name
 
 For some names this changes everything. For most it changes nothing at all.

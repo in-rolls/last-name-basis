@@ -96,16 +96,34 @@ Public Service Commission select lists (analysis 08).
 Because analyses 02 and 06 read from a local clone of `jati`, those two cannot
 be reproduced from a clean checkout. The other six can.
 
-## 1. A surname reveals little, and the average overstates it
+## 1. A surname discriminates well and decides badly
 
-Guess "neither" for everyone in that room of a hundred and you are wrong **25**
-times. Let yourself hear the last name and you are wrong **20**.
+Take one Dalit and one non-Dalit at random and rank the pair by what their
+surnames say about caste. **The Dalit ranks higher 80 times in 100.** A surname
+carrying no information would give 50, and for Adivasi against everyone else the
+figure is 91. So a surname is far from silent about who is more likely to be
+Dalit.
 
-The five mistakes are not spread evenly, and separating two properties of a
-surname explains why. A surname is **predictive** when few of its bearers fall
-outside its largest category. It **changes the guess** only when that largest
-category differs from the population's. The two are not the same, and the
-commonest surnames are often the first without being the second. Yadav is the
+Now ask the same data to name a single category for each person. Guess "neither"
+for everyone in that room of a hundred and you are wrong **25** times. Let
+yourself hear the last name and you are wrong **20**.
+
+Those two facts are both true and the gap between them is the point. Only about
+19 people in that room are Dalit, so a surname can raise someone's odds a great
+deal and still leave them below an even chance, at which point a rule that names
+the most likely category goes on answering "not Dalit". The name moves the odds;
+it rarely moves the decision.
+
+This is why accuracy is the wrong measure to lead with. In a population that is
+70% one group, a rule naming that group is right 70 times in 100 whatever
+surnames reveal. The 25 and the 20 above are mostly a statement about how many
+Indians are not Dalit.
+
+The five mistakes the decision saves are not spread evenly either. A surname is
+**predictive** when few of its bearers fall outside its largest category, and it
+**changes the guess** only when that largest category differs from the
+population's. The commonest surnames are often the first without being the
+second. Yadav is the
 fifth commonest surname in India at 2.6% of the roll, and 99% of its bearers
 fall outside the schedules, so it leaves 1 mistake per 100. It nonetheless
 changes nothing, because "outside the schedules" is what one would have guessed
@@ -134,7 +152,9 @@ someone named Ram is still "neither", and it is wrong 53 times per 100, the same
 rate as guessing without the name. Such a surname warrants less confidence in an
 answer it does not alter.
 
-*Analysis: [01](analyses/01_surname_to_category).*
+*Analysis: [01](analyses/01_surname_to_category). The ranking statistic is
+the Mann-Whitney statistic, equivalently the area under the ROC curve, computed
+twice by different routes as a check.*
 
 ## 2. "Last name" is not one thing across India
 
@@ -208,7 +228,12 @@ the neighbourhood rescues.**
 
 **How much the place is worth varies enormously by state.** Sorting people into
 Dalit, Adivasi or neither, the same guess closes **67% of the gap in Assam and
-0% in Haryana**. What carries a state is one or two large, decisive names rather
+0% in Haryana**. That measure carries claim 1's problem, so it comes with the
+ranking measure beside it, and the two disagree in a way worth seeing. Kerala
+closes under 1% of the gap while its surnames separate Dalit from non-Dalit
+about as well as Maharashtra's, 0.85 against 0.86, because only 8% of Kerala's
+extract is Scheduled Caste. Punjab and Haryana are the states whose surnames
+genuinely carry little, at 0.55 and 0.59 against a floor of 0.50. What carries a state is one or two large, decisive names rather
 than many of them: Assam has two majority-Dalit surnames among its commonest and
 closes two thirds of the gap, because one of them is `das`. Punjab has five and
 closes 3%, because its biggest are `ram` at 62% and `lal` at 52%. Haryana has
@@ -217,6 +242,8 @@ are surnames that cleared a 100-record disclosure floor and they cover between
 3% and 19% of a state.
 
 [![How much of the gap a surname closes, by state](analyses/07_where_the_name_works/out/fig/where_it_works.png)](analyses/07_where_the_name_works/note.md)
+
+[![Deciding badly is not the same as carrying nothing](analyses/07_where_the_name_works/out/fig/discriminates.png)](analyses/07_where_the_name_works/note.md)
 
 **And the village premium is smaller outside Bihar.** The Odisha Record of
 Rights records a jati and a village for every tenant, so the same measurement is
@@ -256,6 +283,12 @@ They are not. Nationally, the guess is wrong about **66 of every 100 Dalits** an
 **4 of every 100 people outside the schedules**, a seventeen-fold gap. Those
 weight up to the 20 mistakes per hundred it makes across everybody, so this is
 one guess split by who it lands on rather than a second estimator.
+
+This is claim 1 seen from the other side. Because a surname rarely pushes anyone
+past an even chance of being Dalit, the rule almost never answers "Dalit", so it
+misses most Dalits and is right about nearly everyone else. The lopsidedness is
+not a separate finding. It is what naming the most likely category does to a
+minority when the cue is informative without being decisive.
 
 The name is not useless for Dalits. It takes them from wrong about all of them
 to wrong about 66 in a hundred, and it does more still for Adivasis, 100 down to

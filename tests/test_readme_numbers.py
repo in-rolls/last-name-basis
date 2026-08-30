@@ -179,7 +179,7 @@ def claims():
         ),
         (
             "01 roll blind",
-            r"you are wrong \*\*(\d+)\*\*\s*\ntimes",
+            r"you are wrong \*\*(\d+)\*\*\stimes",
             lambda: _roll("err_blind")() * 100,
         ),
         (

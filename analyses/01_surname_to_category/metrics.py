@@ -30,7 +30,7 @@ import numpy as np
 import pandas as pd
 from data import CATEGORIES, PROB_COLS
 
-from last_name_basis.scoring import entropy_bits
+from last_name_basis.scoring import entropy_bits, ranks_above
 from last_name_basis.scoring import weighted_summary as _weighted_summary
 
 LABELS = {"sc": "SC", "st": "ST", "other": "Other"}
@@ -229,3 +229,69 @@ def signal_decomposition(cells: pd.DataFrame) -> dict:
 def weighted_summary(named: pd.DataFrame, weight: str) -> dict:
     """This analysis's categories, scored by the shared routine."""
     return _weighted_summary(named, PROB_COLS, weight, CATEGORIES)
+
+
+def discrimination(named: pd.DataFrame, weight: str | None = None) -> dict:
+    """How well a surname separates each group from everyone else.
+
+    Accuracy cannot answer this. A rule naming the largest category is right 70
+    times in 100 in a population that is 70% one group, whatever surnames
+    reveal, so the accuracy figures elsewhere in this analysis are largely a
+    statement about the base rate. This is not: take one member of a group and
+    one non-member at random, rank the pair by what their surnames say, and this
+    is how often the member ranks higher. No information gives 0.5.
+
+    `weight` reweights people by a name's share of the electoral roll. Without
+    it, people are weighted as SECC records them.
+    """
+    counts = named[[f"n_{c}" for c in CATEGORIES]].to_numpy(float)
+    total = counts.sum(axis=1)
+    if weight is not None:
+        w = named[weight].fillna(0).to_numpy(float)
+        scale = np.divide(w, total, out=np.zeros_like(w), where=total > 0)
+        counts = counts * scale[:, None]
+
+    out = {}
+    for i, category in enumerate(CATEGORIES):
+        positive = counts[:, i]
+        negative = counts.sum(axis=1) - positive
+        score = named[f"p_{category}"].to_numpy(float)
+        out[category] = ranks_above(score, positive, negative)
+    return out
+
+
+def discrimination_by_levels(named: pd.DataFrame, weight: str | None = None) -> dict:
+    """The same statistic computed a second way, as a cross-check.
+
+    Groups people by distinct score before accumulating, rather than sorting
+    individuals and handling ties in a pass. The two share no code path beyond
+    the inputs, and the headline claim now rests on this number, so it is worth
+    having two routes to it.
+    """
+    counts = named[[f"n_{c}" for c in CATEGORIES]].to_numpy(float)
+    total = counts.sum(axis=1)
+    if weight is not None:
+        w = named[weight].fillna(0).to_numpy(float)
+        scale = np.divide(w, total, out=np.zeros_like(w), where=total > 0)
+        counts = counts * scale[:, None]
+
+    out = {}
+    for i, category in enumerate(CATEGORIES):
+        frame = pd.DataFrame(
+            {
+                "score": named[f"p_{category}"].to_numpy(float),
+                "positive": counts[:, i],
+                "negative": counts.sum(axis=1) - counts[:, i],
+            }
+        )
+        g = frame.groupby("score", as_index=False).sum().sort_values("score")
+        positive = g["positive"].to_numpy()
+        negative = g["negative"].to_numpy()
+        below = np.concatenate([[0.0], np.cumsum(negative)[:-1]])
+        pairs = positive.sum() * negative.sum()
+        out[category] = (
+            float((positive * (below + 0.5 * negative)).sum() / pairs)
+            if pairs > 0
+            else float("nan")
+        )
+    return out

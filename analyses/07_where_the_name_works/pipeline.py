@@ -81,6 +81,7 @@ def main() -> None:
 
     figures.where_it_works(table, FIG / "where_it_works.png")
     figures.decisive(spotlight, FIG / "decisive_names.png")
+    figures.decides_versus_discriminates(table, FIG / "discriminates.png")
     print(f"wrote {TAB} and {FIG}")
 
 

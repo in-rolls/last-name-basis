@@ -27,10 +27,15 @@ from __future__ import annotations
 
 import importlib.util
 import os
+import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "src"))
+
+from last_name_basis.scoring import ranks_above  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
 A01 = HERE.parent / "01_surname_to_category"
@@ -94,6 +99,14 @@ def state_table(per: pd.DataFrame, min_names: int = TOP_N) -> pd.DataFrame:
         row.update(score(n))
         row["removed_top25"] = score(top)["removed"]
         row["sc_share_of_extract"] = float(100 * n[:, 0].sum() / n.sum())
+        # `removed` is accuracy against the largest category, so it moves with
+        # the state's composition as much as with its surnames. Kerala closes
+        # under 1% of the gap while separating Dalit from non-Dalit as well as
+        # Maharashtra does, because only 8% of its extract is Scheduled Caste
+        # and a surname that raises the odds still rarely crosses a half.
+        totals = n.sum(axis=1)
+        p_sc = np.divide(n[:, 0], totals, out=np.zeros(len(d)), where=totals > 0)
+        row["ranks_dalit_higher"] = ranks_above(p_sc, n[:, 0], totals - n[:, 0])
         census = pop.get(state, np.nan)
         row["census_population"] = float(census)
         row["covered_share"] = float(100 * n.sum() / census) if census else np.nan

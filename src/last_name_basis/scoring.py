@@ -141,3 +141,43 @@ def leave_one_out_ladder(
             }
         )
     return pd.DataFrame(rows)
+
+
+def ranks_above(score: np.ndarray, positive: np.ndarray, negative: np.ndarray) -> float:
+    """How often a positive outranks a negative, ties counted as half.
+
+    Take one person from the positive group and one from the negative group at
+    random, and rank the pair by `score`. This returns the share of such pairs
+    in which the positive ranks higher. A score carrying no information gives
+    exactly 0.5.
+
+    It is the Mann-Whitney statistic, equivalently the area under the ROC curve,
+    and the reason this repo needs it is that accuracy does not answer the
+    question. A rule that names the largest category is right 70 times in 100 in
+    a population that is 70% one group, whatever surnames reveal. This statistic
+    cannot be inflated by the base rate.
+
+    `positive` and `negative` are counts of people at each score, not indicators,
+    so a per-name table can be passed directly.
+    """
+    order = np.argsort(score, kind="mergesort")
+    s, pos, neg = score[order], positive[order], negative[order]
+
+    below = np.zeros(len(s))
+    tied = np.zeros(len(s))
+    running = 0.0
+    i = 0
+    while i < len(s):
+        j = i
+        while j + 1 < len(s) and s[j + 1] == s[i]:
+            j += 1
+        group = neg[i : j + 1].sum()
+        below[i : j + 1] = running
+        tied[i : j + 1] = group
+        running += group
+        i = j + 1
+
+    pairs = pos.sum() * neg.sum()
+    if pairs <= 0:
+        return float("nan")
+    return float((pos * (below + 0.5 * tied)).sum() / pairs)

@@ -122,3 +122,57 @@ def decisive(frames: dict, out: Path) -> None:
     fig.tight_layout(rect=(0, 0.03, 1, 0.94))
     fig.savefig(out, dpi=170)
     plt.close(fig)
+
+
+def decides_versus_discriminates(table, out: Path) -> None:
+    """Where the two measures disagree, and why.
+
+    The horizontal axis is accuracy against the largest category, which a
+    state's composition inflates or suppresses. The vertical axis is how often a
+    Dalit's surname outranks a non-Dalit's, which composition cannot touch.
+    Kerala sits at the top left: surnames that separate as well as Maharashtra's
+    and almost never change the answer, because so few Keralans in the extract
+    are Scheduled Caste.
+    """
+    d = table.copy()
+    fig, ax = plt.subplots(figsize=(8.6, 6.0))
+    ax.axhline(0.5, color=MUTED, ls=":", lw=1.1)
+    ax.text(1, 0.505, "a surname carrying nothing", fontsize=8.5, color=MUTED)
+
+    flagged = {"kerala", "punjab", "haryana", "uttar pradesh", "bihar", "assam"}
+    for row in d.itertuples():
+        marked = row.state in flagged
+        ax.scatter(
+            row.removed,
+            row.ranks_dalit_higher,
+            s=64 if marked else 34,
+            color=ACCENT if marked else INK,
+            zorder=3,
+        )
+        if marked:
+            ax.annotate(
+                row.state,
+                (row.removed, row.ranks_dalit_higher),
+                textcoords="offset points",
+                xytext=(8, -3),
+                fontsize=9.5,
+                color=ACCENT,
+            )
+
+    ax.set_xlim(-3, 72)
+    ax.set_ylim(0.45, 1.0)
+    ax.set_xlabel("share of the gap closed (%), which the base rate inflates")
+    ax.set_ylabel("how often a Dalit's surname outranks a non-Dalit's")
+    ax.set_title(
+        "Deciding badly is not the same as carrying nothing\n"
+        "Kerala's surnames separate about as well as Maharashtra's and change "
+        "the answer\nfor almost nobody. Punjab's and Haryana's barely separate "
+        "at all.",
+        color=INK,
+        loc="left",
+        fontsize=11.5,
+    )
+    style_axes(ax)
+    fig.tight_layout()
+    fig.savefig(out, dpi=170)
+    plt.close(fig)

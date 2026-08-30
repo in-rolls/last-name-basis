@@ -23,25 +23,47 @@ not track the result -- Assam closes the largest gap on 4% of its people and
 Odisha closes half of one on 19% -- so it is a caution about reading levels,
 not a correction to apply.
 
-| state | gap closed (%) | top 25 names only | covers | names |
-|---|---|---|---|---|
-| assam | 67 | 65 | 4% | 161 |
-| bihar | 61 | 59 | 14% | 557 |
-| gujarat | 53 | 51 | 4% | 390 |
-| west bengal | 50 | 38 | 14% | 616 |
-| odisha | 49 | 36 | 19% | 457 |
-| chhattisgarh | 39 | 30 | 5% | 120 |
-| rajasthan | 38 | 31 | 8% | 242 |
-| madhya pradesh | 36 | 23 | 7% | 345 |
-| maharashtra | 31 | 23 | 5% | 751 |
-| uttarakhand | 28 | 28 | 8% | 43 |
-| tamilnadu | 9 | 4 | 5% | 715 |
-| punjab | 3 | 3 | 9% | 29 |
-| uttar pradesh | 2 | 0 | 5% | 612 |
-| kerala | 1 | 0 | 3% | 230 |
-| haryana | 0 | 0 | 4% | 36 |
+| state | gap closed (%) | ranks Dalit higher | top 25 names only | covers | names |
+|---|---|---|---|---|---|
+| assam | 67 | 0.96 | 65 | 4% | 161 |
+| bihar | 61 | 0.96 | 59 | 14% | 557 |
+| gujarat | 53 | 0.86 | 51 | 4% | 390 |
+| west bengal | 50 | 0.91 | 38 | 14% | 616 |
+| odisha | 49 | 0.89 | 36 | 19% | 457 |
+| chhattisgarh | 39 | 0.87 | 30 | 5% | 120 |
+| rajasthan | 38 | 0.81 | 31 | 8% | 242 |
+| madhya pradesh | 36 | 0.88 | 23 | 7% | 345 |
+| maharashtra | 31 | 0.86 | 23 | 5% | 751 |
+| uttarakhand | 28 | 0.84 | 28 | 8% | 43 |
+| tamilnadu | 9 | 0.69 | 4 | 5% | 715 |
+| punjab | 3 | 0.55 | 3 | 9% | 29 |
+| uttar pradesh | 2 | 0.74 | 0 | 5% | 612 |
+| kerala | 1 | 0.85 | 0 | 3% | 230 |
+| haryana | 0 | 0.59 | 0 | 4% | 36 |
 
 ![How much of the gap a surname closes, by state](out/fig/where_it_works.png)
+
+## Two measures, and where they disagree
+
+The gap-closed column is accuracy against the largest category, so a state's
+composition moves it as much as its surnames do. The next column is not: take
+one Dalit and one non-Dalit from the state at random, rank the pair by what
+their surnames say, and it is how often the Dalit ranks higher. A surname
+carrying nothing gives 0.50.
+
+The two agree on the ordering broadly and part company at the bottom, which is
+where the conclusion lived. Kerala closes under 1% of the gap and ranks at
+0.85, about level with Maharashtra at 0.86. Kerala's
+surnames separate Dalit from non-Dalit perfectly respectably; they seldom change
+the answer because only 8% of its extract is Scheduled Caste, so
+raising the odds still rarely crosses a half.
+
+Punjab and Haryana are different. At 0.55 and 0.59 against a
+floor of 0.50, those are states whose surnames genuinely carry little about
+caste. Grouping them with
+Kerala, as the gap-closed column alone does, puts two unlike things together.
+
+![Deciding badly is not the same as carrying nothing](out/fig/discriminates.png)
 
 ## The obvious objection, tested
 
@@ -84,12 +106,13 @@ at 38% Scheduled Caste,
 which is higher than the Census figure for Punjab. Read the `covers` column
 before reading anything into a base rate here.
 
-**A comparison between states with very different base rates.** A surname
-"points Dalit" when over half its bearers are, and that bar sits at
+**A comparison of gap-closed between states with different base rates.** A
+surname "points Dalit" when over half its bearers are, and that bar sits at
 7.6% of the extract in Kerala against
 38.1% in Punjab, so the test is far more lenient
-there. Punjab fails it anyway, which is what makes Punjab's result readable. A
-comparison of Kerala against Punjab is not.
+there. Compare the ranking column across states instead, which is what it is
+for; the gap-closed column is comparable only among states of similar
+composition.
 
 **Any claim about people whose surnames were suppressed.** The floor removes
 rare names, and analysis 01 shows rare names are the informative ones. These

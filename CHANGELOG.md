@@ -8,6 +8,36 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- **The headline measure was accuracy against the largest category, which the
+  base rate inflates.** A rule naming the majority is right 70 times in 100 in a
+  population that is 70% one group, whatever surnames reveal, so "wrong 25 times
+  knowing nothing, 20 with the surname" was largely a statement about how many
+  Indians are not Dalit.
+
+  Measured by ranking instead: take one Dalit and one non-Dalit at random and
+  order the pair by what their surnames say, and the Dalit ranks higher 80 times
+  in 100 on roll weights, 86 on SECC weights, against 50 for a surname carrying
+  nothing. Adivasi against everyone else is 91. So a surname is far from silent,
+  and the repo had been saying it reveals little.
+
+  Both figures are right and the gap between them is the finding. A surname
+  moves the odds a great deal and rarely moves the decision, because only 19% of
+  people are Dalit and raising the odds still usually leaves them under a half.
+  That is also why the errors fall where they do: the rule almost never answers
+  "Dalit", so it misses 66 of every 100 Dalits while getting 96 of every 100
+  other people right. The differential in claim 4 is claim 1 seen from the other
+  side.
+
+- **The same defect changed a conclusion in analysis 07.** It grouped Kerala,
+  Uttar Pradesh, Punjab and Haryana together at the bottom on gap-closed. On the
+  ranking measure Kerala is 0.85, level with Maharashtra's 0.86, while Punjab is
+  0.55 and Haryana 0.59 against a floor of 0.50. Kerala's surnames separate
+  Dalit from non-Dalit perfectly well and seldom change the answer, because only
+  8% of its extract is Scheduled Caste. Punjab's and Haryana's genuinely carry
+  little. The old column could not tell those apart, and the note's blanket
+  refusal to compare Kerala against Punjab is replaced by the measure that makes
+  the comparison possible.
+
 - **The README is organised by claim rather than by analysis.** It had nine
   sections, one per analysis, numbered in the order the analyses were built,
   which is a table of contents and not an argument. The structure also could not
