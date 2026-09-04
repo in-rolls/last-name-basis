@@ -293,29 +293,32 @@ are surnames that cleared a 100-record disclosure floor and they cover between
 Rights records a jati and a village for every tenant, so the same measurement is
 possible elsewhere. Across 30 districts and 10,609 villages, on the same
 protocol, **a village adds 24 points where in Bihar it adds 30**. Put as a share
-of the errors the surname leaves behind, adding the village removes 52% of them
+of the errors the surname leaves behind, adding the village removes 54% of them
 in Odisha and 64% in Bihar.
 
 That pooled figure hides a spread. District by district the premium runs from
-2.5 to 22.4 points, median 11.4, and the pooled number is larger than any single
+2.2 to 22.8 points, median 10.7, and the pooled number is larger than any single
 district: naming a village in the pooled problem also names a district and a
 region, so it carries geography a district-level score has already held fixed.
 Bihar's 30 is pooled too, which is what makes the pooled rows comparable.
 
 The two levels are not comparable: Bihar sorts people among 141 curated jatis
-and Odisha among 5,389 labels as recorded, and a harder target costs mistakes
-whatever the surname does. Given that, the comparable quantity is the distance
-between the rungs, and both places converge at about 47 once the place is
-discarded.
+and Odisha among 5,756 label strings, of which 485 carry 99% of tenants, and a
+harder target costs mistakes whatever the surname does. Given that, the
+comparable quantity is the distance between the rungs. The two ladders cross:
+Odisha is the easier target at every size of place except the finest, and Bihar
+overtakes it exactly when the village arrives.
 
 [![Error rising as the place gets bigger, in both places](analyses/09_odisha_village_premium/out/fig/atrophy.png)](analyses/09_odisha_village_premium/note.md)
 
 Three of the analyst's choices could have produced that difference, so each was
-varied. Collapsing the labels to little more than half as many moves the premium
-by less than a mistake. Stripping the religion suffix from the jati label moves
-it from 24.4 to 23.7. The last token is the surname for 92% of tenants who share
-one with the relative named beside them, so that rule is measured rather than
-assumed. The scrape is unfinished and its districts were not entered at random,
+varied. Two spellings are merged only when the bearers' surnames agree as well
+as the strings, because `ଗଣ୍ଡ`/`ଗଣ୍ଡା` and `ଚମାର`/`କମାର` are one edit apart and
+two different jatis each; moving that gate across its whole defensible range
+moves the premium by 0.13. Stripping the religion suffix from the jati label
+moves it from 24.0 to 23.3. The last token is the surname for 92% of tenants who
+share one with the relative named beside them, so that rule is measured rather
+than assumed. The scrape is unfinished and its districts were not entered at random,
 so this is a partial Odisha; a completed village is now censused rather than
 sampled, but villages still in progress are partial and bias the premium
 downward.

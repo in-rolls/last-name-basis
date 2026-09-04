@@ -67,9 +67,11 @@ Relative to what the surname leaves unresolved, the village closes
 
 ![What a village adds, in Bihar and in Odisha]({FIG}/village_premium.png)
 
-Put on analysis 02's axis, the two places produce the same shape at different
-depths: they converge once the place is discarded and separate as it is
-restored.
+Put on analysis 02's axis the two places cross. Odisha is the easier target at
+every size of place except the finest -- {b['surname']:.0f} against
+{g['surname']:.0f} with no place at all -- and Bihar overtakes it exactly when
+the village arrives. The village does something in Bihar that no larger unit
+does; Odisha's gain is spread more evenly across the scales.
 
 ![Error rising as the place gets bigger, in both places]({FIG}/atrophy.png)
 
@@ -77,15 +79,22 @@ restored.
 
 The two levels are not comparable and the figure is drawn so as not to invite
 the comparison. Bihar sorts people among 141 curated jatis; Odisha sorts them
-among {g['groups']:,} labels as recorded. A harder target produces more mistakes
+among {g['groups']:,} label strings. A harder target produces more mistakes
 whatever the surname does, so the quantity that carries across places is the
 distance between the two rungs rather than the height of either.
 
-Both places happen to leave about {b['surname']:.0f} mistakes at the surname
-alone -- {b['surname']:.1f} in Bihar against {g['surname']:.1f} here. Nothing
-follows from that. They are counting against {b['groups']} groups and
-{g['groups']:,}, so equal heights are not evidence that surnames are equally
+The surname alone leaves {b['surname']:.1f} mistakes in Bihar and
+{g['surname']:.1f} here, which is close but not the same, and nothing follows
+from how close it is. They are counting against {b['groups']} groups and
+{g['groups']:,}, so similar heights are not evidence that surnames are equally
 informative.
+
+The {g['groups']:,} is itself misleading and the honest number is smaller.
+Two thirds of the label strings are carried by a handful of households each:
+**{nrm['labels_covering_99pct']} labels account for 99% of tenants**, against
+Bihar's 141 curated jatis. The tail costs almost nothing in the scoring -- every
+one of its rows is a mistake either way -- but quoted as a group count it makes
+the target look an order of magnitude harder than it is.
 
 ## The premium is not one number
 
@@ -115,13 +124,20 @@ a pooled figure too, so the pooled row is the like-for-like comparison.
 A result assembled from a scraped record and a normalisation layer invites the
 objection that the analyst's choices produced it. Three such choices were varied.
 
-**How aggressively jati labels are merged.** Collapsing
-{sens['groups'].max():,} labels to {sens['groups'].min():,} moves the premium by
-less than a mistake per hundred.
+**How readily two spellings are judged one jati.** Spelling proposes a merge
+and never decides it: `ଚମାର`/`କମାର`, `ଗଣ୍ଡ`/`ଗଣ୍ଡା` and `ଭୂମିଆ`/`ଭୂମିଜ` are
+each one edit apart and each two different jatis. A candidate is confirmed only
+when a second signal agrees -- two spellings of one jati are carried by the same
+surnames -- and that gate is the choice. Moving it from 0.15 to 0.60 moves the
+premium by {sens['premium'].max() - sens['premium'].min():.2f}.
 
-| similarity threshold | groups | surname | + village | premium |
+| surname-profile gate | groups | surname | + village | premium |
 |---|---|---|---|---|
 {sens_rows}
+
+{nrm['households_merged']:,} households were merged and
+{nrm['candidates_refused']:,} candidates refused, every one of them published
+with both of its scores in `out/tab/jati_merges.csv` and `jati_refused.csv`.
 
 **Whether religion is stripped from the label.** A jati recorded as `ପାଣ` and
 one recorded as `ପାଣ ଖ୍ରୀଷ୍ଟିୟାନ` are two prediction targets unless the
@@ -156,12 +172,17 @@ working through remain partial, and a partial village is a weaker cue than a
 complete one, so the premium is still biased **downward** and the gap to Bihar
 remains an upper bound.
 
-**The normalisation layer under-merges.** It leaves `ସଉରା` and `ସୌରା` separate,
-because a one-character difference in a four-character string falls below any
-threshold safe for longer names. {nrm['strings_in']:,} label strings become
-{nrm['strings_out']:,}, against Bihar's curated 141. The sensitivity table above
-is why the residual is reported and left: it does not move the answer. A fuller
-layer is being built in `upnaam` and will replace this one.
+**Most label strings still cannot be checked.** A merge is confirmed by
+comparing surname profiles, and below about 25 households that comparison stops
+discriminating: subsampling a known-same pair to ten rows gives scores as low as
+0.16, and a known-different pair reaches 0.21. So
+{nrm['candidates_refused']:,} candidates are refused, and all but 187 of those
+are refused for being too rare to check rather than for failing the check.
+{nrm['strings_in']:,} label strings become {nrm['strings_out']:,}. Those rare
+labels carry a quarter of one percent of tenants between them, so they cost
+almost nothing in the scoring, but they are the reason the group count stays in
+the thousands. A fuller layer is being built in `upnaam` and will replace this
+one.
 
 ---
 

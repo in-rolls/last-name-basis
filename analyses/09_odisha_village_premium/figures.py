@@ -141,9 +141,9 @@ def atrophy(ladders: dict, blinds: dict, out: Path) -> None:
     ax.set_ylabel("of 100 people, how many you get wrong")
     ax.set_title(
         "Caste is a local fact in both places, and most local in Bihar\n"
-        "The lines converge as the place is thrown away, and cross: the "
-        "village is worth more\nin Bihar, the larger units more in Odisha. "
-        "The units differ across states, so the axis\nranks them by size.",
+        "The lines cross. Odisha is the easier target until the village "
+        "arrives, and Bihar\novertakes it there. The units differ across "
+        "states, so the axis ranks them by size.",
         color=INK,
         loc="left",
         fontsize=11.5,

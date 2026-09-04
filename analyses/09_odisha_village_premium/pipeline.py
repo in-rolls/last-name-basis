@@ -13,9 +13,11 @@ HERE = Path(__file__).resolve().parent
 TAB, FIG = HERE / "out/tab", HERE / "out/fig"
 A02 = HERE.parent / "02_jati_by_geography/out/tab/ladders.csv"
 
-# Collapsing 377 label strings to 218 moves the premium by half a mistake per
-# hundred, so the threshold is reported rather than tuned.
-THRESHOLDS = [92, 85, 78, 72]
+# The merge gate is how much two labels' surname profiles must agree before
+# their spellings are treated as one. Same-jati pairs score 0.31 and up,
+# different-jati pairs 0.10 and down, so anything in between is a defensible
+# setting and the premium is reported across the range rather than at one point.
+THRESHOLDS = [0.15, 0.25, 0.40, 0.60]
 
 
 def bihar() -> dict | None:
@@ -89,9 +91,10 @@ def main() -> None:
     frame = source.load()
 
     position = source.surname_position(frame)
-    result = norm.normalise(frame["jati"])
+    result = norm.normalise(frame[["jati", "surname"]])
     result["merges"].to_csv(TAB / "jati_merges.csv", index=False)
     result["dropped"].to_csv(TAB / "jati_dropped.csv", index=False)
+    result["refused"].to_csv(TAB / "jati_refused.csv", index=False)
 
     frame["jati_norm"] = frame["jati"].map(result["mapping"])
     frame = frame[frame["jati_norm"].notna()].copy()
@@ -107,15 +110,16 @@ def main() -> None:
     }
 
     sensitivity = []
+    default_gate = norm.MIN_PROFILE
     for threshold in THRESHOLDS:
-        norm.MIN_SIMILARITY = threshold
-        mapping = norm.normalise(frame["jati"])["mapping"]
+        norm.MIN_PROFILE = threshold
+        mapping = norm.normalise(frame[["jati", "surname"]])["mapping"]
         alt = frame.assign(g=frame["jati"].map(mapping))
         alt = alt[alt["g"].notna()]
         row = score_all(alt, "g")
         row["threshold"] = threshold
         sensitivity.append(row)
-    norm.MIN_SIMILARITY = THRESHOLDS[0]
+    norm.MIN_PROFILE = default_gate
     pd.DataFrame(sensitivity).to_csv(TAB / "sensitivity.csv", index=False)
 
     frame["ri"] = (
@@ -163,8 +167,10 @@ def main() -> None:
             for k in (
                 "strings_in",
                 "strings_out",
+                "labels_covering_99pct",
                 "households_dropped",
                 "households_merged",
+                "candidates_refused",
             )
         },
         "odisha": scored,
