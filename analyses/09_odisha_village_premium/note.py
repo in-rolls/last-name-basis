@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import jati
 import pandas as pd
 
 HERE = Path(__file__).resolve().parent
@@ -23,6 +24,10 @@ def main() -> None:
     pos = s["surname_position"]
     nrm = s["normalisation"]
     sens = pd.DataFrame(s["sensitivity"])
+    floors = pd.DataFrame(s["floors"])
+    o_rows = g["households"]
+    norm_hh = f"{jati.MIN_JATI_HOUSEHOLDS} or more"
+    norm_reach = f"{jati.MIN_JATI_REACH} or more of them"
     districts = s["districts"]
     per = pd.DataFrame(s["by_district"]).sort_values("premium", ascending=False)
 
@@ -89,12 +94,26 @@ from how close it is. They are counting against {b['groups']} groups and
 {g['groups']:,}, so similar heights are not evidence that surnames are equally
 informative.
 
-The {g['groups']:,} is itself misleading and the honest number is smaller.
-Two thirds of the label strings are carried by a handful of households each:
-**{nrm['labels_covering_99pct']} labels account for 99% of tenants**, against
-Bihar's 141 curated jatis. The tail costs almost nothing in the scoring -- every
-one of its rows is a mistake either way -- but quoted as a group count it makes
-the target look an order of magnitude harder than it is.
+{nrm['strings_in']:,} label strings were recorded and {g['groups']:,} are
+scored. What qualifies a label is reach rather than size: it has to appear in
+more than one village of {s['villages']:,}, and then either carry
+{norm_hh} households or be found in {norm_reach}. That removes
+{nrm['labels_floored']:,} labels and {nrm['households_floored']:,} tenants,
+**{100 * nrm['households_floored'] / (o_rows + nrm['households_floored']):.2f}%
+of the record**, and moves the premium by
+{floors.iloc[0]['premium'] - g['premium']:+.2f}.
+
+Size alone was the wrong test and the removal list said so. A flat floor of
+fifty households cut `ମହିଶ୍ୟ` (47 households across 26 villages), `ଚନ୍ଦ୍ର ବଂଶି`
+(48 across 30) and `ପାଟସାଲିଆ` (47 across 23) for missing the round number by a
+household or two, which is not a defensible thing to have done to recognised
+castes. A label carried across many villages has earned its place whatever its
+size, and what the floor now removes is led by `ତିବତିୟାନ` -- Tibetan, 173
+households in one village -- `ବିବାହିତା ଶୁଣ୍ଢି`, which is a phrase rather than a
+jati, and `ଖଣ୍ଡାୟତ ବା. ନିଜଗାଁ`, which is a residence marker that leaked into the
+caste field upstream. Two thirds of what goes sits in a single village.
+Of what stays, {nrm['labels_covering_99pct']} labels carry 99% of tenants,
+against Bihar's 141 curated jatis.
 
 ## The premium is not one number
 
@@ -171,6 +190,14 @@ analysis first ran, with a maximum of
 working through remain partial, and a partial village is a weaker cue than a
 complete one, so the premium is still biased **downward** and the gap to Bihar
 remains an upper bound.
+
+**The floor is a claim, not a cleanup.** It is swept in `out/tab/floors.csv`
+alongside the merge gate, and across every setting tried -- no floor at all
+through to ten villages -- the premium sits between
+{floors['premium'].min():.2f} and {floors['premium'].max():.2f}. Cutting the
+group count from {nrm['strings_in']:,} to {g['groups']:,} does not move the
+answer, which is the reason it is safe to do and the reason it is reported
+rather than applied quietly.
 
 **Most label strings still cannot be checked.** A merge is confirmed by
 comparing surname profiles, and below about 25 households that comparison stops

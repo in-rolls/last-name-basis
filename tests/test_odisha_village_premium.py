@@ -161,3 +161,42 @@ def test_the_two_ladders_cross_at_the_village(summary):
     # And the crossing is not a rounding artefact at either end.
     assert bihar[-1] - odisha[-1] > 1
     assert odisha[0] - bihar[0] > 1
+
+
+def test_the_floor_on_a_jati_is_presentational(summary):
+    """Cutting the group count must not be what produces the finding.
+
+    A label is kept when it reaches more than one village and then either
+    carries fifty households or is found in five villages. That removes most of
+    the label strings, so the premium has to be shown not to depend on it: if a
+    future change makes the floor load-bearing, this fails rather than quietly
+    improving the headline.
+    """
+    floors = pd.DataFrame(summary["floors"])
+    assert len(floors) >= 4
+    unfloored = floors[floors["min_households"].eq(0)]
+    assert len(unfloored) == 1, "the sweep must include scoring with no floor"
+    scored = summary["odisha"]["as recorded"]["premium"]
+    assert abs(scored - float(unfloored["premium"].iloc[0])) < 0.5
+    assert floors["premium"].max() - floors["premium"].min() < 0.5
+    # And the sweep must actually vary the target, or it proves nothing.
+    assert floors["groups"].max() > 3 * floors["groups"].min()
+
+
+def test_the_floor_removes_local_labels_rather_than_small_ones(summary):
+    """Size alone was the wrong test, and the removal list is what said so.
+
+    A flat fifty-household floor cut ମହିଶ୍ୟ, ଚନ୍ଦ୍ର ବଂଶି and ପାଟସାଲିଆ -- each
+    recognised, each spread over twenty or more villages -- for missing a round
+    number by a household or two. Reach carries the rule now, so what it removes
+    should still be dominated by labels confined to one village. If that share
+    falls, the floor has started removing widespread jatis instead of artefacts.
+    """
+    path = TAB / "jati_floored.csv"
+    if not path.exists():
+        pytest.skip("analysis 09 not built")
+    floored = pd.read_csv(path)
+    assert len(floored) > 0
+    assert floored["villages"].eq(1).mean() > 0.5
+    kept_reach = floored["villages"].max()
+    assert kept_reach < 5, "a label in five villages should have been kept"

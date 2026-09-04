@@ -19,6 +19,13 @@ A02 = HERE.parent / "02_jati_by_geography/out/tab/ladders.csv"
 # setting and the premium is reported across the range rather than at one point.
 THRESHOLDS = [0.15, 0.25, 0.40, 0.60]
 
+# What the floor on a jati costs. Removing the tail cuts the group count by
+# almost nine tenths, so it has to be shown that it does not move the answer.
+FLOORS = [(0, 0), (25, 2), (50, 2), (100, 2)]
+
+# The reach escape: how many villages excuse a label from the size floor.
+REACHES = [2, 5, 10]
+
 
 def bihar() -> dict | None:
     """The Bihar rungs this is compared against, on the same protocol."""
@@ -91,12 +98,18 @@ def main() -> None:
     frame = source.load()
 
     position = source.surname_position(frame)
-    result = norm.normalise(frame[["jati", "surname"]])
+    labelled = frame[["jati", "surname", "village", "district_name"]]
+    result = norm.normalise(labelled)
     result["merges"].to_csv(TAB / "jati_merges.csv", index=False)
     result["dropped"].to_csv(TAB / "jati_dropped.csv", index=False)
     result["refused"].to_csv(TAB / "jati_refused.csv", index=False)
+    result["floored"].to_csv(TAB / "jati_floored.csv", index=False)
 
-    frame["jati_norm"] = frame["jati"].map(result["mapping"])
+    # Both sweeps below vary what the normalisation keeps, so they have to see
+    # the rows it would drop. Scoring them against the frame already filtered by
+    # the default settings made every setting return the default's answer.
+    every = frame
+    frame = frame.assign(jati_norm=frame["jati"].map(result["mapping"]))
     frame = frame[frame["jati_norm"].notna()].copy()
     # Reported both ways rather than decided: a jati recorded as "Pana" and one
     # recorded as "Pana Christian" are two prediction targets unless the
@@ -113,14 +126,42 @@ def main() -> None:
     default_gate = norm.MIN_PROFILE
     for threshold in THRESHOLDS:
         norm.MIN_PROFILE = threshold
-        mapping = norm.normalise(frame[["jati", "surname"]])["mapping"]
-        alt = frame.assign(g=frame["jati"].map(mapping))
+        mapping = norm.normalise(labelled)["mapping"]
+        alt = every.assign(g=every["jati"].map(mapping))
         alt = alt[alt["g"].notna()]
         row = score_all(alt, "g")
         row["threshold"] = threshold
         sensitivity.append(row)
     norm.MIN_PROFILE = default_gate
     pd.DataFrame(sensitivity).to_csv(TAB / "sensitivity.csv", index=False)
+
+    default_floor = (norm.MIN_JATI_HOUSEHOLDS, norm.MIN_JATI_VILLAGES)
+    floors = []
+    for households, villages in FLOORS:
+        norm.MIN_JATI_HOUSEHOLDS, norm.MIN_JATI_VILLAGES = households, villages
+        mapping = norm.normalise(labelled, floor=households > 0)["mapping"]
+        alt = every.assign(g=every["jati"].map(mapping))
+        alt = alt[alt["g"].notna()]
+        row = score_all(alt, "g")
+        row["min_households"] = households
+        row["min_villages"] = villages
+        row["rows"] = int(len(alt))
+        floors.append(row)
+    norm.MIN_JATI_HOUSEHOLDS, norm.MIN_JATI_VILLAGES = default_floor
+    default_reach = norm.MIN_JATI_REACH
+    for reach in REACHES:
+        norm.MIN_JATI_REACH = reach
+        mapping = norm.normalise(labelled)["mapping"]
+        alt = every.assign(g=every["jati"].map(mapping))
+        alt = alt[alt["g"].notna()]
+        row = score_all(alt, "g")
+        row["min_households"] = norm.MIN_JATI_HOUSEHOLDS
+        row["min_villages"] = norm.MIN_JATI_VILLAGES
+        row["reach"] = reach
+        row["rows"] = int(len(alt))
+        floors.append(row)
+    norm.MIN_JATI_REACH = default_reach
+    pd.DataFrame(floors).to_csv(TAB / "floors.csv", index=False)
 
     frame["ri"] = (
         frame["district_code"].astype(str)
@@ -171,6 +212,8 @@ def main() -> None:
                 "households_dropped",
                 "households_merged",
                 "candidates_refused",
+                "labels_floored",
+                "households_floored",
             )
         },
         "odisha": scored,
@@ -179,6 +222,7 @@ def main() -> None:
         "bihar_ladder": bihar_ladder(),
         "bihar_blind": bihar_blind(),
         "sensitivity": sensitivity,
+        "floors": floors,
     }
     (TAB / "summary.json").write_text(json.dumps(summary, indent=2))
     pd.DataFrame(scored).T.to_csv(TAB / "scores.csv")
