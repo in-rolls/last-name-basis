@@ -13,20 +13,20 @@ from last_name_basis.style import ACCENT, INK, MUTED, style_axes  # noqa: E402
 
 
 def premium(summary: dict, out: Path) -> None:
-    """What a village adds, in Bihar and in one district of Odisha.
+    """What a village adds, in Bihar and in Odisha.
 
     The levels are not comparable: Bihar sorts people among 141 jatis and
-    Gajapati among several hundred labels, and the two records were collected
+    Odisha among several thousand labels, and the two records were collected
     differently. The distance between the two bars within each place is the
     quantity that carries across, so the figure draws that distance and labels
     the endpoints rather than inviting a comparison of heights.
     """
-    g = summary["gajapati"]["as recorded"]
+    g = summary["odisha"]["as recorded"]
     b = summary["bihar"]
     places = [
         (f"Bihar\n{b['groups']} jatis", b["surname"], b["surname_village"]),
         (
-            f"Gajapati district, Odisha\n{g['groups']} labels",
+            f"Odisha\n{g['groups']} labels",
             g["surname"],
             g["surname_village"],
         ),
@@ -65,7 +65,7 @@ def premium(summary: dict, out: Path) -> None:
     ax.set_ylim(-0.6, len(places) - 0.4)
     ax.set_xlabel("mistakes per 100 households, leave-one-out")
     ax.set_title(
-        "Adding a village helps less in Gajapati than in Bihar\n"
+        "Adding a village helps less in Odisha than in Bihar\n"
         "Black: the surname alone. Red: the surname with the village. The two "
         "places sort\npeople into different numbers of groups, so compare the "
         "gaps, not the heights.",
@@ -90,9 +90,13 @@ def atrophy(ladders: dict, blinds: dict, out: Path) -> None:
     """
     rungs = ["village", "middle", "larger", "alone"]
     x = range(len(rungs))
-    colour = {"Bihar": INK, "Gajapati district, Odisha": ACCENT}
+    colour = {"Bihar": INK, "Odisha": ACCENT}
 
     fig, ax = plt.subplots(figsize=(9.4, 5.4))
+    # The lines cross, so a fixed offset puts two labels in the same place at
+    # the rungs where they nearly touch. Each label goes above or below
+    # according to which line is higher at that rung.
+    top = [max(v[i] for v in ladders.values()) for i in x]
     for place, values in ladders.items():
         c = colour[place]
         ax.plot(x, values, "-o", color=c, lw=2.2, ms=8, label=place)
@@ -101,18 +105,23 @@ def atrophy(ladders: dict, blinds: dict, out: Path) -> None:
                 f"{v:.0f}",
                 (xi, v),
                 textcoords="offset points",
-                xytext=(0, 9),
+                xytext=(0, 10 if v == top[xi] else -18),
                 ha="center",
                 fontsize=10,
                 color=c,
             )
-    for place, value in blinds.items():
+    # The two blind rates are a point apart, so one label per line printed at
+    # the line's own height lands on top of the other. They are stacked by
+    # rank instead, and each still carries its own colour and number.
+    for rank, (place, value) in enumerate(
+        sorted(blinds.items(), key=lambda kv: -kv[1])
+    ):
         c = colour[place]
         ax.axhline(value, color=c, ls=":", lw=1.1, alpha=0.6)
         ax.text(
             -0.06,
-            value + 1.2,
-            f"knowing nothing, {place.split(' ')[0]} \u2014 {value:.0f}",
+            max(blinds.values()) + 3.0 + rank * 4.2,
+            f"knowing nothing, {place} \u2014 {value:.0f}",
             fontsize=8.5,
             color=c,
         )
@@ -128,13 +137,13 @@ def atrophy(ladders: dict, blinds: dict, out: Path) -> None:
         fontsize=9.5,
     )
     ax.set_xlim(-0.15, len(rungs) - 0.85)
-    ax.set_ylim(0, 90)
+    ax.set_ylim(0, 100)
     ax.set_ylabel("of 100 people, how many you get wrong")
     ax.set_title(
-        "Caste is a local fact in both places, and more local in Bihar\n"
-        "The two lines meet once the place is thrown away. The units are not "
-        "equivalent\nacross states, so the axis ranks them by size rather "
-        "than naming one thing.",
+        "Caste is a local fact in both places, and most local in Bihar\n"
+        "The lines converge as the place is thrown away, and cross: the "
+        "village is worth more\nin Bihar, the larger units more in Odisha. "
+        "The units differ across states, so the axis\nranks them by size.",
         color=INK,
         loc="left",
         fontsize=11.5,

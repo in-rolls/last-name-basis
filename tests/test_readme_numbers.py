@@ -420,5 +420,5 @@ def test_the_readme_premium_numbers_match_analysis_09() -> None:
     text = README.read_text()
     match = re.search(r"village adds\s+(\d+) points where in Bihar it adds (\d+)", text)
     assert match, "README no longer states the two premia"
-    assert abs(float(match.group(1)) - s["gajapati"]["as recorded"]["premium"]) < 0.5
+    assert abs(float(match.group(1)) - s["odisha"]["as recorded"]["premium"]) < 0.5
     assert abs(float(match.group(2)) - s["bihar"]["premium"]) < 0.5

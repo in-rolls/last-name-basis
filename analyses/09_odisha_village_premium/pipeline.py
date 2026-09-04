@@ -87,9 +87,6 @@ def main() -> None:
     FIG.mkdir(parents=True, exist_ok=True)
 
     frame = source.load()
-    if frame is None:
-        print("skipped: tenants.parquet not present")
-        return
 
     position = source.surname_position(frame)
     result = norm.normalise(frame["jati"])
@@ -139,8 +136,22 @@ def main() -> None:
         {"level": [name for name, _ in LADDER], "mistakes_per_100": ladder}
     ).to_csv(TAB / "ladder.csv", index=False)
 
+    # Pooled across thirty districts, the premium is one number standing for
+    # places that differ. Gajapati was the published result, so it is kept
+    # separately comparable rather than absorbed.
+    by_district = []
+    for name, part in frame.groupby("district_name", sort=True, observed=True):
+        if part["jati_norm"].nunique() < 2 or len(part) < 500:
+            continue
+        row = score_all(part, "jati_norm")
+        row["district"] = str(name)
+        row["villages"] = int(part["village"].nunique())
+        by_district.append(row)
+    by_district.sort(key=lambda r: -r["households"])
+    pd.DataFrame(by_district).to_csv(TAB / "by_district.csv", index=False)
+
     summary = {
-        "district": frame.attrs["district"],
+        "districts": frame.attrs["districts"],
         "ladder": ladder,
         "ladder_levels": [name for name, _ in LADDER],
         "sampling": frame.attrs["sampling"],
@@ -156,7 +167,8 @@ def main() -> None:
                 "households_merged",
             )
         },
-        "gajapati": scored,
+        "odisha": scored,
+        "by_district": by_district,
         "bihar": bihar(),
         "bihar_ladder": bihar_ladder(),
         "bihar_blind": bihar_blind(),
@@ -171,10 +183,10 @@ def main() -> None:
     bl = bihar_ladder()
     if bl is not None:
         figures.atrophy(
-            {"Bihar": bl, "Gajapati district, Odisha": summary["ladder"]},
+            {"Bihar": bl, "Odisha": summary["ladder"]},
             {
                 "Bihar": bihar_blind() or 0.0,
-                "Gajapati district, Odisha": scored["as recorded"]["blind"],
+                "Odisha": scored["as recorded"]["blind"],
             },
             FIG / "atrophy.png",
         )

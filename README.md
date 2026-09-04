@@ -47,7 +47,7 @@ carries both, the analyses below combine five.
 | caste composition of a surname, nationally | fine categories; who actually carries the name today | SECC 2011 |
 | how common a name is, and who a person's father or husband is | any caste at all | electoral rolls, 2017 |
 | jati and hamlet for every household | anywhere outside Bihar; the landless | Bihar land records, Mahadalit census |
-| jati and village per tenant in a second state | one district so far; still being scraped | Odisha Record of Rights |
+| jati and village per tenant in a second state | a partial state; still being scraped | Odisha Record of Rights |
 | a third population with its own category labels | a population sample of anything | Karnataka PSC lists |
 
 The national picture needs the first two joined. Whether the *place* does the
@@ -291,26 +291,34 @@ are surnames that cleared a 100-record disclosure floor and they cover between
 
 **And the village premium is smaller outside Bihar.** The Odisha Record of
 Rights records a jati and a village for every tenant, so the same measurement is
-possible elsewhere. In Gajapati district, on the same protocol, **a village adds
-20 points where in Bihar it adds 30**. Put as a share of the errors the surname
-leaves behind, adding the village removes 42% of them in Gajapati and 64% in
-Bihar.
+possible elsewhere. Across 30 districts and 10,609 villages, on the same
+protocol, **a village adds 24 points where in Bihar it adds 30**. Put as a share
+of the errors the surname leaves behind, adding the village removes 52% of them
+in Odisha and 64% in Bihar.
+
+That pooled figure hides a spread. District by district the premium runs from
+2.5 to 22.4 points, median 11.4, and the pooled number is larger than any single
+district: naming a village in the pooled problem also names a district and a
+region, so it carries geography a district-level score has already held fixed.
+Bihar's 30 is pooled too, which is what makes the pooled rows comparable.
 
 The two levels are not comparable: Bihar sorts people among 141 curated jatis
-and Gajapati among several hundred labels as recorded, and a harder target costs
-mistakes whatever the surname does. Given that, the comparable quantity is the
-distance between the rungs, and both places converge at 47 once the place is
+and Odisha among 5,389 labels as recorded, and a harder target costs mistakes
+whatever the surname does. Given that, the comparable quantity is the distance
+between the rungs, and both places converge at about 47 once the place is
 discarded.
 
 [![Error rising as the place gets bigger, in both places](analyses/09_odisha_village_premium/out/fig/atrophy.png)](analyses/09_odisha_village_premium/note.md)
 
 Three of the analyst's choices could have produced that difference, so each was
 varied. Collapsing the labels to little more than half as many moves the premium
-by half a mistake. Stripping the religion suffix from the jati label moves it
-from 19.7 to 15.8. Changing which token is taken as the surname moves it by 0.2.
-Gajapati is one district of thirty and is still being scraped, a median of 35
-khatiyans per village rather than a census of each, so this is not an Odisha
-result, and the sampling biases the premium downward.
+by less than a mistake. Stripping the religion suffix from the jati label moves
+it from 24.4 to 23.7. The last token is the surname for 92% of tenants who share
+one with the relative named beside them, so that rule is measured rather than
+assumed. The scrape is unfinished and its districts were not entered at random,
+so this is a partial Odisha; a completed village is now censused rather than
+sampled, but villages still in progress are partial and bias the premium
+downward.
 
 *Analyses: [02](analyses/02_jati_by_geography),
 [06](analyses/06_neighbours),

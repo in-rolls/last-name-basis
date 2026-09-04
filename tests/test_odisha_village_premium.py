@@ -1,4 +1,4 @@
-"""Analysis 09: the village premium in Bihar against one district of Odisha."""
+"""Analysis 09: the village premium in Bihar against a partial Odisha."""
 
 from __future__ import annotations
 
@@ -36,11 +36,11 @@ def test_the_surname_position_is_measured_before_it_is_used(summary):
 
 def test_the_village_adds_less_here_than_in_bihar(summary):
     bihar = summary["bihar"]
-    gajapati = summary["gajapati"]["as recorded"]
-    assert bihar["premium"] > gajapati["premium"]
+    odisha = summary["odisha"]["as recorded"]
+    assert bihar["premium"] > odisha["premium"]
     # Both are large; the finding is the difference between them, not that one
     # of them is zero.
-    assert gajapati["premium"] > 10
+    assert odisha["premium"] > 10
     assert bihar["premium"] > 25
 
 
@@ -66,26 +66,52 @@ def test_religion_is_reported_both_ways_and_changes_nothing_qualitative(summary)
     Scoring only one way would either smuggle religion in or silently remove it.
     Both are reported, and the conclusion has to hold under each.
     """
-    both = summary["gajapati"]
+    both = summary["odisha"]
     assert set(both) == {"as recorded", "religion stripped"}
     for scored in both.values():
         assert scored["premium"] < summary["bihar"]["premium"]
 
 
-def test_the_district_is_never_labelled_as_the_state(summary):
-    """One district of thirty. Calling it Odisha would be the easy error."""
-    assert summary["district"] == "Gajapati"
+def test_a_partial_scrape_is_never_reported_as_a_finished_one(summary):
+    """The scope claim moved but did not disappear.
+
+    This analysis once covered one district and said so. It now covers many,
+    which retires that caveat and creates the opposite risk: a scrape that has
+    reached a fraction of the state's khatiyans being written up as Odisha
+    entire. The note has to keep saying the crawl is unfinished and that its
+    districts were not entered at random.
+    """
+    assert len(summary["districts"]) > 1
     note = (ROOT / "analyses/09_odisha_village_premium/note.md").read_text()
-    assert "Gajapati" in note
-    # The note must say what it is not.
-    assert "not Odisha" in note or "not an Odisha result" in note
+    assert "not finished" in note or "unfinished" in note
+    assert "random" in note
+
+
+def test_the_pooled_premium_is_reported_beside_its_spread(summary):
+    """Pooling states hides that districts disagree, and here it inverts.
+
+    The pooled premium exceeds every district's, because a village in the
+    pooled problem also names a district and a region. Reporting the pooled
+    number alone would overstate what a village is worth to someone who
+    already knows where they are, so the per-district scores must be present
+    and the note must account for the gap.
+    """
+    per = pd.DataFrame(summary["by_district"])
+    assert len(per) > 5
+    pooled = summary["odisha"]["as recorded"]["premium"]
+    assert per["premium"].min() < per["premium"].max()
+    note = (ROOT / "analyses/09_odisha_village_premium/note.md").read_text()
+    if pooled > per["premium"].max():
+        assert "larger than every district" in note
 
 
 def test_the_sampling_limit_is_recorded(summary):
     """The sampling depth biases the premium downward, so it is measured.
 
-    Not read off the --per-village flag: that is a per-run cap, it has already
-    changed from 40 to 10 mid-collection, and villages accumulate across runs.
+    Not read off the --per-village flag: that is a per-run cap, it has changed
+    between runs and is now effectively off, and villages accumulate across
+    runs. A finished village is censused; one the crawl is still working
+    through is not, and only the realised distribution separates them.
     """
     sampling = summary["sampling"]
     assert sampling["khatiyans_per_village_median"] > 0
@@ -117,6 +143,6 @@ def test_both_places_converge_once_the_place_is_discarded(summary):
     comparable surname signal and the premium difference would be confounded.
     """
     bihar = summary["bihar_ladder"]
-    gajapati = summary["ladder"]
-    assert abs(bihar[-1] - gajapati[-1]) < 2, "surname-alone rungs should agree"
-    assert gajapati[0] - bihar[0] > 5, "village rungs should differ"
+    odisha = summary["ladder"]
+    assert abs(bihar[-1] - odisha[-1]) < 2, "surname-alone rungs should agree"
+    assert odisha[0] - bihar[0] > 4, "village rungs should differ"

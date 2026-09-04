@@ -30,9 +30,7 @@ test is run per state and never carried over.
 
 from __future__ import annotations
 
-import gzip
 import importlib.util
-import json
 import os
 import re
 import sys
@@ -43,7 +41,6 @@ import pandas as pd
 
 HERE = Path(__file__).resolve().parent
 TENANTS = HERE / "out/tab/tenants.parquet"
-DISTRICT = "Gajapati"
 
 _SPACE = re.compile(r"\s+")
 
@@ -68,72 +65,57 @@ def _github() -> Path:
 def checkpoints() -> Path:
     """Where the Odisha scraper and its checkpoints live.
 
-    The scraper moved to its own repository, but a fetch was running in
-    pranaam at the time and could not be interrupted, so both locations exist
-    during the cutover. The first that holds a parser wins, and the fallback
-    can be deleted once nothing is fetching from the old path.
+    One path, deliberately. The scraper briefly existed twice -- once in
+    pranaam and once extracted -- and the fallback chain that tolerated it
+    resolved to a copy holding the parser but no data. Discovery then failed,
+    `load` returned the cached table, and the analysis reported one district
+    for weeks without raising. A missing path is now an error.
     """
-    root = _github()
-    candidates = [
-        root / "odisha-ror",
-        root / "pranaam/scripts/data-acquisition/odisha_ror",
-    ]
-    for candidate in candidates:
-        if (candidate / "parse_ror.py").exists() and (
-            candidate / "raw" / "ror"
-        ).exists():
-            return candidate
-    for candidate in candidates:
-        if (candidate / "parse_ror.py").exists():
-            return candidate
-    return candidates[-1]
+    return _github() / "odisha-ror"
 
 
-def materialise() -> bool:
-    """Parse pranaam's fetched checkpoints into this repo's own table.
+def materialise() -> None:
+    """Parse the scraper's checkpoints into this repo's own table.
 
-    The parser lives in pranaam and is imported rather than copied, so a fix
-    there reaches here. Nothing is written back into that repository: a scrape
-    runs in it, and its own `tenants.parquet` is a build artefact of a process
-    this analysis does not own.
+    The parser is imported rather than copied, so a fix there reaches here.
+    Nothing is written back into that repository: a scrape runs in it, and its
+    own `tenants.parquet` is a build artefact of a process this analysis does
+    not own.
+
+    Raises:
+        FileNotFoundError: If the scraper or its checkpoints are absent.
+        ValueError: If the checkpoint tree holds no readable record.
     """
-    source = checkpoints() / "parse_ror.py"
+    root = checkpoints()
+    source = root / "parse_ror.py"
     if not source.exists():
-        return False
+        raise FileNotFoundError(f"no parse_ror.py under {root}")
+    if not (root / "raw" / "ror").is_dir():
+        raise FileNotFoundError(f"no fetched checkpoints under {root / 'raw/ror'}")
     spec = importlib.util.spec_from_file_location("parse_ror", source)
     if spec is None or spec.loader is None:
-        return False
+        raise ImportError(f"could not load {source}")
     module = importlib.util.module_from_spec(spec)
     sys.modules["parse_ror"] = module
     spec.loader.exec_module(module)
-    # File discovery is done here rather than by `read_checkpoints`, which
-    # globs `district_*/village_*.jsonl.gz`. The fetcher now writes a tahsil
-    # level between the two, so that glob matches nothing and the upstream
-    # parser silently returns zero records against a live scrape. Reported
-    # upstream; this keeps working either way.
-    root = checkpoints() / "raw" / "ror"
-    records = []
-    for path in sorted(root.glob("**/village_*.jsonl.gz")):
-        try:
-            with gzip.open(path, "rt", encoding="utf8") as handle:
-                for line in handle:
-                    try:
-                        records.append(json.loads(line))
-                    except json.JSONDecodeError:
-                        continue  # a partial final line from a live writer
-        except (OSError, EOFError):
-            continue  # a file being written right now
+    # Upstream discovery is used rather than reimplemented here: its glob now
+    # carries the tahsil level the fetcher writes, and it salvages the
+    # checkpoint a live scrape leaves truncated.
+    records = module.read_checkpoints(root / "raw" / "ror")
     if not records:
-        return False
+        raise ValueError(f"no readable records under {root / 'raw/ror'}")
     TENANTS.parent.mkdir(parents=True, exist_ok=True)
     module.build(records).to_parquet(TENANTS, index=False)
-    return True
 
 
-def load() -> pd.DataFrame | None:
-    """Tenant rows with a jati, a village and a surname."""
-    if not TENANTS.exists() and not materialise():
-        return None
+def load() -> pd.DataFrame:
+    """Tenant rows with a jati, a village and a surname.
+
+    Returns:
+        One row per tenant carrying a jati, a village key and a surname.
+    """
+    if not TENANTS.exists():
+        materialise()
     d = pd.read_parquet(TENANTS)
     d["jati"] = d["caste_or"].map(normalise)
     d["name"] = d["name_or"].map(normalise)
@@ -148,7 +130,7 @@ def load() -> pd.DataFrame | None:
     d["surname"] = tokens.map(lambda t: t[-1] if isinstance(t, list) and t else "")
     keep = d["jati"].ne("") & d["surname"].ne("")
     out = d.loc[keep].reset_index(drop=True)
-    out.attrs["district"] = DISTRICT
+    out.attrs["districts"] = sorted(out["district_name"].astype(str).unique())
     out.attrs["sampling"] = village_sampling(out)
     return out
 
@@ -157,7 +139,10 @@ def village_sampling(d: pd.DataFrame) -> dict:
     """How many khatiyans each village actually contributed.
 
     Not the `--per-village` flag: that is a per-run cap, villages accumulate
-    across runs, and the flag has already changed from 40 to 10 mid-collection.
+    across runs, and the flag has changed between runs. It is now effectively
+    off, so a finished village is censused rather than sampled -- but a village
+    the scrape is still working through is not, and only the realised
+    distribution can tell the two apart.
     """
     per = d.groupby(["district_code", "tahsil_code", "village_code"])[
         "khatiyan"
@@ -212,26 +197,65 @@ def score(d: pd.DataFrame, keys: list[str], group: str = "jati") -> dict:
     groups = sorted(d[group].unique())
     index = {g: i for i, g in enumerate(groups)}
     truth = d[group].map(index).to_numpy()
-    cell = d[keys].astype(str).agg("|".join, axis=1) if len(keys) > 1 else d[keys[0]]
+    # `.agg("|".join, axis=1)` is a Python call per row, which is most of the
+    # runtime at five million of them. `str.cat` builds the same strings in one
+    # vectorised pass.
+    if len(keys) > 1:
+        first, *rest = keys
+        cell = d[first].astype(str).str.cat([d[k].astype(str) for k in rest], sep="|")
+    else:
+        cell = d[keys[0]]
+    cell_code, _ = pd.factorize(cell, sort=True)
 
-    counts = (
-        pd.crosstab(cell, d[group]).reindex(columns=groups, fill_value=0).astype(float)
+    # The dense (rows x groups) tally the first version built is 248 GB at
+    # Odisha's size, so the leave-one-out winner is derived from each cell's
+    # two leading groups instead. Removing a row can only demote its own
+    # group by one, so the winner is the cell's top group unless the row
+    # belongs to it, and then it is whichever of the top two survives. Ties
+    # go to the lowest group index, which is what argmax did.
+    tally = pd.DataFrame({"cell": cell_code, "grp": truth}).value_counts()
+    tally = tally.reset_index(name="n").sort_values(
+        ["cell", "n", "grp"], ascending=[True, False, True], kind="stable"
     )
-    rows = counts.loc[cell].to_numpy()
-    own = np.zeros_like(rows)
-    own[np.arange(len(d)), truth] = 1
-    left = rows - own
+    lead = tally.groupby("cell", sort=True).head(2)
+    first = lead.groupby("cell", sort=True).nth(0)
+    second = lead.groupby("cell", sort=True).nth(1)
 
-    prior = counts.to_numpy().sum(axis=0)
+    n_cells = cell_code.max() + 1
+    top_group = np.full(n_cells, -1, dtype=np.int64)
+    top_count = np.zeros(n_cells, dtype=np.int64)
+    next_group = np.full(n_cells, -1, dtype=np.int64)
+    next_count = np.zeros(n_cells, dtype=np.int64)
+    top_group[first["cell"].to_numpy()] = first["grp"].to_numpy()
+    top_count[first["cell"].to_numpy()] = first["n"].to_numpy()
+    next_group[second["cell"].to_numpy()] = second["grp"].to_numpy()
+    next_count[second["cell"].to_numpy()] = second["n"].to_numpy()
+
+    size = np.bincount(cell_code, minlength=n_cells)
+    row_top, row_top_n = top_group[cell_code], top_count[cell_code]
+    row_next, row_next_n = next_group[cell_code], next_count[cell_code]
+
+    # The row is removed from its own cell, so its group loses one vote.
+    demoted = row_top_n - 1
+    runner_up = np.where(row_next < 0, -1, row_next)
+    contested = np.where(
+        demoted > row_next_n,
+        row_top,
+        np.where(demoted == row_next_n, np.minimum(row_top, runner_up), runner_up),
+    )
+    guess = np.where(truth == row_top, contested, row_top)
+
+    prior = np.bincount(truth, minlength=len(groups))
     fallback = int(prior.argmax())
-    resolved = left.sum(axis=1) > 0
-    guess = np.where(resolved, left.argmax(axis=1), fallback)
+    resolved = size[cell_code] > 1
+    guess = np.where(resolved, guess, fallback)
+    counts_shape = n_cells
 
     return {
         "cue": " + ".join(keys),
         "households": int(len(d)),
         "groups": len(groups),
-        "cells": int(counts.shape[0]),
+        "cells": int(counts_shape),
         "mistakes_per_100": float(100 * (guess != truth).mean()),
         "share_resolved": float(100 * resolved.mean()),
     }
